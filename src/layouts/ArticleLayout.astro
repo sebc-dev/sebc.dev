@@ -1,0 +1,87 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ArticleHeader from "@/components/article/ArticleHeader.astro";
+import TableOfContents from "@/components/article/TableOfContents.astro";
+import ShareButtons from "@/components/article/ShareButtons.astro";
+import RelatedArticles from "@/components/article/RelatedArticles.astro";
+import ReadingProgress from "@/components/ui/ReadingProgress.astro";
+import Tag from "@/components/ui/Tag.astro";
+import { getRelatedArticles, type Article } from "@/lib/articles";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+interface Props {
+  article: Article;
+  headings: { depth: number; slug: string; text: string }[];
+}
+
+const { article, headings } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+// Get related articles
+const relatedArticles = await getRelatedArticles(article);
+
+// Compute article URL for sharing
+const articleUrl = new URL(Astro.url.pathname, Astro.site).href;
+---
+
+<BaseLayout title={article.data.title} description={article.data.description}>
+  <ReadingProgress />
+  <div class="max-w-6xl mx-auto px-6 lg:px-8 py-12 md:py-16">
+    <div class="lg:grid lg:grid-cols-[1fr_240px] lg:gap-12">
+      <article>
+        <ArticleHeader article={article} />
+        <div class="prose max-w-none" id="article-content">
+          <slot />
+        </div>
+        <RelatedArticles articles={relatedArticles} />
+      </article>
+      <aside class="hidden lg:block">
+        <div class="sticky top-24">
+          <TableOfContents headings={headings} />
+          <div class="mt-8">
+            <h3
+              class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-4"
+            >
+              {t("article.tags")}
+            </h3>
+            <div class="flex flex-wrap gap-2">
+              {article.data.tags.map((tag) => <Tag label={tag} />)}
+            </div>
+          </div>
+          <div class="mt-8">
+            <ShareButtons url={articleUrl} title={article.data.title} />
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  function initHeadingAnchorCopy() {
+    document.querySelectorAll(".heading-anchor").forEach((anchor: Element) => {
+      anchor.addEventListener("click", async (e: Event) => {
+        e.preventDefault();
+        const hash = anchor.getAttribute("href");
+        if (!hash) return;
+
+        const url = window.location.origin + window.location.pathname + hash;
+
+        try {
+          await navigator.clipboard.writeText(url);
+          // Update URL hash for navigation
+          window.history.pushState(null, "", hash);
+          // Visual feedback
+          anchor.classList.add("text-teal-bright");
+          setTimeout(() => anchor.classList.remove("text-teal-bright"), 1500);
+        } catch (error) {
+          console.error("Failed to copy URL:", error);
+        }
+      });
+    });
+  }
+
+  initHeadingAnchorCopy();
+  document.addEventListener("astro:after-swap", initHeadingAnchorCopy);
+</script>
