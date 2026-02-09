@@ -5,32 +5,33 @@
 See: .planning/PROJECT.md (updated 2026-02-09)
 
 **Core value:** Le site incarne les valeurs defendues (UX, performance, qualite) tout en permettant une publication reguliere d'articles. Le medium est le message.
-**Current focus:** Phase 1 - Foundation
+**Current focus:** Phase 2 - Home Page
 
 ## Current Position
 
-Phase: 1 of 6 (Foundation)
-Plan: 3 of 3 in current phase
-Status: Phase complete -- all plans executed
-Last activity: 2026-02-09 -- Completed 01-03-PLAN.md (Layout Integration), ready for Phase 2
+Phase: 2 of 6 (Home Page)
+Plan: 1 of 2 in current phase
+Status: Plan 02-01 complete -- data foundation ready, executing Plan 02-02 next
+Last activity: 2026-02-09 -- Completed 02-01-PLAN.md (Data Foundation)
 
-Progress: [███░░░░░░░] 17%
+Progress: [████░░░░░░] 25%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
+- Total plans completed: 4
 - Average duration: 3min
-- Total execution time: 0.15 hours
+- Total execution time: 0.22 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation | 3 | 9min | 3min |
+| 02-home-page | 1 | 4min | 4min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2min), 01-02 (2min), 01-03 (5min)
+- Last 5 plans: 01-01 (2min), 01-02 (2min), 01-03 (5min), 02-01 (4min)
 - Trend: Consistent
 
 *Updated after each plan completion*
@@ -53,6 +54,9 @@ Recent decisions affecting current work:
 - [01-03]: BaseLayout uses min-h-screen flex-col pattern to push footer to bottom on short pages
 - [01-03]: Scroll-reveal script wrapped in astro:page-load event for View Transitions compatibility
 - [01-03]: Root 404 page defaults to English since it handles unprefixed URLs
+- [02-01]: Flat article file structure ({lang}-{slug}.mdx) to prevent entry.id path separator issues
+- [02-01]: Featured article fallback to most recent when none marked featured: true
+- [02-01]: Intl.DateTimeFormat over date-fns/dayjs -- zero dependencies for locale-aware dates
 
 ### Pending Todos
 
@@ -67,5 +71,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-09
-Stopped at: Phase 1 complete -- 01-03-PLAN.md finished
-Resume file: Ready for Phase 2 planning
+Stopped at: Completed 02-01-PLAN.md (Data Foundation)
+Resume file: Ready for 02-02-PLAN.md execution
