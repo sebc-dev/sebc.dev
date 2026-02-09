@@ -46,10 +46,11 @@ Plans:
   1. User sees a featured article prominently displayed at the top of the home page with image, metadata, and description
   2. User can browse articles in a responsive grid (1 column on mobile, 2 on tablet, 3 on desktop) with cards showing image, date, reading time, category, tags, and excerpt
   3. User can filter articles by category using filter buttons that visually toggle their active state and immediately update the displayed articles
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 02-01: TBD
+- [ ] 02-01-PLAN.md -- Seed MDX articles, article data access layer, date utility, Tag component, i18n strings
+- [ ] 02-02-PLAN.md -- FeaturedArticle, ArticleCard, CategoryFilter components, home page wiring, visual verification
 
 ### Phase 3: Article Page
 **Goal**: Users can read a full MDX article with premium code blocks, navigate via TOC, track reading progress, share the article, and discover related content.
@@ -117,7 +118,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | Phase | Plans Complete | Status | Completed |
 |-------|---------------|--------|-----------|
 | 1. Foundation | 3/3 | ✓ Complete | 2026-02-09 |
-| 2. Home Page | 0/TBD | Not started | - |
+| 2. Home Page | 0/2 | In progress | - |
 | 3. Article Page | 0/TBD | Not started | - |
 | 4. Search Page | 0/TBD | Not started | - |
 | 5. About Page | 0/TBD | Not started | - |
