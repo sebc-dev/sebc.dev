@@ -228,8 +228,8 @@
   display: none !important;
 }
 
-/* Mobile: hide copy button, tap code block to copy */
-@media (hover: none) {
+/* Mobile (<lg): hide copy button, tap code block to copy */
+@media (max-width: 1023px) {
   .expressive-code .copy {
     display: none !important;
   }

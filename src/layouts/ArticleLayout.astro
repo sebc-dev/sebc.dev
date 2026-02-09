@@ -213,8 +213,8 @@ if (article.data.translationSlug) {
   document.addEventListener("astro:after-swap", initCodeBlockHeaders);
 
   function initMobileCodeCopy() {
-    const isTouch = window.matchMedia("(hover: none)").matches;
-    if (!isTouch) return;
+    const isMobile = window.matchMedia("(max-width: 1023px)").matches;
+    if (!isMobile) return;
 
     document.querySelectorAll(".expressive-code .frame").forEach((frame) => {
       const pre = frame.querySelector("pre");
