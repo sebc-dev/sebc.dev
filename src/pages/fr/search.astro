@@ -1,16 +1,1019 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import ArticleCard from "@/components/article/ArticleCard.astro";
+import { getArticlesByLocale, getCategories, getTags } from "@/lib/articles";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const allArticles = await getArticlesByLocale(lang);
+const categories = await getCategories(lang);
+const tags = await getTags(lang);
+
+// Compute initial filter counts
+const categoryCounts: Record<string, number> = {};
+for (const cat of categories) {
+  categoryCounts[cat] = allArticles.filter(
+    (a) => a.data.category === cat,
+  ).length;
+}
+
+const tagCounts: Record<string, number> = {};
+for (const tag of tags) {
+  tagCounts[tag] = allArticles.filter((a) => a.data.tags.includes(tag)).length;
+}
 ---
 
-<BaseLayout
-  title="Recherche"
-  description="Rechercher des articles sur sebc.dev"
->
+<BaseLayout title={t("search.title")} description={t("search.description")}>
   <section
     data-pagefind-ignore
-    class="max-w-6xl mx-auto px-6 lg:px-8 py-16 fade-up"
+    class="max-w-6xl mx-auto px-6 lg:px-8 py-12 md:py-16"
   >
-    <h1 class="text-3xl md:text-5xl font-bold mb-6">Recherche</h1>
-    <p class="text-text-secondary text-lg max-w-2xl">Bientot disponible.</p>
+    <!-- Page header -->
+    <h1 class="text-3xl md:text-5xl font-bold mb-8">{t("search.title")}</h1>
+
+    <!-- Search input -->
+    <div class="mb-4">
+      <input
+        id="search-input"
+        type="search"
+        placeholder={t("search.placeholder")}
+        class="bg-surface border border-border rounded-xs px-4 py-3 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-teal/50 w-full font-body"
+        autocomplete="off"
+      />
+    </div>
+
+    <!-- Active filter chips area -->
+    <div
+      id="filter-chips"
+      class="flex flex-wrap items-center gap-2 mb-6 min-h-[0px]"
+    >
+    </div>
+
+    <!-- Main content area -->
+    <div class="lg:grid lg:grid-cols-[240px_1fr] lg:gap-8">
+      <!-- Left sidebar (desktop) -->
+      <aside id="filter-sidebar" class="hidden lg:block">
+        <div class="sticky top-24">
+          <!-- Categories -->
+          <div class="mb-8">
+            <h3
+              class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-4"
+            >
+              {t("search.categories")}
+            </h3>
+            <div class="flex flex-col gap-1.5">
+              {
+                categories.map((cat) => (
+                  <button
+                    data-filter-category={cat}
+                    data-count={categoryCounts[cat]}
+                    class="text-sm font-medium px-3.5 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright text-left"
+                  >
+                    {cat}{" "}
+                    <span class="text-text-muted opacity-60">
+                      ({categoryCounts[cat]})
+                    </span>
+                  </button>
+                ))
+              }
+            </div>
+          </div>
+          <!-- Tags -->
+          <div>
+            <h3
+              class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-4"
+            >
+              {t("search.tags")}
+            </h3>
+            <div class="flex flex-wrap gap-1.5">
+              {
+                tags.map((tag) => (
+                  <button
+                    data-filter-tag={tag}
+                    data-count={tagCounts[tag]}
+                    class="text-xs font-code px-2.5 py-1 rounded-xs border border-border text-text-secondary whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright"
+                  >
+                    {tag} <span class="opacity-60">({tagCounts[tag]})</span>
+                  </button>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Mobile filter button -->
+      <button
+        id="filter-mobile-btn"
+        class="lg:hidden flex items-center gap-2 text-sm font-medium px-3.5 py-2 rounded-xs border border-border text-text-muted hover:border-teal/40 hover:text-teal-bright transition-all mb-4"
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="4" y1="6" x2="20" y2="6"></line>
+          <line x1="8" y1="12" x2="20" y2="12"></line>
+          <line x1="12" y1="18" x2="20" y2="18"></line>
+        </svg>
+        {t("search.filters")}
+      </button>
+
+      <!-- Mobile filter drawer -->
+      <div
+        id="filter-drawer-overlay"
+        class="lg:hidden fixed inset-0 z-50 pointer-events-none opacity-0 transition-opacity duration-300"
+      >
+        <div
+          class="absolute inset-0 bg-canvas/80 backdrop-blur-sm"
+          data-filter-backdrop
+        >
+        </div>
+        <div
+          id="filter-drawer-panel"
+          class="absolute inset-y-0 left-0 w-full max-w-sm bg-canvas border-r border-border -translate-x-full transition-transform duration-300 ease-out flex flex-col"
+        >
+          <div
+            class="flex items-center justify-between px-6 py-4 border-b border-border"
+          >
+            <h3
+              class="text-xs font-semibold uppercase tracking-widest text-text-muted"
+            >
+              {t("search.filters")}
+            </h3>
+            <button
+              data-filter-close
+              class="text-text-muted hover:text-text-primary p-1"
+              aria-label="Close"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+          <nav class="flex-1 overflow-y-auto px-6 py-6">
+            <!-- Mobile Categories -->
+            <div class="mb-8">
+              <h3
+                class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-4"
+              >
+                {t("search.categories")}
+              </h3>
+              <div class="flex flex-col gap-1.5">
+                {
+                  categories.map((cat) => (
+                    <button
+                      data-filter-category-mobile={cat}
+                      data-count={categoryCounts[cat]}
+                      class="text-sm font-medium px-3.5 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright text-left"
+                    >
+                      {cat}{" "}
+                      <span class="text-text-muted opacity-60">
+                        ({categoryCounts[cat]})
+                      </span>
+                    </button>
+                  ))
+                }
+              </div>
+            </div>
+            <!-- Mobile Tags -->
+            <div>
+              <h3
+                class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-4"
+              >
+                {t("search.tags")}
+              </h3>
+              <div class="flex flex-wrap gap-1.5">
+                {
+                  tags.map((tag) => (
+                    <button
+                      data-filter-tag-mobile={tag}
+                      data-count={tagCounts[tag]}
+                      class="text-xs font-code px-2.5 py-1 rounded-xs border border-border text-text-secondary whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright"
+                    >
+                      {tag} <span class="opacity-60">({tagCounts[tag]})</span>
+                    </button>
+                  ))
+                }
+              </div>
+            </div>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Results area -->
+      <div>
+        <!-- View toggle + result count bar -->
+        <div class="flex items-center justify-between mb-6">
+          <p id="result-count" class="text-sm text-text-muted">
+            {allArticles.length}
+            {
+              allArticles.length === 1
+                ? t("search.resultCountSingular")
+                : t("search.resultCount")
+            }
+          </p>
+          <div
+            id="view-toggle"
+            class="hidden lg:flex items-center gap-1 border border-border rounded-xs p-0.5"
+          >
+            <button
+              data-view="grid"
+              class="p-1.5 rounded-xs text-teal-bright bg-teal-dim transition-colors"
+              aria-label={t("search.gridView")}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+              </svg>
+            </button>
+            <button
+              data-view="list"
+              class="p-1.5 rounded-xs text-text-muted transition-colors hover:text-text-primary"
+              aria-label={t("search.listView")}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Loading state -->
+        <div id="search-loading" class="hidden">
+          <div
+            class="flex items-center gap-3 text-text-muted py-12 justify-center"
+          >
+            <div
+              class="w-4 h-4 border-2 border-teal/30 border-t-teal rounded-full animate-spin"
+            >
+            </div>
+            <span class="text-sm">{t("search.loading")}</span>
+          </div>
+        </div>
+
+        <!-- No results message -->
+        <div id="no-results" class="hidden">
+          <p class="text-text-secondary text-center py-12"></p>
+        </div>
+
+        <!-- Server-rendered articles grid (initial state) -->
+        <div
+          id="initial-articles"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {allArticles.map((article) => <ArticleCard article={article} />)}
+        </div>
+
+        <!-- Pagefind results container -->
+        <div id="search-results" class="hidden"></div>
+      </div>
+    </div>
   </section>
 </BaseLayout>
+
+<script>
+  function initSearch() {
+    // --- DOM references ---
+    const searchInput = document.getElementById(
+      "search-input",
+    ) as HTMLInputElement | null;
+    const filterChips = document.getElementById("filter-chips");
+    const initialArticles = document.getElementById("initial-articles");
+    const searchResults = document.getElementById("search-results");
+    const noResults = document.getElementById("no-results");
+    const searchLoading = document.getElementById("search-loading");
+    const resultCount = document.getElementById("result-count");
+    const viewToggle = document.getElementById("view-toggle");
+    const filterSidebar = document.getElementById("filter-sidebar");
+    const filterMobileBtn = document.getElementById("filter-mobile-btn");
+    const filterDrawerOverlay = document.getElementById(
+      "filter-drawer-overlay",
+    );
+    const filterDrawerPanel = document.getElementById("filter-drawer-panel");
+
+    if (
+      !searchInput ||
+      !filterChips ||
+      !initialArticles ||
+      !searchResults ||
+      !noResults ||
+      !resultCount
+    )
+      return;
+
+    // Safe references (narrowed by guard above)
+    const $initial = initialArticles;
+    const $results = searchResults;
+    const $noResults = noResults;
+    const $count = resultCount;
+    const $chips = filterChips;
+    const $noResultsP = $noResults.querySelector("p");
+
+    // --- State ---
+    interface SearchState {
+      query: string;
+      category: string;
+      tags: string[];
+      view: "grid" | "list";
+    }
+
+    let state: SearchState = {
+      query: "",
+      category: "",
+      tags: [],
+      view: "grid",
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let pagefind: any = null;
+    let pagefindLoading = false;
+    const initialArticleCount =
+      initialArticles.querySelectorAll("article").length;
+    const lang = document.documentElement.lang || "en";
+
+    // --- Responsive: force list on mobile ---
+    const lgMediaQuery = window.matchMedia("(min-width: 1024px)");
+
+    function getEffectiveView(): "grid" | "list" {
+      return lgMediaQuery.matches ? state.view : "list";
+    }
+
+    // --- URL state management ---
+    function readStateFromUrl(): SearchState {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        query: params.get("q") || "",
+        category: params.get("cat") || "",
+        tags: params.get("tags")?.split(",").filter(Boolean) || [],
+        view: state.view,
+      };
+    }
+
+    function writeStateToUrl(s: SearchState, push = false) {
+      const params = new URLSearchParams();
+      if (s.query) params.set("q", s.query);
+      if (s.category) params.set("cat", s.category);
+      if (s.tags.length) params.set("tags", s.tags.join(","));
+      const qs = params.toString();
+      const url = `${window.location.pathname}${qs ? "?" + qs : ""}`;
+      if (push) {
+        window.history.pushState(null, "", url);
+      } else {
+        window.history.replaceState(null, "", url);
+      }
+    }
+
+    // --- Pagefind initialization ---
+    async function initPagefind() {
+      if (pagefind) return pagefind;
+      if (pagefindLoading) return null;
+      pagefindLoading = true;
+      try {
+        const pagefindPath = "/pagefind/pagefind.js";
+        pagefind = await import(/* @vite-ignore */ pagefindPath);
+        await pagefind.init();
+        pagefindLoading = false;
+        return pagefind;
+      } catch {
+        console.warn("Pagefind not available (run npm run build first)");
+        pagefindLoading = false;
+        return null;
+      }
+    }
+
+    // --- Escape HTML ---
+    function escapeHtml(str: string): string {
+      const div = document.createElement("div");
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // --- Highlight title ---
+    function highlightTitle(title: string, excerpt: string): string {
+      const markRegex = /<mark>(.*?)<\/mark>/gi;
+      const markedTerms: string[] = [];
+      let m;
+      while ((m = markRegex.exec(excerpt)) !== null) {
+        const term = m[1].toLowerCase();
+        if (!markedTerms.includes(term)) markedTerms.push(term);
+      }
+      if (markedTerms.length === 0) return escapeHtml(title);
+      let result = escapeHtml(title);
+      for (const term of markedTerms) {
+        const regex = new RegExp(
+          `(${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+          "gi",
+        );
+        result = result.replace(regex, "<mark>$1</mark>");
+      }
+      return result;
+    }
+
+    // --- Format date ---
+    function formatDate(dateStr: string): string {
+      const date = new Date(dateStr);
+      return new Intl.DateTimeFormat(lang, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }).format(date);
+    }
+
+    // --- Reading time label ---
+    function readingTimeLabel(): string {
+      return lang === "fr" ? "min de lecture" : "min read";
+    }
+
+    // --- Render grid card ---
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function renderGridCard(data: any): string {
+      const tags = data.filters?.tag || [];
+      const category = data.filters?.category?.[0] || "";
+      const url = data.meta?.url || data.url;
+      const image = data.meta?.image;
+      const title = data.meta?.title || "";
+      const description = data.meta?.description || "";
+      const readingTime = data.meta?.readingTime || "";
+      const date = data.meta?.date || "";
+
+      return `<article class="group">
+        <a href="${escapeHtml(url)}" class="block">
+          <div class="relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors mb-4">
+            ${
+              image
+                ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(title)}" class="w-full aspect-[16/10] object-cover opacity-75 group-hover:opacity-100 transition-opacity" loading="lazy" />`
+                : `<div class="w-full aspect-[16/10] bg-surface flex items-center justify-center"><span class="text-3xl font-code text-text-muted">&gt;_</span></div>`
+            }
+            <div class="absolute inset-0 bg-linear-to-t from-canvas/40 to-transparent"></div>
+            <span class="absolute top-3 left-3 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">${escapeHtml(category)}</span>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-text-muted mb-2.5">
+            <time class="tabular-nums">${formatDate(date)}</time>
+            <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+            <span>${escapeHtml(readingTime)} ${readingTimeLabel()}</span>
+          </div>
+          <h3 class="text-lg font-semibold leading-snug mb-2 group-hover:text-teal-bright transition-colors">${data.excerpt ? highlightTitle(title, data.excerpt) : escapeHtml(title)}</h3>
+          <p class="text-text-secondary text-sm leading-relaxed line-clamp-2 mb-3">${data.excerpt || escapeHtml(description)}</p>
+          <div class="flex flex-wrap gap-2">
+            ${tags.map((t: string) => `<span class="text-xs font-code px-2.5 py-1 rounded-xs border text-text-secondary border-border">${escapeHtml(t)}</span>`).join("")}
+          </div>
+        </a>
+      </article>`;
+    }
+
+    // --- Render list card ---
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function renderListCard(data: any): string {
+      const tags = data.filters?.tag || [];
+      const category = data.filters?.category?.[0] || "";
+      const url = data.meta?.url || data.url;
+      const image = data.meta?.image;
+      const title = data.meta?.title || "";
+      const description = data.meta?.description || "";
+      const readingTime = data.meta?.readingTime || "";
+      const date = data.meta?.date || "";
+
+      return `<article class="group">
+        <a href="${escapeHtml(url)}" class="flex gap-4 sm:gap-6 py-4 border-b border-border">
+          <div class="hidden sm:block flex-shrink-0 w-48 relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors">
+            ${
+              image
+                ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(title)}" class="w-full aspect-video object-cover opacity-75 group-hover:opacity-100 transition-opacity" loading="lazy" />`
+                : `<div class="w-full aspect-video bg-surface flex items-center justify-center"><span class="text-xl font-code text-text-muted">&gt;_</span></div>`
+            }
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-lg font-semibold leading-snug mb-1.5 group-hover:text-teal-bright transition-colors">${data.excerpt ? highlightTitle(title, data.excerpt) : escapeHtml(title)}</h3>
+            <p class="text-text-secondary text-sm leading-relaxed line-clamp-2 mb-3">${data.excerpt || escapeHtml(description)}</p>
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-muted">
+              <span class="font-code text-teal px-2 py-0.5 rounded-xs border border-teal/20 bg-canvas/80">${escapeHtml(category)}</span>
+              <time class="tabular-nums">${formatDate(date)}</time>
+              <span>${escapeHtml(readingTime)} ${readingTimeLabel()}</span>
+              ${tags.map((t: string) => `<span class="font-code text-text-secondary">${escapeHtml(t)}</span>`).join("")}
+            </div>
+          </div>
+        </a>
+      </article>`;
+    }
+
+    // --- Update result count ---
+    function updateResultCount(count: number) {
+      const label =
+        count === 1
+          ? lang === "fr"
+            ? "résultat"
+            : "result"
+          : lang === "fr"
+            ? "résultats"
+            : "results";
+      $count.textContent = `${count} ${label}`;
+    }
+
+    // --- Update filter button states ---
+    function updateFilterButtons() {
+      // Desktop sidebar
+      if (filterSidebar) {
+        filterSidebar
+          .querySelectorAll("[data-filter-category]")
+          .forEach((btn) => {
+            const cat = (btn as HTMLElement).dataset.filterCategory || "";
+            if (cat === state.category) {
+              btn.classList.add(
+                "text-teal-bright",
+                "border-teal",
+                "bg-teal-dim",
+              );
+              btn.classList.remove("text-text-muted", "border-border");
+            } else {
+              btn.classList.remove(
+                "text-teal-bright",
+                "border-teal",
+                "bg-teal-dim",
+              );
+              btn.classList.add("text-text-muted", "border-border");
+            }
+          });
+        filterSidebar.querySelectorAll("[data-filter-tag]").forEach((btn) => {
+          const tag = (btn as HTMLElement).dataset.filterTag || "";
+          if (state.tags.includes(tag)) {
+            btn.classList.add(
+              "text-teal-bright",
+              "border-teal/20",
+              "bg-teal-dim",
+            );
+            btn.classList.remove("text-text-secondary", "border-border");
+          } else {
+            btn.classList.remove(
+              "text-teal-bright",
+              "border-teal/20",
+              "bg-teal-dim",
+            );
+            btn.classList.add("text-text-secondary", "border-border");
+          }
+        });
+      }
+
+      // Mobile drawer
+      if (filterDrawerPanel) {
+        filterDrawerPanel
+          .querySelectorAll("[data-filter-category-mobile]")
+          .forEach((btn) => {
+            const cat = (btn as HTMLElement).dataset.filterCategoryMobile || "";
+            if (cat === state.category) {
+              btn.classList.add(
+                "text-teal-bright",
+                "border-teal",
+                "bg-teal-dim",
+              );
+              btn.classList.remove("text-text-muted", "border-border");
+            } else {
+              btn.classList.remove(
+                "text-teal-bright",
+                "border-teal",
+                "bg-teal-dim",
+              );
+              btn.classList.add("text-text-muted", "border-border");
+            }
+          });
+        filterDrawerPanel
+          .querySelectorAll("[data-filter-tag-mobile]")
+          .forEach((btn) => {
+            const tag = (btn as HTMLElement).dataset.filterTagMobile || "";
+            if (state.tags.includes(tag)) {
+              btn.classList.add(
+                "text-teal-bright",
+                "border-teal/20",
+                "bg-teal-dim",
+              );
+              btn.classList.remove("text-text-secondary", "border-border");
+            } else {
+              btn.classList.remove(
+                "text-teal-bright",
+                "border-teal/20",
+                "bg-teal-dim",
+              );
+              btn.classList.add("text-text-secondary", "border-border");
+            }
+          });
+      }
+    }
+
+    // --- Update filter counts from Pagefind results ---
+    function updateFilterCounts(
+      totalFilters: Record<string, Record<string, number>>,
+    ) {
+      if (!totalFilters) return;
+
+      const updateBtn = (
+        btn: Element,
+        filterKey: string,
+        filterName: string,
+      ) => {
+        const count = totalFilters[filterKey]?.[filterName] ?? 0;
+        (btn as HTMLElement).dataset.count = String(count);
+        const countSpan = btn.querySelector("span");
+        if (countSpan) countSpan.textContent = `(${count})`;
+      };
+
+      // Desktop
+      if (filterSidebar) {
+        filterSidebar
+          .querySelectorAll("[data-filter-category]")
+          .forEach((btn) => {
+            updateBtn(
+              btn,
+              "category",
+              (btn as HTMLElement).dataset.filterCategory || "",
+            );
+          });
+        filterSidebar.querySelectorAll("[data-filter-tag]").forEach((btn) => {
+          updateBtn(btn, "tag", (btn as HTMLElement).dataset.filterTag || "");
+        });
+      }
+
+      // Mobile
+      if (filterDrawerPanel) {
+        filterDrawerPanel
+          .querySelectorAll("[data-filter-category-mobile]")
+          .forEach((btn) => {
+            updateBtn(
+              btn,
+              "category",
+              (btn as HTMLElement).dataset.filterCategoryMobile || "",
+            );
+          });
+        filterDrawerPanel
+          .querySelectorAll("[data-filter-tag-mobile]")
+          .forEach((btn) => {
+            updateBtn(
+              btn,
+              "tag",
+              (btn as HTMLElement).dataset.filterTagMobile || "",
+            );
+          });
+      }
+    }
+
+    // --- Render filter chips ---
+    function renderFilterChips() {
+      const chips: string[] = [];
+
+      if (state.category) {
+        chips.push(`<span class="inline-flex items-center gap-1.5 text-xs font-code px-2.5 py-1 rounded-xs border text-teal-bright border-teal/20 bg-teal-dim">
+          ${escapeHtml(state.category)}
+          <button data-remove-filter="category" class="hover:text-text-primary transition-colors" aria-label="Remove ${escapeHtml(state.category)} filter">&times;</button>
+        </span>`);
+      }
+
+      for (const tag of state.tags) {
+        chips.push(`<span class="inline-flex items-center gap-1.5 text-xs font-code px-2.5 py-1 rounded-xs border text-teal-bright border-teal/20 bg-teal-dim">
+          ${escapeHtml(tag)}
+          <button data-remove-filter="tag:${escapeHtml(tag)}" class="hover:text-text-primary transition-colors" aria-label="Remove ${escapeHtml(tag)} filter">&times;</button>
+        </span>`);
+      }
+
+      if (chips.length > 0) {
+        const clearLabel = lang === "fr" ? "Tout effacer" : "Clear all";
+        chips.push(
+          `<button id="clear-all-filters" class="text-xs text-text-muted hover:text-teal-bright transition-colors ml-1">${clearLabel}</button>`,
+        );
+      }
+
+      $chips.innerHTML = chips.join("");
+
+      // Attach chip event listeners
+      $chips.querySelectorAll("[data-remove-filter]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          const val = (btn as HTMLElement).dataset.removeFilter || "";
+          if (val === "category") {
+            state.category = "";
+          } else if (val.startsWith("tag:")) {
+            const tagName = val.slice(4);
+            state.tags = state.tags.filter((t) => t !== tagName);
+          }
+          writeStateToUrl(state, true);
+          updateFilterButtons();
+          renderFilterChips();
+          performSearch();
+        });
+      });
+
+      const clearAll = $chips.querySelector("#clear-all-filters");
+      if (clearAll) {
+        clearAll.addEventListener("click", () => {
+          state.category = "";
+          state.tags = [];
+          writeStateToUrl(state, true);
+          updateFilterButtons();
+          renderFilterChips();
+          performSearch();
+        });
+      }
+    }
+
+    // --- View toggle ---
+    function updateViewToggle() {
+      if (!viewToggle) return;
+      const gridBtn = viewToggle.querySelector("[data-view='grid']");
+      const listBtn = viewToggle.querySelector("[data-view='list']");
+      if (!gridBtn || !listBtn) return;
+
+      if (state.view === "grid") {
+        gridBtn.classList.add("text-teal-bright", "bg-teal-dim");
+        gridBtn.classList.remove("text-text-muted");
+        listBtn.classList.remove("text-teal-bright", "bg-teal-dim");
+        listBtn.classList.add("text-text-muted");
+      } else {
+        listBtn.classList.add("text-teal-bright", "bg-teal-dim");
+        listBtn.classList.remove("text-text-muted");
+        gridBtn.classList.remove("text-teal-bright", "bg-teal-dim");
+        gridBtn.classList.add("text-text-muted");
+      }
+    }
+
+    // --- Perform search ---
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let lastResults: any[] | null = null;
+
+    async function performSearch() {
+      const hasQuery = state.query.trim().length > 0;
+      const hasFilters = state.category !== "" || state.tags.length > 0;
+
+      if (!hasQuery && !hasFilters) {
+        // Show initial state
+        $initial.classList.remove("hidden");
+        $results.classList.add("hidden");
+        $noResults.classList.add("hidden");
+        searchLoading?.classList.add("hidden");
+        updateResultCount(initialArticleCount);
+        lastResults = null;
+        return;
+      }
+
+      // Initialize Pagefind if needed
+      const pf = await initPagefind();
+      if (!pf) {
+        // Pagefind not available (dev mode)
+        if ($noResultsP)
+          $noResultsP.textContent =
+            "Search is available in production builds only.";
+        $initial.classList.add("hidden");
+        $results.classList.add("hidden");
+        $noResults.classList.remove("hidden");
+        searchLoading?.classList.add("hidden");
+        return;
+      }
+
+      // Show loading on first search
+      if (!lastResults) {
+        searchLoading?.classList.remove("hidden");
+      }
+
+      // Build filter object
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const pfFilters: Record<string, any> = {};
+      if (state.category) pfFilters.category = state.category;
+      if (state.tags.length) pfFilters.tag = { any: state.tags };
+
+      const searchTerm = hasQuery ? state.query : null;
+      const result = await pf.debouncedSearch(
+        searchTerm,
+        { filters: pfFilters },
+        250,
+      );
+
+      if (result === null) return; // Superseded by newer search
+
+      searchLoading?.classList.add("hidden");
+      $initial.classList.add("hidden");
+
+      // Load result data
+      const loaded = await Promise.all(
+        result.results
+          .slice(0, 24)
+          .map((r: { data: () => Promise<unknown> }) => r.data()),
+      );
+      lastResults = loaded;
+
+      if (loaded.length === 0) {
+        $results.classList.add("hidden");
+        const noResultsLabel =
+          lang === "fr" ? "Aucun résultat pour" : "No results for";
+        const queryDisplay =
+          state.query ||
+          [state.category, ...state.tags].filter(Boolean).join(", ");
+        if ($noResultsP)
+          $noResultsP.innerHTML = `${noResultsLabel} <span class="font-semibold text-text-primary">"${escapeHtml(queryDisplay)}"</span>`;
+        $noResults.classList.remove("hidden");
+        updateResultCount(0);
+      } else {
+        $noResults.classList.add("hidden");
+        renderResults(loaded);
+        updateResultCount(result.results.length);
+      }
+
+      // Update filter counts from search results
+      if (result.totalFilters) {
+        updateFilterCounts(result.totalFilters);
+      }
+    }
+
+    // --- Render results ---
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function renderResults(loaded: any[]) {
+      const view = getEffectiveView();
+      if (view === "grid") {
+        $results.className =
+          "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6";
+        $results.innerHTML = loaded.map((d) => renderGridCard(d)).join("");
+      } else {
+        $results.className = "flex flex-col";
+        $results.innerHTML = loaded.map((d) => renderListCard(d)).join("");
+      }
+      $results.classList.remove("hidden");
+    }
+
+    // --- Mobile drawer ---
+    function openDrawer() {
+      if (!filterDrawerOverlay || !filterDrawerPanel) return;
+      filterDrawerOverlay.classList.remove("pointer-events-none", "opacity-0");
+      filterDrawerOverlay.classList.add("pointer-events-auto", "opacity-100");
+      filterDrawerPanel.classList.remove("-translate-x-full");
+      filterDrawerPanel.classList.add("translate-x-0");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeDrawer() {
+      if (!filterDrawerOverlay || !filterDrawerPanel) return;
+      filterDrawerOverlay.classList.add("pointer-events-none", "opacity-0");
+      filterDrawerOverlay.classList.remove(
+        "pointer-events-auto",
+        "opacity-100",
+      );
+      filterDrawerPanel.classList.add("-translate-x-full");
+      filterDrawerPanel.classList.remove("translate-x-0");
+      document.body.style.overflow = "";
+    }
+
+    // --- Event listeners ---
+
+    // Search input
+    searchInput.addEventListener("input", () => {
+      state.query = searchInput.value;
+      writeStateToUrl(state, false);
+      performSearch();
+    });
+
+    // Lazy init Pagefind on focus
+    searchInput.addEventListener("focus", () => initPagefind(), { once: true });
+
+    // Category filter clicks (desktop)
+    filterSidebar?.querySelectorAll("[data-filter-category]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const cat = (btn as HTMLElement).dataset.filterCategory || "";
+        state.category = state.category === cat ? "" : cat;
+        writeStateToUrl(state, true);
+        updateFilterButtons();
+        renderFilterChips();
+        performSearch();
+      });
+    });
+
+    // Tag filter clicks (desktop)
+    filterSidebar?.querySelectorAll("[data-filter-tag]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const tag = (btn as HTMLElement).dataset.filterTag || "";
+        if (state.tags.includes(tag)) {
+          state.tags = state.tags.filter((t) => t !== tag);
+        } else {
+          state.tags = [...state.tags, tag];
+        }
+        writeStateToUrl(state, true);
+        updateFilterButtons();
+        renderFilterChips();
+        performSearch();
+      });
+    });
+
+    // Category filter clicks (mobile)
+    filterDrawerPanel
+      ?.querySelectorAll("[data-filter-category-mobile]")
+      .forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const cat = (btn as HTMLElement).dataset.filterCategoryMobile || "";
+          state.category = state.category === cat ? "" : cat;
+          writeStateToUrl(state, true);
+          updateFilterButtons();
+          renderFilterChips();
+          performSearch();
+        });
+      });
+
+    // Tag filter clicks (mobile)
+    filterDrawerPanel
+      ?.querySelectorAll("[data-filter-tag-mobile]")
+      .forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const tag = (btn as HTMLElement).dataset.filterTagMobile || "";
+          if (state.tags.includes(tag)) {
+            state.tags = state.tags.filter((t) => t !== tag);
+          } else {
+            state.tags = [...state.tags, tag];
+          }
+          writeStateToUrl(state, true);
+          updateFilterButtons();
+          renderFilterChips();
+          performSearch();
+        });
+      });
+
+    // View toggle
+    viewToggle?.querySelectorAll("button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const view = (btn as HTMLElement).dataset.view as "grid" | "list";
+        if (view && view !== state.view) {
+          state.view = view;
+          updateViewToggle();
+          if (lastResults) {
+            renderResults(lastResults);
+          }
+        }
+      });
+    });
+
+    // Mobile drawer
+    filterMobileBtn?.addEventListener("click", openDrawer);
+    filterDrawerOverlay
+      ?.querySelector("[data-filter-backdrop]")
+      ?.addEventListener("click", closeDrawer);
+    filterDrawerOverlay
+      ?.querySelector("[data-filter-close]")
+      ?.addEventListener("click", closeDrawer);
+
+    // Popstate (back/forward)
+    window.addEventListener("popstate", () => {
+      state = { ...readStateFromUrl(), view: state.view };
+      searchInput.value = state.query;
+      updateFilterButtons();
+      renderFilterChips();
+      performSearch();
+    });
+
+    // --- Initialize from URL on load ---
+    const initialState = readStateFromUrl();
+    if (
+      initialState.query ||
+      initialState.category ||
+      initialState.tags.length
+    ) {
+      state = { ...initialState, view: state.view };
+      searchInput.value = state.query;
+      updateFilterButtons();
+      renderFilterChips();
+      performSearch();
+    }
+  }
+
+  initSearch();
+  document.addEventListener("astro:after-swap", initSearch);
+</script>
