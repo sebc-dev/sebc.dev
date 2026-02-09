@@ -1,0 +1,24 @@
+---
+title: "CSS Container Queries : L'avenir du design responsive"
+description: "Comment les container queries revolutionnent les patterns de design responsive oriente composants."
+date: 2025-12-28
+category: "css"
+tags: ["css", "responsive"]
+pillarTags: ["UX", "Ing\u00e9nierie"]
+readingTime: 10
+featured: false
+draft: false
+lang: "fr"
+---
+
+## Le probleme des media queries
+
+Les media queries reagissent au viewport, pas au conteneur du composant. Cela signifie qu'un composant carte qui est superbe en pleine largeur se casse quand il est place dans une barre laterale etroite -- car le viewport n'a pas change, seul l'espace disponible a change.
+
+## Les container queries a la rescousse
+
+Les container queries permettent de styler des elements en fonction de la taille de leur conteneur parent. Definissez un contexte de confinement avec `container-type: inline-size`, puis utilisez les regles `@container` pour adapter la mise en page du composant a l'espace qu'il occupe reellement.
+
+## Adopter les container queries aujourd'hui
+
+Le support navigateur des container queries a atteint le statut baseline. Vous pouvez commencer a les utiliser en production aux cotes des media queries -- utilisez les media queries pour les changements de mise en page au niveau de la page et les container queries pour les adaptations au niveau des composants. Les deux se complementent parfaitement.

@@ -1,0 +1,26 @@
+---
+title: "Construire un Design System moderne avec Tailwind v4"
+description: "Explorer la nouvelle directive @theme et comment elle transforme la construction de design systems."
+date: 2026-01-15
+category: "design-systems"
+tags: ["tailwind", "css", "design-systems"]
+pillarTags: ["Ing\u00e9nierie", "UX"]
+image: "https://picsum.photos/seed/design-system/800/500"
+readingTime: 8
+featured: true
+draft: false
+lang: "fr"
+translationSlug: "en-building-design-system"
+---
+
+## Pourquoi les Design Systems comptent
+
+Les design systems sont le socle d'interfaces utilisateur coherentes et evolutives. Avec Tailwind CSS v4, l'introduction de la directive `@theme` change fondamentalement la maniere dont nous definissons et consommons les design tokens. Au lieu d'un volumineux `tailwind.config.js`, les tokens vivent directement dans votre CSS, les rendant plus portables et plus faciles a comprendre.
+
+## La directive @theme en pratique
+
+La directive `@theme` permet de declarer des valeurs personnalisees que Tailwind transforme en classes utilitaires au moment du build. Cela signifie que votre palette de couleurs, votre echelle d'espacement et votre pile typographique vivent au meme endroit -- votre feuille de style -- plutot que repartis entre fichiers de configuration et proprietes CSS personnalisees.
+
+## Lecons apprises
+
+Construire un design system n'est jamais un effort unique. Commencez par l'ensemble minimal de tokens couvrant vos patterns les plus courants, puis etendez au fur et a mesure que les composants reels necessitent de nouvelles valeurs. Resistez a l'envie de predefinir chaque nuance ou increment d'espacement possible.

@@ -1,0 +1,26 @@
+---
+title: "TypeScript 5.4 : Patterns de types avances pour des API plus sures"
+description: "Plongee dans les types conditionnels, les mapped types et les template literal types."
+date: 2026-01-10
+category: "typescript"
+tags: ["typescript", "advanced"]
+pillarTags: ["Ing\u00e9nierie"]
+image: "https://picsum.photos/seed/ts54/800/500"
+readingTime: 12
+featured: false
+draft: false
+lang: "fr"
+translationSlug: "en-typescript-patterns"
+---
+
+## Au-dela des types basiques
+
+Le systeme de types de TypeScript est bien plus puissant que de simples annotations. Les types conditionnels, les mapped types et les template literal types permettent d'encoder des regles metier complexes directement dans la couche de types, attrapant des classes entieres de bugs a la compilation plutot qu'a l'execution.
+
+## Types conditionnels pour les contrats d'API
+
+Les types conditionnels agissent comme des instructions if-else au niveau des types. Ils sont inestimables pour creer des fonctions d'API dont le type de retour depend des parametres d'entree. Combines avec `infer`, ils peuvent extraire et transformer des types depuis des structures profondement imbriquees.
+
+## Points pratiques
+
+Commencez par typer vos frontieres de donnees les plus critiques -- reponses d'API, requetes de base de donnees et contrats inter-modules. C'est la ou les erreurs de types causent le plus de degats. Puis poussez progressivement la securite des types vers les fonctions utilitaires et les composants d'interface.

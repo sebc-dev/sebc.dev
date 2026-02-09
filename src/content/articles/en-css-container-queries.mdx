@@ -1,0 +1,24 @@
+---
+title: "CSS Container Queries: The Future of Responsive Design"
+description: "How container queries are revolutionizing component-based responsive design patterns."
+date: 2025-12-28
+category: "css"
+tags: ["css", "responsive"]
+pillarTags: ["UX", "Ing\u00e9nierie"]
+readingTime: 10
+featured: false
+draft: false
+lang: "en"
+---
+
+## The Problem with Media Queries
+
+Media queries respond to the viewport, not the component's container. This means a card component that looks great in a full-width layout breaks when placed in a narrow sidebar -- because the viewport hasn't changed, only the available space has.
+
+## Container Queries to the Rescue
+
+Container queries let you style elements based on the size of their parent container. Define a containment context with `container-type: inline-size`, then use `@container` rules to adapt the component's layout to the space it actually occupies.
+
+## Adopting Container Queries Today
+
+Browser support for container queries has reached baseline status. You can start using them in production alongside media queries -- use media queries for page-level layout shifts and container queries for component-level adaptations. The two complement each other perfectly.
