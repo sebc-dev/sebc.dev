@@ -190,14 +190,14 @@
   display: none !important;
 }
 
-/* Language label injected by script */
+/* Language label: positioned right side of header */
 .expressive-code .frame .header .ec-lang-label {
   font-family: var(--font-code);
   font-size: 0.7rem;
   color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  opacity: 0.7;
+  margin-left: auto;
 }
 
 /* Pre: remove border/radius (container handles it) */
@@ -212,53 +212,14 @@
   border-top-right-radius: 0 !important;
 }
 
-/* Copy button: reposition into header bar */
+/* Copy button: inside code block, top-right */
 .expressive-code .copy {
-  all: unset !important;
-  position: absolute !important;
-  top: 0 !important;
-  right: 0.75rem !important;
-  height: 2.45rem !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 0.25rem !important;
-  z-index: 2 !important;
+  inset-block-start: calc(var(--ec-brdWd, 0px) + 0.5rem) !important;
+  inset-inline-end: calc(var(--ec-brdWd, 0px) + 0.5rem) !important;
 }
-.expressive-code .copy button {
-  all: unset !important;
-  cursor: pointer !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 0.375rem !important;
-  color: var(--color-text-muted) !important;
-  font-family: var(--font-code) !important;
-  font-size: 0.75rem !important;
-  transition: color 0.2s ease !important;
-}
-.expressive-code .copy button:hover {
-  color: var(--color-teal) !important;
-}
-.expressive-code .copy button::after {
-  content: "" !important;
-  display: block !important;
-  width: 14px !important;
-  height: 14px !important;
-  background-color: currentColor !important;
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='14' height='14' x='8' y='8' rx='2' ry='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E") !important;
-  -webkit-mask-repeat: no-repeat !important;
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='14' height='14' x='8' y='8' rx='2' ry='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E") !important;
-  mask-repeat: no-repeat !important;
-  position: static !important;
-  margin: 0 !important;
-}
-.expressive-code .copy .feedback {
-  font-family: var(--font-code) !important;
-  font-size: 0.75rem !important;
-}
-
-/* Ensure first line doesn't need extra right padding for repositioned copy */
-.expressive-code :nth-child(1 of .ec-line) .code {
-  padding-inline-end: var(--ec-codePadInl) !important;
+.expressive-code .frame.has-title .copy,
+.expressive-code .frame:not(.has-title) .copy {
+  inset-block-start: calc(2.45rem + 0.5rem) !important;
 }
 
 /* ---- HEADING ANCHORS ---- */

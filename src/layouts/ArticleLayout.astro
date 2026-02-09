@@ -93,26 +93,12 @@ const articleUrl = new URL(Astro.url.pathname, Astro.site).href;
       if (header.querySelector(".ec-lang-label")) return;
 
       const lang = pre.getAttribute("data-language") || "";
-      const title = header.querySelector(".title");
-      const hasTitle = title && title.textContent?.trim();
 
-      // Create language label
+      // Language label always appended at end (right side via margin-left:auto)
       const label = document.createElement("span");
       label.className = "ec-lang-label";
       label.textContent = lang;
-
-      if (hasTitle) {
-        // Titled block: wrap title + lang in a flex container
-        const left = document.createElement("span");
-        left.style.cssText = "display:flex;align-items:center;gap:0.75rem";
-        const titleClone = title.cloneNode(true) as HTMLElement;
-        left.appendChild(titleClone);
-        left.appendChild(label);
-        title.replaceWith(left);
-      } else {
-        // No title: language label only
-        header.insertBefore(label, header.firstChild);
-      }
+      header.appendChild(label);
     });
   }
 
