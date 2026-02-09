@@ -77,10 +77,12 @@ Plans:
   2. User can filter search results by category and tags via sidebar filters, and see active filter chips that can be individually removed
   3. User can toggle between grid and list views for search results
   4. User arrives on search page with pre-applied filters when clicking a category or tag link from any other page
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 04-01: TBD
+- [ ] 04-01-PLAN.md -- Pagefind instrumentation on ArticleLayout, getTags helper, search i18n strings
+- [ ] 04-02-PLAN.md -- Complete EN/FR search pages with Pagefind integration, sidebar filters, grid/list toggle, URL sync
+- [ ] 04-03-PLAN.md -- Cross-page pre-filter links (category badges, tags), visual verification checkpoint
 
 ### Phase 5: About Page
 **Goal**: Users can learn about the blog author, the "learn in public" philosophy, and find social media links.
