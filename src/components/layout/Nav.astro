@@ -1,0 +1,42 @@
+---
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const pathname = Astro.url.pathname;
+
+const navItems = [
+  { label: t("nav.home"), href: `/${lang}` },
+  { label: t("nav.search"), href: `/${lang}/search` },
+  { label: t("nav.about"), href: `/${lang}/about` },
+];
+
+function isActive(href: string): boolean {
+  if (href === `/${lang}`) {
+    return pathname === `/${lang}` || pathname === `/${lang}/`;
+  }
+  return pathname.startsWith(href);
+}
+---
+
+<nav aria-label="Main navigation">
+  <ul class="flex items-center gap-4 sm:gap-6 text-sm">
+    {
+      navItems.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            class:list={[
+              isActive(item.href)
+                ? "text-teal-bright font-semibold"
+                : "text-text-secondary hover:text-text-primary transition-colors",
+            ]}
+            aria-current={isActive(item.href) ? "page" : undefined}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>

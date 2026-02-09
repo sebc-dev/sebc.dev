@@ -1,0 +1,39 @@
+---
+import { languages } from "@/i18n/ui";
+import { getLangFromUrl } from "@/i18n/utils";
+
+const currentLang = getLangFromUrl(Astro.url);
+const currentPath = Astro.url.pathname;
+
+function getLocalizedPath(targetLang: string): string {
+  const cleanPath = currentPath.replace(/^\/[a-z]{2}(\/|$)/, "/");
+  const pathSuffix = cleanPath === "/" ? "" : cleanPath;
+  return `/${targetLang}${pathSuffix}`;
+}
+---
+
+<div class="flex items-center gap-1 text-sm">
+  {
+    Object.entries(languages).map(([code, label]) => (
+      <a
+        href={getLocalizedPath(code)}
+        class:list={[
+          "px-2 py-1 rounded-sm transition-colors",
+          code === currentLang
+            ? "text-teal-bright font-semibold"
+            : "text-text-secondary hover:text-text-primary",
+        ]}
+        aria-current={code === currentLang ? "true" : undefined}
+        aria-label={
+          code === currentLang
+            ? label
+            : code === "en"
+              ? "Switch to English"
+              : "Passer en Francais"
+        }
+      >
+        {code.toUpperCase()}
+      </a>
+    ))
+  }
+</div>
