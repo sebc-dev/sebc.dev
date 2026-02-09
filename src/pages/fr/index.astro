@@ -1,16 +1,54 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import FeaturedArticle from "@/components/article/FeaturedArticle.astro";
+import ArticleCard from "@/components/article/ArticleCard.astro";
+import CategoryFilter from "@/components/article/CategoryFilter.astro";
+import {
+  getArticlesByLocale,
+  getFeaturedArticle,
+  getCategories,
+} from "@/lib/articles";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const allArticles = await getArticlesByLocale(lang);
+const featured = await getFeaturedArticle(lang);
+const categories = await getCategories(lang);
+const gridArticles = featured
+  ? allArticles.filter((a) => a.id !== featured.id)
+  : allArticles;
 ---
 
-<BaseLayout
-  title="Accueil"
-  description="Blog technique sur l'IA, l'Ingénierie logicielle & l'UX"
->
-  <section class="max-w-6xl mx-auto px-6 lg:px-8 py-16 fade-up">
-    <h1 class="text-3xl md:text-5xl font-bold mb-6">Apprendre en public.</h1>
-    <p class="text-text-secondary text-lg max-w-2xl">
-      À l'intersection de l'IA, de l'Ingénierie logicielle & de l'UX.
-      Expérimentations, leçons apprises et réflexions honnêtes.
-    </p>
-  </section>
+<BaseLayout title={t("nav.home")} description={t("home.description")}>
+  <div class="max-w-6xl mx-auto px-6 lg:px-8">
+    {featured && <FeaturedArticle article={featured} />}
+
+    {categories.length > 0 && <CategoryFilter categories={categories} />}
+
+    {
+      gridArticles.length > 0 ? (
+        <section class="pb-16">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {gridArticles.map((article, i) => (
+              <ArticleCard
+                article={article}
+                class:list={[
+                  "fade-up",
+                  i < 3 && `fade-up-d${Math.min(i + 1, 4)}`,
+                ]}
+              />
+            ))}
+          </div>
+        </section>
+      ) : (
+        !featured && (
+          <section class="py-16 text-center">
+            <p class="text-text-secondary text-lg">{t("home.noArticles")}</p>
+          </section>
+        )
+      )
+    }
+  </div>
 </BaseLayout>
