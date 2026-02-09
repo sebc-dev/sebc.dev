@@ -156,6 +156,9 @@
 .expressive-code .copy .feedback {
   border: 1px solid var(--color-teal) !important;
 }
+.expressive-code .copy .feedback::after {
+  border-inline-start-color: var(--color-teal) !important;
+}
 
 /* Container: clean border, no shadow */
 .expressive-code .frame {
