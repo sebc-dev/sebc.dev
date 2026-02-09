@@ -56,7 +56,8 @@ const lang = Astro.currentLocale ?? "en";
           )
           .forEach((el) => observer.observe(el));
       }
-      document.addEventListener("astro:page-load", initScrollReveal);
+      initScrollReveal();
+      document.addEventListener("astro:after-swap", initScrollReveal);
     </script>
   </body>
 </html>

@@ -68,5 +68,6 @@ const t = useTranslations(lang);
     });
   }
 
-  document.addEventListener("astro:page-load", initCategoryFilter);
+  initCategoryFilter();
+  document.addEventListener("astro:after-swap", initCategoryFilter);
 </script>
