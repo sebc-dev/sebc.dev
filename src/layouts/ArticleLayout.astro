@@ -6,7 +6,11 @@ import ShareButtons from "@/components/article/ShareButtons.astro";
 import RelatedArticles from "@/components/article/RelatedArticles.astro";
 import ReadingProgress from "@/components/ui/ReadingProgress.astro";
 import Tag from "@/components/ui/Tag.astro";
-import { getRelatedArticles, type Article } from "@/lib/articles";
+import {
+  getRelatedArticles,
+  getArticleUrl,
+  type Article,
+} from "@/lib/articles";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
 interface Props {
@@ -43,7 +47,42 @@ if (article.data.translationSlug) {
   <ReadingProgress />
   <div class="max-w-6xl mx-auto px-6 lg:px-8 py-12 md:py-16">
     <div class="lg:grid lg:grid-cols-[1fr_240px] lg:gap-12">
-      <article>
+      <article data-pagefind-body>
+        <!-- Pagefind filters -->
+        <meta
+          data-pagefind-filter="category[content]"
+          content={article.data.category}
+        />
+        {
+          article.data.tags.map((tag) => (
+            <meta data-pagefind-filter="tag[content]" content={tag} />
+          ))
+        }
+        <!-- Pagefind metadata -->
+        <meta
+          data-pagefind-meta="title[content]"
+          content={article.data.title}
+        />
+        <meta
+          data-pagefind-meta="description[content]"
+          content={article.data.description}
+        />
+        <meta
+          data-pagefind-meta="date[content]"
+          content={article.data.date.toISOString()}
+        />
+        <meta
+          data-pagefind-meta="readingTime[content]"
+          content={String(article.data.readingTime)}
+        />
+        <meta
+          data-pagefind-meta="image[content]"
+          content={article.data.image || ""}
+        />
+        <meta
+          data-pagefind-meta="url[content]"
+          content={getArticleUrl(article)}
+        />
         <ArticleHeader article={article} />
         <div class="prose max-w-none" id="article-content">
           <slot />
