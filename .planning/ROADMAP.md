@@ -31,11 +31,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. User sees a footer with site description, social links (GitHub, Twitter/X, LinkedIn, RSS), glow-line separator, and copyright on every page
   4. User sees fade-up scroll-reveal animations on sections as they scroll into view
   5. All UI strings (navigation, labels, buttons, date formats) display correctly in both FR and EN, and all pages are accessible via locale-prefixed URLs (/en/..., /fr/...)
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
+- [ ] 01-01-PLAN.md -- i18n translation system, GlowLine component, WCAG contrast documentation
+- [ ] 01-02-PLAN.md -- Layout components (Nav, LangSwitch, Header, Footer)
+- [ ] 01-03-PLAN.md -- BaseLayout integration, placeholder pages, 404, visual verification
 
 ### Phase 2: Home Page
 **Goal**: Users land on the home page and can browse articles through a featured article hero and a filterable responsive grid of article cards.
@@ -115,7 +116,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|---------------|--------|-----------|
-| 1. Foundation | 0/TBD | Not started | - |
+| 1. Foundation | 0/3 | Planning complete | - |
 | 2. Home Page | 0/TBD | Not started | - |
 | 3. Article Page | 0/TBD | Not started | - |
 | 4. Search Page | 0/TBD | Not started | - |
