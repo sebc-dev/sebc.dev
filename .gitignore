@@ -30,3 +30,6 @@ public/pagefind/
 # Stryker
 reports/
 .stryker-tmp/
+
+# Coverage
+coverage/
