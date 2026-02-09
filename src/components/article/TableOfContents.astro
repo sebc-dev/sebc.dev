@@ -1,0 +1,74 @@
+---
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+interface Props {
+  headings: { depth: number; slug: string; text: string }[];
+}
+
+const { headings } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+// Filter to only h2 and h3
+const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+<nav>
+  <h3
+    class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-4"
+  >
+    {t("article.toc")}
+  </h3>
+  <ul class="space-y-1">
+    {
+      tocHeadings.map((heading) => (
+        <li>
+          <a
+            href={`#${heading.slug}`}
+            data-toc-link
+            class:list={[
+              "toc-link block text-sm text-text-muted hover:text-text-primary py-1.5 border-l-2 border-border transition-colors",
+              heading.depth === 2 ? "pl-3" : "pl-5",
+            ]}
+          >
+            {heading.text}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<script>
+  function initScrollSpy() {
+    const headings = document.querySelectorAll(
+      "article :is(h2, h3)",
+    ) as NodeListOf<HTMLHeadingElement>;
+    const tocLinks = document.querySelectorAll(
+      "[data-toc-link]",
+    ) as NodeListOf<HTMLAnchorElement>;
+
+    if (!headings.length || !tocLinks.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            tocLinks.forEach((link) => link.classList.remove("active"));
+            const id = entry.target.getAttribute("id");
+            const activeLink = document.querySelector(
+              `[data-toc-link][href="#${id}"]`,
+            );
+            activeLink?.classList.add("active");
+          }
+        }
+      },
+      { threshold: 1, rootMargin: "-80px 0px -66% 0px" },
+    );
+
+    headings.forEach((heading) => observer.observe(heading));
+  }
+
+  initScrollSpy();
+  document.addEventListener("astro:after-swap", initScrollSpy);
+</script>

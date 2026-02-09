@@ -1,0 +1,127 @@
+---
+import { formatDate } from "@/utils/dates";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+import { type Article } from "@/lib/articles";
+import Tag from "@/components/ui/Tag.astro";
+import PillarTag from "@/components/article/PillarTag.astro";
+
+interface Props {
+  article: Article;
+}
+
+const { article } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<div>
+  <!-- Back link -->
+  <a
+    href={`/${lang}`}
+    class="inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-teal transition-colors mb-8"
+  >
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="m15 18-6-6 6-6"></path>
+    </svg>
+    {t("article.backToArticles")}
+  </a>
+
+  <!-- Cover image with category badge -->
+  {
+    article.data.image && (
+      <div class="relative overflow-hidden rounded-xs border border-border mb-8">
+        <img
+          src={article.data.image}
+          alt={article.data.title}
+          class="w-full aspect-[2/1] object-cover"
+          loading="eager"
+        />
+        <div class="absolute inset-0 bg-linear-to-t from-canvas/50 to-transparent" />
+        <span class="absolute top-4 left-4 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">
+          {article.data.category}
+        </span>
+      </div>
+    )
+  }
+
+  <!-- Title and description -->
+  <header class="mb-10">
+    <h1
+      class="text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.15] tracking-tight mb-6"
+    >
+      {article.data.title}
+    </h1>
+
+    <p class="text-lg text-text-secondary leading-relaxed mb-8 max-w-2xl">
+      {article.data.description}
+    </p>
+
+    <!-- Metadata row -->
+    <div
+      class="flex flex-wrap items-center gap-6 text-sm text-text-muted pb-8 border-b border-border"
+    >
+      <!-- Date -->
+      <div class="flex items-center gap-1.5">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+          <line x1="16" x2="16" y1="2" y2="6"></line>
+          <line x1="8" x2="8" y1="2" y2="6"></line>
+          <line x1="3" x2="21" y1="10" y2="10"></line>
+        </svg>
+        <time>{formatDate(article.data.date, lang)}</time>
+      </div>
+
+      <!-- Reading time -->
+      <div class="flex items-center gap-1.5">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>{article.data.readingTime} {t("article.readingTime")}</span>
+      </div>
+
+      <!-- Pillar tags -->
+      {
+        article.data.pillarTags && article.data.pillarTags.length > 0 && (
+          <div class="flex items-center gap-2">
+            {article.data.pillarTags.map((pillar) => (
+              <PillarTag pillar={pillar} />
+            ))}
+          </div>
+        )
+      }
+    </div>
+
+    <!-- Tags below metadata -->
+    <div class="flex flex-wrap gap-2 mt-6">
+      {article.data.tags.map((tag) => <Tag label={tag} />)}
+    </div>
+  </header>
+</div>

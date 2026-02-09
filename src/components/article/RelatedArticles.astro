@@ -1,0 +1,28 @@
+---
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+import { type Article } from "@/lib/articles";
+import ArticleCard from "@/components/article/ArticleCard.astro";
+
+interface Props {
+  articles: Article[];
+}
+
+const { articles } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+{
+  articles.length > 0 && (
+    <section class="mt-16 pt-12 border-t border-border">
+      <h2 class="text-sm font-semibold uppercase tracking-widest text-text-muted mb-8">
+        {t("article.relatedArticles")}
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {articles.map((article) => (
+          <ArticleCard article={article} />
+        ))}
+      </div>
+    </section>
+  )
+}
