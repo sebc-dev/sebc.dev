@@ -18,6 +18,8 @@ export default [
       "public/pagefind/",
       ".stryker-tmp/",
       "worker-configuration.d.ts",
+      ".claude/get-shit-done/",
+      ".claude/hooks/",
     ],
   },
 ];
