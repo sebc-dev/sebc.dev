@@ -27,3 +27,27 @@ export async function getCategories(lang: "en" | "fr"): Promise<string[]> {
 export function getArticleUrl(article: Article): string {
   return `/${article.data.lang}/articles/${article.id}`;
 }
+
+export async function getRelatedArticles(
+  article: Article,
+  limit = 3,
+): Promise<Article[]> {
+  const allArticles = await getArticlesByLocale(
+    article.data.lang as "en" | "fr",
+  );
+  const otherArticles = allArticles.filter((a) => a.id !== article.id);
+
+  const scored = otherArticles.map((a) => {
+    let score = 0;
+    if (a.data.category === article.data.category) score += 2;
+    for (const tag of a.data.tags) {
+      if (article.data.tags.includes(tag)) score += 1;
+    }
+    return { article: a, score };
+  });
+
+  return scored
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((s) => s.article);
+}
