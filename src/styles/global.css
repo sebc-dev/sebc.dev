@@ -239,23 +239,28 @@
 }
 .mobile-copy-feedback {
   position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  top: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(-4px);
   font-family: var(--font-code);
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--color-teal-bright);
-  background: color-mix(in srgb, var(--color-void) 85%, transparent);
-  border-radius: 0 0 4px 4px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-teal);
+  border-radius: 9999px;
+  padding: 0.25rem 1rem;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
   pointer-events: none;
   z-index: 5;
+  white-space: nowrap;
 }
 .mobile-copy-feedback.show {
   opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 /* ---- HEADING ANCHORS ---- */
