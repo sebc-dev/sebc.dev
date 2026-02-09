@@ -1,0 +1,72 @@
+---
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+interface Props {
+  categories: string[];
+}
+
+const { categories } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<section class="pt-10 pb-6 fade-up fade-up-d1">
+  <div class="flex items-center gap-3 overflow-x-auto pb-2 -mx-1 px-1">
+    <button
+      data-filter="all"
+      class="text-sm font-medium px-3.5 py-1.5 rounded-xs border whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright text-teal-bright border-teal bg-teal-dim"
+    >
+      {t("home.filterAll")}
+    </button>
+    {
+      categories.map((category) => (
+        <button
+          data-filter={category}
+          class="text-sm font-medium px-3.5 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright"
+        >
+          {category}
+        </button>
+      ))
+    }
+  </div>
+</section>
+
+<script>
+  function initCategoryFilter() {
+    const buttons = document.querySelectorAll("[data-filter]");
+    const cards = document.querySelectorAll("[data-category]");
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const filter = (button as HTMLElement).dataset.filter;
+
+        // Update active state on all buttons
+        buttons.forEach((btn) => {
+          if (btn === button) {
+            btn.classList.add("text-teal-bright", "border-teal", "bg-teal-dim");
+            btn.classList.remove("text-text-muted", "border-border");
+          } else {
+            btn.classList.remove(
+              "text-teal-bright",
+              "border-teal",
+              "bg-teal-dim",
+            );
+            btn.classList.add("text-text-muted", "border-border");
+          }
+        });
+
+        // Show/hide cards
+        cards.forEach((card) => {
+          const category = (card as HTMLElement).dataset.category;
+          if (filter === "all" || category === filter) {
+            card.classList.remove("hidden");
+          } else {
+            card.classList.add("hidden");
+          }
+        });
+      });
+    });
+  }
+
+  document.addEventListener("astro:page-load", initCategoryFilter);
+</script>

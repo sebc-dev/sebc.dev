@@ -1,0 +1,67 @@
+---
+import Tag from "@/components/ui/Tag.astro";
+import { formatDate } from "@/utils/dates";
+import { getArticleUrl, type Article } from "@/lib/articles";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+interface Props {
+  article: Article;
+}
+
+const { article } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const url = getArticleUrl(article);
+---
+
+<section class="py-12 md:py-16 border-b border-border fade-up">
+  <a
+    href={url}
+    class="block group md:grid md:grid-cols-[1.3fr_1fr] gap-10 items-center"
+  >
+    <div
+      class="relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors mb-6 md:mb-0"
+    >
+      {
+        article.data.image ? (
+          <img
+            src={article.data.image}
+            alt={article.data.title}
+            class="w-full aspect-[16/10] object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+          />
+        ) : (
+          <div class="w-full aspect-[16/10] bg-surface flex items-center justify-center">
+            <span class="text-4xl font-code text-text-muted">&gt;_</span>
+          </div>
+        )
+      }
+      <div
+        class="absolute inset-0 bg-linear-to-t from-canvas/50 to-transparent"
+      >
+      </div>
+      <span
+        class="absolute top-4 left-4 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20"
+      >
+        {article.data.category}
+      </span>
+    </div>
+    <div>
+      <div class="flex items-center gap-3 text-xs text-text-muted mb-4">
+        <time class="tabular-nums">{formatDate(article.data.date, lang)}</time>
+        <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+        <span>{article.data.readingTime} {t("article.readingTime")}</span>
+      </div>
+      <h2
+        class="text-2xl md:text-3xl lg:text-4xl font-bold leading-tight mb-4 group-hover:text-teal-bright transition-colors"
+      >
+        {article.data.title}
+      </h2>
+      <p class="text-text-secondary leading-relaxed mb-5">
+        {article.data.description}
+      </p>
+      <div class="flex flex-wrap gap-2">
+        {article.data.tags.map((tag) => <Tag label={tag} />)}
+      </div>
+    </div>
+  </a>
+</section>
