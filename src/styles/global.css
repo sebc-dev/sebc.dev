@@ -148,6 +148,15 @@
 
 /* ---- EXPRESSIVE CODE: CUSTOM FRAME DESIGN ---- */
 
+/* Override EC tooltip colors with theme teal */
+.expressive-code {
+  --ec-frm-tooltipSuccessBg: var(--color-surface) !important;
+  --ec-frm-tooltipSuccessFg: var(--color-teal-bright) !important;
+}
+.expressive-code .copy .feedback {
+  border: 1px solid var(--color-teal) !important;
+}
+
 /* Container: clean border, no shadow */
 .expressive-code .frame {
   border-radius: 4px !important;
