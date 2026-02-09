@@ -212,6 +212,49 @@ if (article.data.translationSlug) {
   initCodeBlockHeaders();
   document.addEventListener("astro:after-swap", initCodeBlockHeaders);
 
+  function initMobileCodeCopy() {
+    const isTouch = window.matchMedia("(hover: none)").matches;
+    if (!isTouch) return;
+
+    document.querySelectorAll(".expressive-code .frame").forEach((frame) => {
+      const pre = frame.querySelector("pre");
+      if (!pre || pre.hasAttribute("data-mobile-copy")) return;
+      pre.setAttribute("data-mobile-copy", "");
+
+      pre.addEventListener("click", async () => {
+        const code = pre.querySelector("code");
+        if (!code) return;
+        const text = code.innerText || code.textContent || "";
+
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch {
+          return;
+        }
+
+        // Show feedback overlay
+        const existing = frame.querySelector(".mobile-copy-feedback");
+        if (existing) existing.remove();
+
+        const feedback = document.createElement("div");
+        feedback.className = "mobile-copy-feedback";
+        feedback.textContent =
+          document.documentElement.lang === "fr" ? "Copié !" : "Copied!";
+        (frame as HTMLElement).style.position = "relative";
+        frame.appendChild(feedback);
+
+        requestAnimationFrame(() => feedback.classList.add("show"));
+        setTimeout(() => {
+          feedback.classList.remove("show");
+          setTimeout(() => feedback.remove(), 300);
+        }, 1200);
+      });
+    });
+  }
+
+  initMobileCodeCopy();
+  document.addEventListener("astro:after-swap", initMobileCodeCopy);
+
   function initMobileToc() {
     const btn = document.getElementById("toc-mobile-btn");
     const ov = document.getElementById("toc-mobile-overlay");
