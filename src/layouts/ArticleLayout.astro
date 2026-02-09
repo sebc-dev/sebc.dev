@@ -233,19 +233,22 @@ if (article.data.translationSlug) {
         }
 
         // Show feedback overlay
-        const existing = frame.querySelector(".mobile-copy-feedback");
+        const existing = document.querySelector(".mobile-copy-feedback");
         if (existing) existing.remove();
 
         const feedback = document.createElement("div");
         feedback.className = "mobile-copy-feedback";
         feedback.textContent =
           document.documentElement.lang === "fr" ? "Copié !" : "Copied!";
-        frame.appendChild(feedback);
+        document.body.appendChild(feedback);
 
-        requestAnimationFrame(() => feedback.classList.add("show"));
+        // Double-RAF ensures element is painted before triggering transition
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => feedback.classList.add("show"));
+        });
         setTimeout(() => {
           feedback.classList.remove("show");
-          setTimeout(() => feedback.remove(), 300);
+          setTimeout(() => feedback.remove(), 200);
         }, 1200);
       });
     });
