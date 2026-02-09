@@ -46,9 +46,12 @@ const t = useTranslations(lang);
           loading="eager"
         />
         <div class="absolute inset-0 bg-linear-to-t from-canvas/50 to-transparent" />
-        <span class="absolute top-4 left-4 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">
+        <a
+          href={`/${lang}/search?cat=${encodeURIComponent(article.data.category)}`}
+          class="absolute top-4 left-4 z-10 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20 hover:bg-canvas/90 transition-colors"
+        >
           {article.data.category}
-        </span>
+        </a>
       </div>
     )
   }
@@ -121,7 +124,14 @@ const t = useTranslations(lang);
 
     <!-- Tags below metadata -->
     <div class="flex flex-wrap gap-2 mt-6">
-      {article.data.tags.map((tag) => <Tag label={tag} />)}
+      {
+        article.data.tags.map((tag) => (
+          <Tag
+            label={tag}
+            href={`/${lang}/search?tags=${encodeURIComponent(tag)}`}
+          />
+        ))
+      }
     </div>
   </header>
 </div>

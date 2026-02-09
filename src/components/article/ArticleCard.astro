@@ -16,52 +16,58 @@ const url = getArticleUrl(article);
 ---
 
 <article
-  class:list={["group", className]}
+  class:list={["group relative", className]}
   data-category={article.data.category}
 >
-  <a href={url} class="block">
-    <div
-      class="relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors mb-4"
-    >
-      {
-        article.data.image ? (
-          <img
-            src={article.data.image}
-            alt={article.data.title}
-            class="w-full aspect-[16/10] object-cover opacity-75 group-hover:opacity-100 transition-opacity"
-            loading="lazy"
-          />
-        ) : (
-          <div class="w-full aspect-[16/10] bg-surface flex items-center justify-center">
-            <span class="text-3xl font-code text-text-muted">&gt;_</span>
-          </div>
-        )
-      }
-      <div
-        class="absolute inset-0 bg-linear-to-t from-canvas/40 to-transparent"
-      >
-      </div>
-      <span
-        class="absolute top-3 left-3 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20"
-      >
-        {article.data.category}
-      </span>
+  <div
+    class="relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors mb-4"
+  >
+    {
+      article.data.image ? (
+        <img
+          src={article.data.image}
+          alt={article.data.title}
+          class="w-full aspect-[16/10] object-cover opacity-75 group-hover:opacity-100 transition-opacity"
+          loading="lazy"
+        />
+      ) : (
+        <div class="w-full aspect-[16/10] bg-surface flex items-center justify-center">
+          <span class="text-3xl font-code text-text-muted">&gt;_</span>
+        </div>
+      )
+    }
+    <div class="absolute inset-0 bg-linear-to-t from-canvas/40 to-transparent">
     </div>
-    <div class="flex items-center gap-2 text-xs text-text-muted mb-2.5">
-      <time class="tabular-nums">{formatDate(article.data.date, lang)}</time>
-      <span class="w-1 h-1 rounded-full bg-text-muted"></span>
-      <span>{article.data.readingTime} {t("article.readingTime")}</span>
-    </div>
-    <h3
-      class="text-lg font-semibold leading-snug mb-2 group-hover:text-teal-bright transition-colors"
+    <a
+      href={`/${lang}/search?cat=${encodeURIComponent(article.data.category)}`}
+      class="absolute top-3 left-3 z-10 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20 hover:bg-canvas/90 transition-colors"
     >
+      {article.data.category}
+    </a>
+  </div>
+  <div class="flex items-center gap-2 text-xs text-text-muted mb-2.5">
+    <time class="tabular-nums">{formatDate(article.data.date, lang)}</time>
+    <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+    <span>{article.data.readingTime} {t("article.readingTime")}</span>
+  </div>
+  <h3
+    class="text-lg font-semibold leading-snug mb-2 group-hover:text-teal-bright transition-colors"
+  >
+    <a href={url} class="after:absolute after:inset-0">
       {article.data.title}
-    </h3>
-    <p class="text-text-secondary text-sm leading-relaxed line-clamp-2 mb-3">
-      {article.data.description}
-    </p>
-    <div class="flex flex-wrap gap-2">
-      {article.data.tags.map((tag) => <Tag label={tag} />)}
-    </div>
-  </a>
+    </a>
+  </h3>
+  <p class="text-text-secondary text-sm leading-relaxed line-clamp-2 mb-3">
+    {article.data.description}
+  </p>
+  <div class="relative z-10 flex flex-wrap gap-2">
+    {
+      article.data.tags.map((tag) => (
+        <Tag
+          label={tag}
+          href={`/${lang}/search?tags=${encodeURIComponent(tag)}`}
+        />
+      ))
+    }
+  </div>
 </article>

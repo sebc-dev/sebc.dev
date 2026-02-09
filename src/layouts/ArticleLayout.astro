@@ -192,7 +192,14 @@ if (article.data.translationSlug) {
               {t("article.tags")}
             </h3>
             <div class="flex flex-wrap gap-2">
-              {article.data.tags.map((tag) => <Tag label={tag} />)}
+              {
+                article.data.tags.map((tag) => (
+                  <Tag
+                    label={tag}
+                    href={`/${lang}/search?tags=${encodeURIComponent(tag)}`}
+                  />
+                ))
+              }
             </div>
           </div>
           <div class="mt-8">
