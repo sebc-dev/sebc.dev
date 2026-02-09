@@ -15,6 +15,19 @@ export default defineConfig({
     imageService: "compile",
     platformProxy: { enabled: true },
   }),
+  markdown: {
+    rehypePlugins: [
+      rehypeHeadingIds,
+      [
+        rehypeAutolinkHeadings,
+        {
+          behavior: "append",
+          properties: { class: "heading-anchor", ariaHidden: true, tabIndex: -1 },
+          content: h("span.heading-anchor-icon", "#"),
+        },
+      ],
+    ],
+  },
   integrations: [
     astroExpressiveCode({
       themes: ["github-dark-default"],
@@ -32,19 +45,7 @@ export default defineConfig({
         },
       },
     }),
-    mdx({
-      rehypePlugins: [
-        rehypeHeadingIds,
-        [
-          rehypeAutolinkHeadings,
-          {
-            behavior: "append",
-            properties: { class: "heading-anchor", ariaHidden: true, tabIndex: -1 },
-            content: h("span.heading-anchor-icon", "#"),
-          },
-        ],
-      ],
-    }),
+    mdx(),
     sitemap(),
   ],
   vite: {
