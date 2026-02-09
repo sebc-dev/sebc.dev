@@ -1,325 +1,274 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# quality-report.sh — Lance tests unitaires, knip et/ou Stryker
-# et produit un rapport compact (optimisé pour consommation LLM)
+# quality-report.sh — Compact quality report optimized for LLM consumption (minimal tokens)
 #
-# Usage:
-#   ./scripts/quality-report.sh [OPTIONS]
-#
-# Options:
-#   -t, --tests       Lancer les tests unitaires (vitest)
-#   -k, --knip        Lancer knip (dead code)
-#   -m, --mutations   Lancer les tests de mutation (stryker)
-#   -c, --coverage    Ajouter la couverture de code aux tests
-#   -a, --all         Tout lancer (équivaut à -t -c -k -m)
-#   -v, --verbose     Afficher les logs complets (défaut: résumé uniquement)
-#   -o, --output FILE Écrire le rapport dans un fichier
-#   -h, --help        Afficher l'aide
+# Usage: ./scripts/quality-report.sh [OPTIONS]
+#   -t  tests only (no coverage)    -c  tests + coverage (-c implies -t)
+#   -k  knip (dead code)            -m  mutation testing (stryker)
+#   -a  all (-t -c -k -m)           -v  verbose (full tool output)
+#   -o FILE  write to file (ANSI stripped)
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 cd "$PROJECT_DIR"
 
-# Couleurs (désactivées si pas de terminal)
-if [[ -t 1 ]]; then
-  RED='\033[0;31m'
-  GREEN='\033[0;32m'
-  YELLOW='\033[0;33m'
-  CYAN='\033[0;36m'
-  BOLD='\033[1m'
-  RESET='\033[0m'
-else
-  RED='' GREEN='' YELLOW='' CYAN='' BOLD='' RESET=''
-fi
+RUN_TESTS=false RUN_COVERAGE=false RUN_KNIP=false RUN_MUTATIONS=false VERBOSE=false OUTPUT_FILE=""
 
-# Defaults
-RUN_TESTS=false
-RUN_COVERAGE=false
-RUN_KNIP=false
-RUN_MUTATIONS=false
-VERBOSE=false
-OUTPUT_FILE=""
-
-usage() {
-  echo "Usage: $0 [OPTIONS]"
-  echo ""
-  echo "Options:"
-  echo "  -t, --tests       Tests unitaires (vitest)"
-  echo "  -c, --coverage    Ajouter la couverture de code aux tests"
-  echo "  -k, --knip        Dead code (knip)"
-  echo "  -m, --mutations   Tests de mutation (stryker)"
-  echo "  -a, --all         Tout lancer (-t -c -k -m)"
-  echo "  -v, --verbose     Logs complets"
-  echo "  -o, --output FILE Écrire dans un fichier"
-  echo "  -h, --help        Aide"
-  exit 0
-}
-
-# Parse args
 while [[ $# -gt 0 ]]; do
   case $1 in
-    -t|--tests)      RUN_TESTS=true; shift ;;
-    -c|--coverage)   RUN_COVERAGE=true; shift ;;
-    -k|--knip)       RUN_KNIP=true; shift ;;
-    -m|--mutations)   RUN_MUTATIONS=true; shift ;;
-    -a|--all)        RUN_TESTS=true; RUN_COVERAGE=true; RUN_KNIP=true; RUN_MUTATIONS=true; shift ;;
-    -v|--verbose)    VERBOSE=true; shift ;;
-    -o|--output)     OUTPUT_FILE="$2"; shift 2 ;;
-    -h|--help)       usage ;;
-    *) echo "Option inconnue: $1"; usage ;;
+    -t|--tests)     RUN_TESTS=true; shift ;;
+    -c|--coverage)  RUN_COVERAGE=true; shift ;;
+    -k|--knip)      RUN_KNIP=true; shift ;;
+    -m|--mutations) RUN_MUTATIONS=true; shift ;;
+    -a|--all)       RUN_TESTS=true; RUN_COVERAGE=true; RUN_KNIP=true; RUN_MUTATIONS=true; shift ;;
+    -v|--verbose)   VERBOSE=true; shift ;;
+    -o|--output)    OUTPUT_FILE="$2"; shift 2 ;;
+    -h|--help)      echo "-t tests  -c coverage  -k knip  -m mutations  -a all  -v verbose  -o file"; exit 0 ;;
+    *) echo "Unknown: $1"; exit 1 ;;
   esac
 done
 
-# Au moins une option requise
-# -c implique -t (pas de couverture sans tests)
-if $RUN_COVERAGE && ! $RUN_TESTS; then
-  RUN_TESTS=true
-fi
+$RUN_COVERAGE && RUN_TESTS=true
 
 if ! $RUN_TESTS && ! $RUN_KNIP && ! $RUN_MUTATIONS; then
-  echo "Erreur: spécifiez au moins une option (-t, -c, -k, -m ou -a)"
-  echo ""
-  usage
+  echo "Specify at least: -t, -c, -k, -m, or -a"; exit 1
 fi
 
-# Rapport
-REPORT=""
-TOTAL_PASS=0
-TOTAL_FAIL=0
-SEPARATOR="━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+REPORT="" CHECKS_RUN=0 CHECKS_FAIL=0
+append() { REPORT+="$1"$'\n'; }
 
-append() {
-  REPORT+="$1"$'\n'
-}
+append "QUALITY REPORT — sebc.dev — $(date '+%Y-%m-%d %H:%M')"
 
-append ""
-append "${BOLD}╔═══════════════════════════════════════════╗${RESET}"
-append "${BOLD}║         RAPPORT QUALITÉ — sebc.dev        ║${RESET}"
-append "${BOLD}╚═══════════════════════════════════════════╝${RESET}"
-append ""
-append "Date: $(date '+%Y-%m-%d %H:%M:%S')"
-append ""
-
-# ─── Tests unitaires (Vitest) ───────────────────────────────────────
+# ── Tests (Vitest) ──────────────────────────────────────────
 
 run_tests() {
-  local header="TESTS UNITAIRES (Vitest)"
-  $RUN_COVERAGE && header="TESTS UNITAIRES + COUVERTURE (Vitest)"
+  local tmp
+  tmp=$(mktemp)
+  local args="run --reporter=verbose"
+  $RUN_COVERAGE && args="run --coverage --reporter=verbose"
 
-  append "${SEPARATOR}"
-  append "${CYAN}${BOLD}▸ $header${RESET}"
-  append "${SEPARATOR}"
+  local rc=0
+  # shellcheck disable=SC2086
+  npx vitest $args > "$tmp" 2>&1 || rc=$?
 
-  local tmpfile
-  tmpfile=$(mktemp)
+  # Known Vite issue: "close timed out" exits non-zero even when tests pass
+  [[ $rc -ne 0 ]] && grep -q "Tests closed successfully" "$tmp" 2>/dev/null && rc=0
 
-  local vitest_args="run --reporter=verbose"
-  $RUN_COVERAGE && vitest_args="run --coverage --reporter=verbose"
+  $VERBOSE && { append ""; append "[VITEST RAW]"; append "$(cat "$tmp")"; append "[/VITEST RAW]"; }
 
-  local exit_code=0
-  npx vitest $vitest_args 2>&1 > "$tmpfile" || exit_code=$?
-
-  if $VERBOSE; then
-    append ""
-    append "$(cat "$tmpfile")"
-    append ""
-  fi
-
-  # Extraire le résumé des tests
-  local test_summary
-  test_summary=$(grep -E "^[[:space:]]*(Tests|Test Files)" "$tmpfile" 2>/dev/null || true)
-
-  # Extraire les tests échoués
-  local failed_tests
-  failed_tests=$(grep -E "^[[:space:]]*×|FAIL" "$tmpfile" 2>/dev/null || true)
-
-  if [[ $exit_code -eq 0 ]]; then
-    append "${GREEN}✓ PASS${RESET}"
-    ((TOTAL_PASS++))
-  else
-    append "${RED}✗ FAIL (exit code: $exit_code)${RESET}"
-    ((TOTAL_FAIL++))
-  fi
-
-  if [[ -n "$test_summary" ]]; then
-    append ""
-    append "Résumé:"
-    append "$test_summary"
-  fi
-
-  if [[ -n "$failed_tests" ]]; then
-    append ""
-    append "${RED}Tests échoués:${RESET}"
-    append "$failed_tests"
-  fi
-
-  # Couverture (uniquement si demandée)
-  if $RUN_COVERAGE; then
-    local coverage_summary
-    coverage_summary=$(grep -E "^(All files|---|[[:space:]]+src/)" "$tmpfile" 2>/dev/null | head -20 || true)
-
-    if [[ -n "$coverage_summary" ]]; then
-      append ""
-      append "Couverture:"
-      append "$coverage_summary"
-    fi
-  fi
+  ((CHECKS_RUN++)) || true
+  local label="TESTS"
+  $RUN_COVERAGE && label="TESTS + COVERAGE"
 
   append ""
-  rm -f "$tmpfile"
+  if [[ $rc -eq 0 ]]; then
+    append "[$label] PASS"
+  else
+    append "[$label] FAIL"
+    ((CHECKS_FAIL++)) || true
+  fi
+
+  # Summary counts
+  local counts
+  counts=$(grep -E "^\s*(Test Files|Tests\s|Duration)" "$tmp" | sed 's/^[[:space:]]*/  /' | grep -v "Tests closed" || true)
+  [[ -n "$counts" ]] && append "$counts"
+
+  # Per-file results (use awk to avoid pipe/grep-c issues)
+  local per_file
+  per_file=$(awk '
+    /✓/ || /×/ {
+      match($0, /src\/[^ ]+\.test\.ts/, m)
+      if (m[0] != "") {
+        if (/✓/) pass[m[0]]++
+        if (/×/) fail[m[0]]++
+      }
+    }
+    END {
+      for (f in pass) if (!(f in seen)) { seen[f]=1; files[++n]=f }
+      for (f in fail) if (!(f in seen)) { seen[f]=1; files[++n]=f }
+      asort(files)
+      for (i=1; i<=length(files); i++) {
+        f = files[i]; p = (f in pass) ? pass[f] : 0; x = (f in fail) ? fail[f] : 0
+        if (x > 0) printf "    FAIL %s (%d passed, %d failed)\n", f, p, x
+        else printf "    OK   %s (%d passed)\n", f, p
+      }
+    }
+  ' "$tmp" || true)
+  if [[ -n "$per_file" ]]; then
+    append "  Per file:"
+    append "$per_file"
+  fi
+
+  # Failed tests — names + assertion details
+  local failures
+  failures=$(grep -E "^\s*×" "$tmp" 2>/dev/null | sed 's/^[[:space:]]*/    /' || true)
+  if [[ -n "$failures" ]]; then
+    append "  Failures:"
+    append "$failures"
+    local errors
+    errors=$(grep -E "(Expected|Received|AssertionError|expect\()" "$tmp" \
+      | head -20 | sed 's/^[[:space:]]*/      /' || true)
+    [[ -n "$errors" ]] && append "$errors"
+  fi
+
+  # Coverage
+  if $RUN_COVERAGE; then
+    append "  Coverage:"
+
+    # All files summary
+    local all_cov
+    all_cov=$(grep "^All files" "$tmp" || true)
+    if [[ -n "$all_cov" ]]; then
+      local s b fn l
+      s=$(echo "$all_cov" | awk -F'|' '{gsub(/ /,"",$2); print $2}')
+      b=$(echo "$all_cov" | awk -F'|' '{gsub(/ /,"",$3); print $3}')
+      fn=$(echo "$all_cov" | awk -F'|' '{gsub(/ /,"",$4); print $4}')
+      l=$(echo "$all_cov" | awk -F'|' '{gsub(/ /,"",$5); print $5}')
+      append "    All: ${s}% stmt | ${b}% branch | ${fn}% func | ${l}% line"
+    fi
+
+    # Parse coverage table: tested files (stmts>0) with uncovered lines + count untested
+    local cov_result
+    cov_result=$(awk -F'|' '
+      /^-+\|/ { sep++; next }
+      sep >= 1 && NF >= 5 {
+        name = $1; gsub(/^[ ]+|[ ]+$/, "", name)
+        if (name == "File" || name == "All files") next
+        if (name !~ /\./) next
+        stmts = $2 + 0
+        if (stmts == 0) { untested++; next }
+        branch = $3 + 0; funcs = $4 + 0; lines = $5 + 0
+        uncov = ""; if (NF >= 6) { uncov = $6; gsub(/^[ ]+|[ ]+$/, "", uncov) }
+        gsub(/^\.+/, "", name)
+        printf "      %-22s %5g%% stmt | %5g%% branch | %5g%% func | %5g%% line", name, stmts, branch, funcs, lines
+        if (uncov != "") printf " | uncovered: L%s", uncov
+        printf "\n"
+      }
+      END { printf "UNTESTED:%d\n", untested + 0 }
+    ' "$tmp" || true)
+
+    local tested untested_n
+    tested=$(echo "$cov_result" | grep -v "^UNTESTED:" || true)
+    untested_n=$(echo "$cov_result" | grep -oP '(?<=UNTESTED:)\d+' || echo 0)
+
+    if [[ -n "$tested" ]]; then
+      append "    Tested:"
+      append "$tested"
+    fi
+    [[ "$untested_n" -gt 0 ]] && append "    Untested: ${untested_n} files (components, layouts, pages)"
+  fi
+
+  rm -f "$tmp"
 }
 
-# ─── Knip (dead code) ──────────────────────────────────────────────
+# ── Knip (dead code) ────────────────────────────────────────
 
 run_knip() {
-  append "${SEPARATOR}"
-  append "${CYAN}${BOLD}▸ DEAD CODE (Knip)${RESET}"
-  append "${SEPARATOR}"
+  local tmp
+  tmp=$(mktemp)
 
-  local tmpfile
-  tmpfile=$(mktemp)
+  local rc=0
+  npx knip > "$tmp" 2>&1 || rc=$?
 
-  local exit_code=0
-  npx knip 2>&1 > "$tmpfile" || exit_code=$?
+  $VERBOSE && { append ""; append "[KNIP RAW]"; append "$(cat "$tmp")"; append "[/KNIP RAW]"; }
 
-  if $VERBOSE; then
-    append ""
-    append "$(cat "$tmpfile")"
-    append ""
-  fi
+  ((CHECKS_RUN++)) || true
+  append ""
 
-  local line_count
-  line_count=$(wc -l < "$tmpfile")
-
-  if [[ $exit_code -eq 0 ]]; then
-    append "${GREEN}✓ PASS — Aucun dead code détecté${RESET}"
-    ((TOTAL_PASS++))
+  if [[ $rc -eq 0 ]]; then
+    append "[KNIP] PASS — no dead code"
   else
-    append "${RED}✗ FAIL — Problèmes détectés${RESET}"
-    ((TOTAL_FAIL++))
+    append "[KNIP] FAIL — dead code detected"
+    ((CHECKS_FAIL++)) || true
 
-    # Résumé par catégorie
-    local unused_files unused_deps unused_exports unused_types
-    unused_files=$(grep -c "Unused files" "$tmpfile" 2>/dev/null || echo "0")
-    unused_deps=$(grep -c "Unused dependencies" "$tmpfile" 2>/dev/null || echo "0")
-    unused_exports=$(grep -c "Unused exports" "$tmpfile" 2>/dev/null || echo "0")
-    unused_types=$(grep -c "Unused exported types" "$tmpfile" 2>/dev/null || echo "0")
+    # Show full knip output (compact, all actionable)
+    local content
+    content=$(sed 's/^/    /' "$tmp" || true)
+    local line_count
+    line_count=$(wc -l < "$tmp")
 
-    # Extraire les sections avec leurs contenus (compact)
-    append ""
-    # Afficher les 50 premières lignes max pour rester compact
-    head -50 "$tmpfile" | while IFS= read -r line; do
-      append "  $line"
-    done
-
-    if [[ $line_count -gt 50 ]]; then
-      append "  ... ($(( line_count - 50 )) lignes supplémentaires, utilisez -v pour tout voir)"
+    if [[ $line_count -le 60 ]]; then
+      append "$content"
+    else
+      append "$(head -60 "$tmp" | sed 's/^/    /')"
+      append "    ... (+$(( line_count - 60 )) more lines, use -v for full output)"
     fi
   fi
 
-  append ""
-  rm -f "$tmpfile"
+  rm -f "$tmp"
 }
 
-# ─── Stryker (mutation testing) ─────────────────────────────────────
+# ── Stryker (mutation testing) ──────────────────────────────
 
 run_mutations() {
-  append "${SEPARATOR}"
-  append "${CYAN}${BOLD}▸ TESTS DE MUTATION (Stryker)${RESET}"
-  append "${SEPARATOR}"
+  local tmp
+  tmp=$(mktemp)
 
-  local tmpfile
-  tmpfile=$(mktemp)
+  local rc=0
+  npx stryker run > "$tmp" 2>&1 || rc=$?
 
-  local exit_code=0
-  npx stryker run 2>&1 > "$tmpfile" || exit_code=$?
+  $VERBOSE && { append ""; append "[STRYKER RAW]"; append "$(cat "$tmp")"; append "[/STRYKER RAW]"; }
 
-  if $VERBOSE; then
-    append ""
-    append "$(cat "$tmpfile")"
-    append ""
-  fi
+  ((CHECKS_RUN++)) || true
+  append ""
 
-  # Extraire le score de mutation
-  local mutation_score
-  mutation_score=$(grep -oP "Mutation score:?\s*\K[\d.]+%" "$tmpfile" 2>/dev/null || true)
-
-  # Extraire le résumé (killed, survived, etc.)
-  local mutation_summary
-  mutation_summary=$(grep -iE "(killed|survived|timeout|no coverage|mutants)" "$tmpfile" 2>/dev/null | tail -5 || true)
-
-  # Mutants survivants (les plus importants à corriger)
-  local survived
-  survived=$(grep -A2 "Survived" "$tmpfile" 2>/dev/null | head -30 || true)
-
-  if [[ $exit_code -eq 0 ]]; then
-    append "${GREEN}✓ PASS${RESET}"
-    ((TOTAL_PASS++))
+  if [[ $rc -eq 0 ]]; then
+    append "[MUTATIONS] PASS"
   else
-    append "${YELLOW}⚠ FAIL (exit code: $exit_code)${RESET}"
-    ((TOTAL_FAIL++))
+    append "[MUTATIONS] FAIL"
+    ((CHECKS_FAIL++)) || true
   fi
 
-  if [[ -n "$mutation_score" ]]; then
-    append ""
-    append "Score de mutation: ${BOLD}$mutation_score${RESET}"
+  # Mutation score
+  local score
+  score=$(grep -oP "Mutation score:?\s*\K[\d.]+%" "$tmp" || true)
+  [[ -n "$score" ]] && append "  Score: $score"
+
+  # Summary stats
+  local stats
+  stats=$(grep -iE "^\s*(Killed|Survived|Timeout|No coverage|NoCoverage)" "$tmp" | head -10 | sed 's/^[[:space:]]*/    /' || true)
+  if [[ -n "$stats" ]]; then
+    append "  Stats:"
+    append "$stats"
   fi
 
-  if [[ -n "$mutation_summary" ]]; then
-    append ""
-    append "Résumé:"
-    append "$mutation_summary"
-  fi
-
-  if [[ -n "$survived" ]] && [[ $exit_code -ne 0 ]]; then
-    append ""
-    append "${YELLOW}Mutants survivants (à investiguer):${RESET}"
+  # Survived mutants — the actionable items
+  local survived
+  survived=$(grep -B1 -A2 "Survived" "$tmp" | grep -vE "^(--|Survived)" | head -30 | sed 's/^[[:space:]]*/    /' || true)
+  if [[ -n "$survived" ]]; then
+    append "  Survived mutants (action needed):"
     append "$survived"
   fi
 
-  # Rappel du rapport HTML
-  if [[ -d "reports/mutation" ]]; then
-    append ""
-    append "Rapport HTML: reports/mutation/html/index.html"
-  fi
+  [[ -d "reports/mutation" ]] && append "  HTML report: reports/mutation/html/index.html"
 
-  append ""
-  rm -f "$tmpfile"
+  rm -f "$tmp"
 }
 
-# ─── Exécution ──────────────────────────────────────────────────────
+# ── Run ─────────────────────────────────────────────────────
 
 $RUN_TESTS && run_tests
 $RUN_KNIP && run_knip
 $RUN_MUTATIONS && run_mutations
 
-# ─── Résumé final ───────────────────────────────────────────────────
+# ── Result ──────────────────────────────────────────────────
 
-append "${SEPARATOR}"
-append "${BOLD}RÉSUMÉ${RESET}"
-append "${SEPARATOR}"
 append ""
-append "  ${GREEN}✓ Pass: $TOTAL_PASS${RESET}    ${RED}✗ Fail: $TOTAL_FAIL${RESET}"
-append ""
-
-if [[ $TOTAL_FAIL -eq 0 ]]; then
-  append "${GREEN}${BOLD}Tout est OK ✓${RESET}"
+passed=$((CHECKS_RUN - CHECKS_FAIL))
+if [[ $CHECKS_FAIL -eq 0 ]]; then
+  append "RESULT: ${CHECKS_RUN}/${CHECKS_RUN} passed"
 else
-  append "${RED}${BOLD}$TOTAL_FAIL vérification(s) en échec${RESET}"
+  append "RESULT: ${passed}/${CHECKS_RUN} passed, ${CHECKS_FAIL} failed"
 fi
 
-append ""
-
-# ─── Output ─────────────────────────────────────────────────────────
+# ── Output ──────────────────────────────────────────────────
 
 if [[ -n "$OUTPUT_FILE" ]]; then
-  # Strip ANSI pour le fichier
-  echo -e "$REPORT" | sed 's/\x1b\[[0-9;]*m//g' > "$OUTPUT_FILE"
-  echo "Rapport écrit dans: $OUTPUT_FILE"
+  echo "$REPORT" | sed 's/\x1b\[[0-9;]*m//g' > "$OUTPUT_FILE"
+  echo "Written to: $OUTPUT_FILE"
 else
-  echo -e "$REPORT"
+  echo "$REPORT"
 fi
 
-# Exit code non-zero si au moins un échec
-[[ $TOTAL_FAIL -eq 0 ]]
+[[ $CHECKS_FAIL -eq 0 ]]
