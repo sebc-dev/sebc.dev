@@ -146,13 +146,39 @@
   border-radius: 2px;
 }
 
-/* ---- SHIKI CODE BLOCKS ---- */
-pre.astro-code {
-  background: var(--color-void) !important;
-  border: 1px solid var(--color-border);
+/* ---- HEADING ANCHORS ---- */
+.heading-anchor {
+  opacity: 0;
+  margin-left: 0.5rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+.prose :is(h2, h3):hover .heading-anchor {
+  opacity: 1;
+}
+.heading-anchor:hover {
+  color: var(--color-teal-bright);
+}
+.heading-anchor-icon {
+  font-family: var(--font-code);
+  font-size: 0.8em;
+}
+
+/* ---- TOC ACTIVE STATE ---- */
+.toc-link.active {
+  color: var(--color-teal-bright);
+  border-color: var(--color-teal);
+}
+
+/* ---- READING PROGRESS ---- */
+#reading-progress {
+  transform-origin: left;
+  transition: transform 80ms linear;
+}
+
+/* ---- PROSE IMAGE STYLES ---- */
+.prose img {
   border-radius: 4px;
-  padding: 1.25rem;
-  overflow-x: auto;
-  font-size: 0.875rem;
-  line-height: 1.6;
+  border: 1px solid var(--color-border);
 }
