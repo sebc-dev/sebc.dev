@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-09)
 ## Current Position
 
 Phase: 1 of 6 (Foundation)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: Executing phase
-Last activity: 2026-02-09 -- Completed 01-01-PLAN.md (i18n + GlowLine + WCAG)
+Last activity: 2026-02-09 -- Completed 01-02-PLAN.md (Layout Shell Components)
 
-Progress: [█░░░░░░░░░] 5%
+Progress: [██░░░░░░░░] 10%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
+- Total plans completed: 2
 - Average duration: 2min
-- Total execution time: 0.04 hours
+- Total execution time: 0.07 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-foundation | 1 | 2min | 2min |
+| 01-foundation | 2 | 4min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2min)
-- Trend: Starting
+- Last 5 plans: 01-01 (2min), 01-02 (2min)
+- Trend: Consistent
 
 *Updated after each plan completion*
 
@@ -47,6 +47,9 @@ Recent decisions affecting current work:
 - [Roadmap]: Responsive (INFR-03) and contrast (INFR-04) placed in Phase 1 as foundational constraints
 - [01-01]: Followed official Astro i18n recipe pattern -- no custom abstractions for 2 languages
 - [01-01]: GlowLine accepts optional class prop for flexible composition across components
+- [01-02]: Used text-teal-bright (not text-teal) for logo and active states -- WCAG AA on all backgrounds
+- [01-02]: Social icons use text-secondary hover:text-teal-bright instead of mockup text-muted for WCAG
+- [01-02]: LangSwitch renders as anchor tags since each option navigates to a localized URL
 
 ### Pending Todos
 
@@ -61,5 +64,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-09
-Stopped at: Completed 01-01-PLAN.md
-Resume file: .planning/phases/01-foundation/01-01-SUMMARY.md
+Stopped at: Completed 01-02-PLAN.md
+Resume file: .planning/phases/01-foundation/01-02-SUMMARY.md
