@@ -24,6 +24,12 @@ export async function getCategories(lang: "en" | "fr"): Promise<string[]> {
   return categories.sort();
 }
 
+export async function getTags(lang: "en" | "fr"): Promise<string[]> {
+  const articles = await getArticlesByLocale(lang);
+  const tags = [...new Set(articles.flatMap((a) => a.data.tags))];
+  return tags.sort();
+}
+
 export function getArticleUrl(article: Article): string {
   return `/${article.data.lang}/articles/${article.id}`;
 }
