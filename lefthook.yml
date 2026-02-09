@@ -1,0 +1,13 @@
+pre-commit:
+  parallel: true
+  commands:
+    prettier:
+      glob: "*.{ts,tsx,js,jsx,json,css,astro,md,mdx}"
+      run: npx prettier --check {staged_files}
+    eslint:
+      glob: "*.{ts,tsx,js,jsx,astro}"
+      exclude: "worker-configuration.d.ts"
+      run: npx eslint {staged_files}
+    content:
+      glob: "src/content/**/*.{md,mdx}"
+      run: npx markdownlint-cli2 {staged_files}

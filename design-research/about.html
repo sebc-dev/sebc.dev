@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>À propos — devblog</title>
+  <meta name="description" content="Développeur Full-Stack passionné — J'explore le développement web moderne et partage ce que j'apprends.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --color-void: #111111;
+      --color-canvas: #181818;
+      --color-surface: #232323;
+      --color-surface-raised: #2d2d2d;
+      --color-surface-hover: #383838;
+      --color-text-primary: #e6e6e6;
+      --color-text-secondary: #a0a0a0;
+      --color-text-muted: #6b6b6b;
+      --color-teal: #0D9488;
+      --color-teal-hover: #14B8A6;
+      --color-teal-bright: #2DD4BF;
+      --color-teal-glow: #0D948833;
+      --color-teal-dim: #0D94881a;
+      --color-border: #2a2a2a;
+      --color-border-subtle: #202020;
+      --color-border-hover: #0D9488;
+      --font-display: "Albert Sans", system-ui, sans-serif;
+      --font-body: "Albert Sans", system-ui, sans-serif;
+      --font-code: "Fira Code", ui-monospace, monospace;
+    }
+  </style>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body { line-height: 1.7; }
+    .glow-line { background: linear-gradient(90deg, transparent, #0D948860, transparent); height: 1px; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bounce-subtle {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    @keyframes pulse-teal {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 #0D948860; }
+      50% { opacity: 0.8; box-shadow: 0 0 0 8px transparent; }
+    }
+
+    @keyframes glow-expand {
+      from { width: 0; opacity: 0; }
+      to { width: 100%; opacity: 1; }
+    }
+
+    .fade-up { opacity: 0; }
+    .fade-up.in-view { animation: fadeUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+    .scroll-indicator {
+      animation: bounce-subtle 2s ease-in-out infinite;
+    }
+
+    .timeline-dot {
+      animation: pulse-teal 2s ease-in-out infinite;
+    }
+
+    .section-title::after {
+      content: '';
+      display: block;
+      height: 2px;
+      width: 0;
+      background: linear-gradient(90deg, #0D9488, #2DD4BF);
+      margin-top: 0.5rem;
+      border-radius: 2px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .section-title.in-view::after {
+      width: 64px;
+    }
+
+    .tech-card {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .tech-card:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 8px 24px #0D948820;
+    }
+
+    .project-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px #0D948830;
+    }
+
+    .timeline-line {
+      background: linear-gradient(180deg, transparent, #0D94881a, #0D94881a, transparent);
+    }
+  </style>
+</head>
+<body class="bg-canvas text-text-primary font-body antialiased">
+
+  <!-- Glow line top -->
+  <div class="glow-line w-full"></div>
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 bg-canvas/90 backdrop-blur-lg border-b border-border-subtle">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="/" class="flex items-center gap-2 group">
+          <span class="w-8 h-8 bg-teal/15 border border-teal/30 rounded-xs flex items-center justify-center text-teal font-code text-sm font-medium group-hover:bg-teal/25 transition-colors">&gt;_</span>
+          <span class="text-lg font-semibold tracking-tight text-text-primary">devblog</span>
+        </a>
+
+        <nav class="flex items-center gap-6 text-sm">
+          <a href="/" class="text-text-muted hover:text-text-primary transition-colors">Accueil</a>
+          <a href="#search" class="text-text-muted hover:text-text-primary transition-colors">Recherche</a>
+          <a href="#about" class="text-text-primary font-medium">A propos</a>
+        </nav>
+
+        <div class="flex items-center gap-1 text-sm text-text-muted">
+          <button class="px-2 py-1 rounded-xs text-text-primary font-medium bg-surface">FR</button>
+          <button class="px-2 py-1 rounded-xs hover:text-text-primary transition-colors">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-6 lg:px-8">
+
+    <!-- Hero Section -->
+    <section class="py-16 md:py-24 flex flex-col items-center text-center border-b border-border fade-up">
+      <!-- Avatar/Logo -->
+      <div class="w-32 h-32 md:w-40 md:h-40 bg-surface border-2 border-teal/30 rounded-sm flex items-center justify-center mb-8 relative group">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-teal group-hover:text-teal-bright transition-colors">
+          <polyline points="4 17 10 11 4 5"></polyline>
+          <line x1="12" y1="19" x2="20" y2="19"></line>
+        </svg>
+        <div class="absolute inset-0 bg-teal/5 rounded-sm group-hover:bg-teal/10 transition-colors"></div>
+      </div>
+
+      <!-- Title & Tagline -->
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-4">
+        Développeur Full-Stack & Créateur de Contenu Technique
+      </h1>
+      <p class="text-text-secondary text-lg md:text-xl max-w-2xl mb-10">
+        J'explore le développement web moderne et partage ce que j'apprends.
+      </p>
+
+      <!-- Stats -->
+      <div class="flex flex-wrap items-center justify-center gap-6 md:gap-10 mb-12">
+        <div class="flex items-center gap-2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-teal">
+            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+          <span class="text-text-primary font-semibold">120+ articles</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-teal">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <span class="text-text-primary font-semibold">50K+ lecteurs</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-teal">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span class="text-text-primary font-semibold">5 ans de blog</span>
+        </div>
+      </div>
+
+      <!-- Scroll indicator -->
+      <div class="scroll-indicator">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-teal-bright">
+          <path d="m7 13 5 5 5-5"></path>
+          <path d="m7 6 5 5 5-5"></path>
+        </svg>
+      </div>
+    </section>
+
+    <!-- Qui je suis -->
+    <section class="py-16 md:py-20 border-b border-border fade-up">
+      <div class="grid md:grid-cols-[1.2fr_1fr] gap-10 lg:gap-16 items-center">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-bold mb-6 section-title">Qui je suis</h2>
+          <div class="space-y-4 text-text-secondary leading-relaxed">
+            <p>
+              Bonjour, je suis <strong class="text-text-primary font-semibold">Alex</strong>. Développeur web passionné depuis plus de 8 ans, je me suis spécialisé dans l'écosystème JavaScript moderne — React, TypeScript, Node.js.
+            </p>
+            <p>
+              Ce blog est né d'une envie simple : documenter ce que j'apprends et le rendre accessible à tous. Je crois que la meilleure façon d'apprendre, c'est d'enseigner. Chaque article que j'écris est une opportunité de clarifier ma propre compréhension et d'aider d'autres développeurs dans leur parcours.
+            </p>
+            <p>
+              En dehors du code, je suis amateur de café de spécialité, de photographie urbaine et de randonnée. J'aime explorer de nouveaux horizons, qu'ils soient techniques ou naturels.
+            </p>
+          </div>
+        </div>
+
+        <!-- Code Signature Card -->
+        <div class="bg-surface border border-border rounded-sm p-6 relative overflow-hidden">
+          <div class="absolute top-3 right-3 flex gap-1.5">
+            <div class="w-3 h-3 rounded-full bg-text-muted/20"></div>
+            <div class="w-3 h-3 rounded-full bg-text-muted/20"></div>
+            <div class="w-3 h-3 rounded-full bg-teal/40"></div>
+          </div>
+          <pre class="font-code text-xs md:text-sm leading-relaxed mt-6"><code><span class="text-teal-bright">const</span> <span class="text-text-primary">developer</span> <span class="text-text-secondary">=</span> <span class="text-text-secondary">{</span>
+  <span class="text-teal">name</span><span class="text-text-secondary">:</span> <span class="text-teal-bright">'Alex'</span><span class="text-text-secondary">,</span>
+  <span class="text-teal">passion</span><span class="text-text-secondary">:</span> <span class="text-teal-bright">'web development'</span><span class="text-text-secondary">,</span>
+  <span class="text-teal">stack</span><span class="text-text-secondary">:</span> <span class="text-text-secondary">[</span>
+    <span class="text-teal-bright">'TypeScript'</span><span class="text-text-secondary">,</span>
+    <span class="text-teal-bright">'React'</span><span class="text-text-secondary">,</span>
+    <span class="text-teal-bright">'Node.js'</span>
+  <span class="text-text-secondary">],</span>
+  <span class="text-teal">motto</span><span class="text-text-secondary">:</span> <span class="text-teal-bright">'Learn by teaching'</span>
+<span class="text-text-secondary">};</span></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mon Parcours (Timeline) -->
+    <section class="py-16 md:py-20 border-b border-border fade-up">
+      <h2 class="text-2xl md:text-3xl font-bold mb-12 text-center section-title">Mon Parcours</h2>
+
+      <div class="relative max-w-4xl mx-auto">
+        <!-- Vertical Line -->
+        <div class="absolute left-6 md:left-1/2 top-0 bottom-0 w-px timeline-line hidden md:block"></div>
+
+        <div class="space-y-12">
+          <!-- Step 1 -->
+          <div class="relative md:grid md:grid-cols-2 md:gap-8 items-center">
+            <div class="md:text-right mb-6 md:mb-0">
+              <div class="bg-surface border border-border rounded-sm p-6 hover:border-teal/30 transition-colors">
+                <div class="text-teal font-code text-sm mb-2">2016</div>
+                <h3 class="text-lg font-semibold mb-2">Premiers pas en développement</h3>
+                <p class="text-text-secondary text-sm">Autodidacte, HTML/CSS/JS — Découverte passionnée du développement web.</p>
+              </div>
+            </div>
+            <div class="hidden md:flex justify-center">
+              <div class="w-4 h-4 bg-teal border-4 border-canvas rounded-full timeline-dot"></div>
+            </div>
+            <div class="hidden md:block"></div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="relative md:grid md:grid-cols-2 md:gap-8 items-center">
+            <div class="hidden md:block"></div>
+            <div class="hidden md:flex justify-center">
+              <div class="w-4 h-4 bg-teal border-4 border-canvas rounded-full timeline-dot"></div>
+            </div>
+            <div class="mb-6 md:mb-0">
+              <div class="bg-surface border border-border rounded-sm p-6 hover:border-teal/30 transition-colors">
+                <div class="text-teal font-code text-sm mb-2">2018</div>
+                <h3 class="text-lg font-semibold mb-2">Formation & premiers projets</h3>
+                <p class="text-text-secondary text-sm">Bootcamp intensif, React — Premiers clients freelance et projets concrets.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="relative md:grid md:grid-cols-2 md:gap-8 items-center">
+            <div class="md:text-right mb-6 md:mb-0">
+              <div class="bg-surface border border-border rounded-sm p-6 hover:border-teal/30 transition-colors">
+                <div class="text-teal font-code text-sm mb-2">2020</div>
+                <h3 class="text-lg font-semibold mb-2">Développeur Full-Stack</h3>
+                <p class="text-text-secondary text-sm">CDI en startup tech, Node.js, TypeScript — Immersion dans l'écosystème moderne.</p>
+              </div>
+            </div>
+            <div class="hidden md:flex justify-center">
+              <div class="w-4 h-4 bg-teal border-4 border-canvas rounded-full timeline-dot"></div>
+            </div>
+            <div class="hidden md:block"></div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="relative md:grid md:grid-cols-2 md:gap-8 items-center">
+            <div class="hidden md:block"></div>
+            <div class="hidden md:flex justify-center">
+              <div class="w-4 h-4 bg-teal border-4 border-canvas rounded-full timeline-dot"></div>
+            </div>
+            <div class="mb-6 md:mb-0">
+              <div class="bg-surface border border-border rounded-sm p-6 hover:border-teal/30 transition-colors">
+                <div class="text-teal font-code text-sm mb-2">2023</div>
+                <h3 class="text-lg font-semibold mb-2">Lead Dev & Mentorat</h3>
+                <p class="text-text-secondary text-sm">Lead technique — Mentorat de développeurs juniors et architecture de solutions.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="relative md:grid md:grid-cols-2 md:gap-8 items-center">
+            <div class="md:text-right">
+              <div class="bg-surface border border-border rounded-sm p-6 hover:border-teal/30 transition-colors">
+                <div class="text-teal font-code text-sm mb-2">2024</div>
+                <h3 class="text-lg font-semibold mb-2">Lancement du blog</h3>
+                <p class="text-text-secondary text-sm">Partage de connaissances — 120+ articles publiés et une communauté engagée.</p>
+              </div>
+            </div>
+            <div class="hidden md:flex justify-center">
+              <div class="w-4 h-4 bg-teal-bright border-4 border-canvas rounded-full shadow-sm shadow-teal-glow timeline-dot"></div>
+            </div>
+            <div class="hidden md:block"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stack Technique -->
+    <section class="py-16 md:py-20 border-b border-border fade-up">
+      <h2 class="text-2xl md:text-3xl font-bold mb-10 text-center section-title">Stack Technique</h2>
+
+      <!-- Frontend -->
+      <div class="mb-10">
+        <h3 class="text-sm font-code text-teal mb-4 uppercase tracking-wider">Frontend</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div class="tech-card bg-surface border border-border rounded-sm p-5 flex flex-col items-center gap-3 text-center hover:border-teal/30">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-teal">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+              <line x1="9" y1="9" x2="9.01" y2="9"></line>
+              <line x1="15" y1="9" x2="15.01" y2="9"></line>
+            </svg>
+            <span class="text-sm font-medium">React</span>
+          </div>
+          <div class="tech-card bg-surface border border-border rounded-sm p-5 flex flex-col items-center gap-3 text-center hover:border-teal/30">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-teal">
+              <polyline points="16 18 22 12 16 6"></polyline>
+              <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>
+            <span class="text-sm font-medium">TypeScript</span>
+          </div>
+          <div class="tech-card bg-surface border border-border rounded-sm p-5 flex flex-col items-center gap-3 text-center hover:border-teal/30">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-teal">
+              <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path>
+            </svg>
+            <span class="text-sm font-medium">Next.js</span>
+          </div>
+          <div class="tech-card bg-surface border border-border rounded-sm p-5 flex flex-col items-center gap-3 text-center hover:border-teal/30">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-teal">
+              <path d="M12 2a2 2 0 0 0-2 2c0 .74.4 1.39 1 1.73V7h2V5.73c.6-.34 1-.99 1-1.73a2 2 0 0 0-2-2Z"></path>
+              <path d="M14 2v6"></path>
+              <path d="M10 2v6"></path>
+              <rect width="20" height="14" x="2" y="8" rx="2"></rect>
+            </svg>
+            <span class="text-sm font-medium">Tailwind CSS</span>
+          </div>
+          <div class="tech-card bg-surface border border-border rounded-sm p-5 flex flex-col items-center gap-3 text-center hover:border-teal/30">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-teal">
+              <path d="M2 12 7 2l5 10-5 10L2 12z"></path>
+              <path d="m7 12 5-10 5 10-5 10L7 12z"></path>
+              <path d="m12 2 5 10-5 10"></path>
+            </svg>
+            <span class="text-sm font-medium">Vue.js</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Backend -->
+      <div class="mb-10">
+        <h3 class="text-sm font-code text-teal mb-4 uppercase tracking-wider">Backend</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div class="tech-card bg-surface border border-border rounded-sm p-5 flex flex-col items-center gap-3 text-center hover:border-teal/30">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-teal">
+              <path d="M12 2v20"></path>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+            <span class="text-sm font-medium">Node.js</span>
+          </div>
+          <div class="tech-card bg-surface border border-border rounded-sm p-5 flex flex-col items-center gap-3 text-center hover:border-teal/30">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-teal">
+              <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+              <path d="M3 5v14a9 3 0 0 0 18 0V5"></path>
+            </svg>
+            <span class="text-sm font-medium">PostgreSQL</span>
+          </div>
+          <div class="tech-card bg-surface border border-border rounded-sm p-5 flex flex-col items-center gap-3 text-center hover:border-teal/30">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-teal">
+              <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+              <path d="M7 7h10"></path>
+              <path d="M7 12h10"></path>
+              <path d="M7 17h10"></path>
+            </svg>
+            <span class="text-sm font-medium">Redis</span>
+          </div>
+          <div class="tech-card bg-surface border border-border rounded-sm p-5 flex flex-col items-center gap-3 text-center hover:border-teal/30">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-teal">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span class="text-sm font-medium">GraphQL</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Outils & DevOps -->
+      <div>
+        <h3 class="text-sm font-code text-teal mb-4 uppercase tracking-wider">Outils & DevOps</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div class="tech-card bg-surface border border-border rounded-sm p-5 flex flex-col items-center gap-3 text-center hover:border-teal/30">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-teal">
+              <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
+              <path d="M9 18c-4.51 2-5-2-7-2"></path>
+            </svg>
+            <span class="text-sm font-medium">Git</span>
+          </div>
+          <div class="tech-card bg-surface border border-border rounded-sm p-5 flex flex-col items-center gap-3 text-center hover:border-teal/30">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-teal">
+              <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+              <circle cx="9" cy="9" r="2"></circle>
+              <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
+            </svg>
+            <span class="text-sm font-medium">Docker</span>
+          </div>
+          <div class="tech-card bg-surface border border-border rounded-sm p-5 flex flex-col items-center gap-3 text-center hover:border-teal/30">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-teal">
+              <path d="M5 7 3 5"></path>
+              <path d="m9 6-2 2"></path>
+              <path d="m13 5-2 2"></path>
+              <path d="m17 4-2 2"></path>
+              <path d="m21 3-2 2"></path>
+              <path d="M5 7v12h16V7"></path>
+            </svg>
+            <span class="text-sm font-medium">Vercel</span>
+          </div>
+          <div class="tech-card bg-surface border border-border rounded-sm p-5 flex flex-col items-center gap-3 text-center hover:border-teal/30">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-teal">
+              <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+              <path d="M3 9h18"></path>
+              <path d="M9 21V9"></path>
+            </svg>
+            <span class="text-sm font-medium">Figma</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projets Notables -->
+    <section class="py-16 md:py-20 border-b border-border fade-up">
+      <h2 class="text-2xl md:text-3xl font-bold mb-10 text-center section-title">Projets Notables</h2>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Featured Project -->
+        <article class="md:col-span-2 project-card bg-surface border border-border rounded-sm overflow-hidden group">
+          <div class="md:grid md:grid-cols-2">
+            <div class="relative overflow-hidden">
+              <img src="https://picsum.photos/seed/devtools-dash/800/500" alt="DevTools Dashboard" class="w-full h-64 md:h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+              <div class="absolute inset-0 bg-linear-to-br from-teal-dim to-transparent"></div>
+            </div>
+            <div class="p-6 md:p-8 flex flex-col justify-center">
+              <h3 class="text-xl md:text-2xl font-bold mb-3 group-hover:text-teal-bright transition-colors">DevTools Dashboard</h3>
+              <p class="text-text-secondary leading-relaxed mb-5">
+                Un dashboard pour monitorer les performances web en temps réel. Built with React, D3.js et WebSockets pour une visualisation fluide et interactive.
+              </p>
+              <div class="flex flex-wrap gap-2 mb-5">
+                <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">react</span>
+                <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">d3</span>
+                <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">websockets</span>
+              </div>
+              <div class="flex items-center gap-4">
+                <a href="#github" class="flex items-center gap-1.5 text-sm text-teal hover:text-teal-bright transition-colors">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
+                    <path d="M9 18c-4.51 2-5-2-7-2"></path>
+                  </svg>
+                  GitHub
+                </a>
+                <a href="#demo" class="flex items-center gap-1.5 text-sm text-teal hover:text-teal-bright transition-colors">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" x2="21" y1="14" y2="3"></line>
+                  </svg>
+                  Demo
+                </a>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 2 -->
+        <article class="project-card bg-surface border border-border rounded-sm overflow-hidden group">
+          <div class="relative overflow-hidden">
+            <img src="https://picsum.photos/seed/codesnap/600/360" alt="CodeSnap" class="w-full h-48 object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+            <div class="absolute inset-0 bg-linear-to-br from-teal-dim to-transparent"></div>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-2 group-hover:text-teal-bright transition-colors">CodeSnap</h3>
+            <p class="text-text-secondary text-sm leading-relaxed mb-4">
+              Extension VS Code pour capturer des screenshots de code élégants avec syntax highlighting et personnalisation.
+            </p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">typescript</span>
+              <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">vscode</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <a href="#github" class="flex items-center gap-1.5 text-sm text-teal hover:text-teal-bright transition-colors">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
+                  <path d="M9 18c-4.51 2-5-2-7-2"></path>
+                </svg>
+                GitHub
+              </a>
+              <a href="#demo" class="flex items-center gap-1.5 text-sm text-teal hover:text-teal-bright transition-colors">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" x2="21" y1="14" y2="3"></line>
+                </svg>
+                Demo
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 3 -->
+        <article class="project-card bg-surface border border-border rounded-sm overflow-hidden group">
+          <div class="relative overflow-hidden">
+            <img src="https://picsum.photos/seed/api-bench/600/360" alt="API Bench" class="w-full h-48 object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+            <div class="absolute inset-0 bg-linear-to-br from-teal-dim to-transparent"></div>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-2 group-hover:text-teal-bright transition-colors">API Bench</h3>
+            <p class="text-text-secondary text-sm leading-relaxed mb-4">
+              Outil CLI pour benchmarker et comparer les performances d'APIs REST avec rapports détaillés et statistiques.
+            </p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">node</span>
+              <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">cli</span>
+              <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">performance</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <a href="#github" class="flex items-center gap-1.5 text-sm text-teal hover:text-teal-bright transition-colors">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
+                  <path d="M9 18c-4.51 2-5-2-7-2"></path>
+                </svg>
+                GitHub
+              </a>
+              <a href="#demo" class="flex items-center gap-1.5 text-sm text-teal hover:text-teal-bright transition-colors">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" x2="21" y1="14" y2="3"></line>
+                </svg>
+                Demo
+              </a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Philosophie -->
+    <section class="py-16 md:py-20 border-b border-border fade-up">
+      <h2 class="text-2xl md:text-3xl font-bold mb-10 text-center section-title">Philosophie</h2>
+
+      <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+        <!-- Value 1 -->
+        <div class="bg-surface border border-border-subtle rounded-sm p-6 lg:p-8 hover:border-teal/30 transition-colors">
+          <div class="w-12 h-12 bg-teal/15 border border-teal/30 rounded-sm flex items-center justify-center mb-5">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-teal">
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold mb-3">Accessibilité</h3>
+          <p class="text-text-secondary text-sm leading-relaxed">
+            Le web doit être accessible à tous. J'intègre les standards WCAG dès la conception, pas en post-production. Chaque interface que je crée est pensée pour être utilisable par le plus grand nombre.
+          </p>
+        </div>
+
+        <!-- Value 2 -->
+        <div class="bg-surface border border-border-subtle rounded-sm p-6 lg:p-8 hover:border-teal/30 transition-colors">
+          <div class="w-12 h-12 bg-teal/15 border border-teal/30 rounded-sm flex items-center justify-center mb-5">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-teal">
+              <path d="m13 2-2 2.5L13 7"></path>
+              <path d="M10 14 8.5 16.5 10 19"></path>
+              <path d="m16 2 2 2.5L16 7"></path>
+              <path d="m8 6 1.5 2.5L8 11"></path>
+              <path d="M14 14l1.5 2.5L14 19"></path>
+              <path d="m5 10 2 2.5L5 15"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold mb-3">Performance</h3>
+          <p class="text-text-secondary text-sm leading-relaxed">
+            Chaque milliseconde compte. Je privilégie les solutions lean et mesure systématiquement l'impact sur l'expérience utilisateur. Une application rapide est une application qui donne envie d'être utilisée.
+          </p>
+        </div>
+
+        <!-- Value 3 -->
+        <div class="bg-surface border border-border-subtle rounded-sm p-6 lg:p-8 hover:border-teal/30 transition-colors">
+          <div class="w-12 h-12 bg-teal/15 border border-teal/30 rounded-sm flex items-center justify-center mb-5">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-teal">
+              <line x1="6" x2="6" y1="3" y2="15"></line>
+              <circle cx="18" cy="6" r="3"></circle>
+              <circle cx="6" cy="18" r="3"></circle>
+              <path d="M18 9a9 9 0 0 1-9 9"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold mb-3">Open Source</h3>
+          <p class="text-text-secondary text-sm leading-relaxed">
+            Le partage de connaissances accélère l'innovation. Je contribue activement et encourage l'open-source dans chaque projet. Le code est meilleur quand il est ouvert et collaboratif.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Newsletter -->
+    <section class="py-16 md:py-20 fade-up">
+      <div class="bg-surface border border-border rounded-sm p-8 md:p-12 text-center max-w-2xl mx-auto">
+        <h2 class="text-2xl md:text-3xl font-bold mb-4">Restons en contact</h2>
+        <p class="text-text-secondary mb-8 leading-relaxed">
+          Recevez mes derniers articles directement dans votre boîte mail. Une fois par semaine, sans spam.
+        </p>
+
+        <form class="flex flex-col sm:flex-row gap-3 mb-6">
+          <input
+            type="email"
+            placeholder="votre@email.com"
+            class="flex-1 px-4 py-3 bg-canvas border border-border rounded-sm text-text-primary placeholder:text-text-muted focus:border-teal focus:outline-hidden transition-colors"
+            required
+          >
+          <button
+            type="submit"
+            class="px-6 py-3 bg-teal hover:bg-teal-hover text-white font-medium rounded-sm transition-colors"
+          >
+            S'abonner
+          </button>
+        </form>
+
+        <div class="flex items-center justify-center gap-5 mb-6">
+          <a href="#github" class="text-text-muted hover:text-text-primary transition-colors" aria-label="GitHub">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
+              <path d="M9 18c-4.51 2-5-2-7-2"></path>
+            </svg>
+          </a>
+          <a href="#twitter" class="text-text-muted hover:text-text-primary transition-colors" aria-label="Twitter">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
+            </svg>
+          </a>
+          <a href="#linkedin" class="text-text-muted hover:text-text-primary transition-colors" aria-label="LinkedIn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+              <rect width="4" height="12" x="2" y="9"></rect>
+              <circle cx="4" cy="4" r="2"></circle>
+            </svg>
+          </a>
+        </div>
+
+        <p class="text-text-muted text-sm italic">
+          Fun fact : ce blog a été entièrement construit avec Vim, du café et une dose excessive d'enthousiasme.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-border">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8 py-12">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-6 h-6 bg-teal/15 border border-teal/30 rounded-xs flex items-center justify-center text-teal font-code text-xs">&gt;_</span>
+            <span class="text-sm font-semibold">devblog</span>
+          </div>
+          <p class="text-text-muted text-sm max-w-xs">
+            Exploring modern web development through thoughtful articles and experiments.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-5">
+          <a href="#github" class="text-text-muted hover:text-text-primary transition-colors" aria-label="GitHub">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+          </a>
+          <a href="#twitter" class="text-text-muted hover:text-text-primary transition-colors" aria-label="Twitter">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+          </a>
+          <a href="#linkedin" class="text-text-muted hover:text-text-primary transition-colors" aria-label="LinkedIn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a href="#rss" class="text-text-muted hover:text-text-primary transition-colors" aria-label="RSS">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="glow-line w-full my-8"></div>
+
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-text-muted text-xs">
+        <p>&copy; 2026 devblog. Tous droits reserves.</p>
+        <div class="flex gap-6">
+          <a href="#privacy" class="hover:text-text-primary transition-colors">Confidentialite</a>
+          <a href="#mentions" class="hover:text-text-primary transition-colors">Mentions legales</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Minimal JavaScript for scroll animations -->
+  <script>
+    // IntersectionObserver for fade-up animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    });
+
+    // Observe all fade-up and section-title elements
+    document.querySelectorAll('.fade-up, .section-title').forEach(el => {
+      observer.observe(el);
+    });
+  </script>
+
+</body>
+</html>

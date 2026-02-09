@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recherche — DevBlog</title>
+  <meta name="description" content="Rechercher et filtrer les articles du blog — par catégorie, tags, temps de lecture et date.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --color-void: #111111;
+      --color-canvas: #181818;
+      --color-surface: #232323;
+      --color-surface-raised: #2d2d2d;
+      --color-surface-hover: #383838;
+      --color-text-primary: #e6e6e6;
+      --color-text-secondary: #a0a0a0;
+      --color-text-muted: #6b6b6b;
+      --color-teal: #0D9488;
+      --color-teal-hover: #14B8A6;
+      --color-teal-bright: #2DD4BF;
+      --color-teal-glow: #0D948833;
+      --color-teal-dim: #0D94881a;
+      --color-border: #2a2a2a;
+      --color-border-subtle: #202020;
+      --color-border-hover: #0D9488;
+      --font-display: "Albert Sans", system-ui, sans-serif;
+      --font-body: "Albert Sans", system-ui, sans-serif;
+      --font-code: "Fira Code", ui-monospace, monospace;
+    }
+  </style>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body { line-height: 1.7; }
+    .glow-line { background: linear-gradient(90deg, transparent, #0D948860, transparent); height: 1px; }
+    .filter-btn.active { color: #2DD4BF; border-color: #0D9488; background: #0D94881a; }
+    .time-btn.active { color: #2DD4BF; border-color: #0D9488; background: #0D94881a; }
+    .date-btn.active { color: #2DD4BF; border-color: #0D9488; background: #0D94881a; }
+    .view-btn.active { color: #2DD4BF; }
+
+    /* Tag input */
+    .tag-suggestions { display: none; }
+    .tag-input-wrap:focus-within .tag-suggestions { display: block; }
+
+    /* Skeleton pulse */
+    @keyframes shimmer {
+      0% { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg, #232323 25%, #2d2d2d 50%, #232323 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.5s infinite;
+    }
+
+    /* Fade in for results */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.4s ease-out both; }
+
+    /* Search highlight */
+    mark { background: #0D948840; color: #2DD4BF; padding: 0 2px; border-radius: 2px; }
+  </style>
+</head>
+<body class="bg-canvas text-text-primary font-body antialiased">
+
+  <!-- Glow line top -->
+  <div class="glow-line w-full"></div>
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 bg-canvas/90 backdrop-blur-lg border-b border-border-subtle">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="/" class="flex items-center gap-2 group">
+          <span class="w-8 h-8 bg-teal/15 border border-teal/30 rounded-xs flex items-center justify-center text-teal font-code text-sm font-medium group-hover:bg-teal/25 transition-colors">&gt;_</span>
+          <span class="text-lg font-semibold tracking-tight text-text-primary">devblog</span>
+        </a>
+
+        <nav class="flex items-center gap-6 text-sm">
+          <a href="/" class="text-text-muted hover:text-text-primary transition-colors">Accueil</a>
+          <a href="#" class="text-text-primary font-medium">Recherche</a>
+          <a href="#about" class="text-text-muted hover:text-text-primary transition-colors">A propos</a>
+        </nav>
+
+        <div class="flex items-center gap-1 text-sm text-text-muted">
+          <button class="px-2 py-1 rounded-xs text-text-primary font-medium bg-surface">FR</button>
+          <button class="px-2 py-1 rounded-xs hover:text-text-primary transition-colors">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-6 lg:px-8">
+
+    <!-- Search hero -->
+    <section class="pt-12 md:pt-16 pb-8">
+      <h1 class="text-2xl md:text-3xl font-bold tracking-tight mb-2">Recherche</h1>
+      <p class="text-text-secondary text-sm mb-8">Explorez les articles par mot-cle, categorie, tags ou filtres avances.</p>
+
+      <!-- Search bar -->
+      <div class="relative group">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-text-muted group-focus-within:text-teal transition-colors"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </div>
+        <input
+          type="search"
+          id="search-input"
+          placeholder="Rechercher un article, un sujet, un mot-cle..."
+          class="w-full h-13 pl-12 pr-24 bg-surface border border-border rounded-sm text-text-primary placeholder:text-text-muted text-sm focus:outline-hidden focus:border-teal/50 focus:ring-1 focus:ring-teal/20 transition-all"
+          autocomplete="off"
+        >
+        <div class="absolute inset-y-0 right-0 pr-4 flex items-center gap-2 pointer-events-none">
+          <kbd class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-xs bg-surface-raised border border-border text-text-muted text-xs font-code">
+            <span class="text-[11px]">&#8984;</span>K
+          </kbd>
+        </div>
+      </div>
+    </section>
+
+    <!-- Active filters chips -->
+    <div id="active-filters" class="hidden pb-6">
+      <div class="flex items-center gap-2 flex-wrap">
+        <span class="text-xs text-text-muted mr-1">Filtres actifs :</span>
+        <div id="filter-chips" class="flex items-center gap-2 flex-wrap"></div>
+        <button id="clear-all-filters" class="text-xs text-text-muted hover:text-teal transition-colors ml-2 underline underline-offset-2">
+          Tout effacer
+        </button>
+      </div>
+    </div>
+
+    <!-- Layout: sidebar + results -->
+    <div class="lg:grid lg:grid-cols-[260px_1fr] lg:gap-10 pb-16">
+
+      <!-- Sidebar filters -->
+      <aside>
+        <!-- Mobile toggle -->
+        <button id="filters-toggle" class="lg:hidden flex items-center justify-between w-full py-3 px-4 mb-4 bg-surface border border-border rounded-sm text-sm text-text-secondary hover:text-text-primary transition-colors">
+          <span class="flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="4" y1="21" y2="14"/><line x1="4" x2="4" y1="10" y2="3"/><line x1="12" x2="12" y1="21" y2="12"/><line x1="12" x2="12" y1="8" y2="3"/><line x1="20" x2="20" y1="21" y2="16"/><line x1="20" x2="20" y1="12" y2="3"/><circle cx="4" cy="12" r="2"/><circle cx="12" cy="10" r="2"/><circle cx="20" cy="14" r="2"/></svg>
+            Filtres
+          </span>
+          <span id="filter-count-badge" class="hidden w-5 h-5 rounded-full bg-teal text-void text-xs font-semibold flex items-center justify-center">0</span>
+          <svg id="filters-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+
+        <div id="filters-panel" class="hidden lg:block space-y-8">
+
+          <!-- Categories -->
+          <div>
+            <h3 class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-3">Categories</h3>
+            <div class="flex flex-wrap gap-2" id="category-filters">
+              <button class="filter-btn active text-xs font-medium px-3 py-1.5 rounded-xs border border-border whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright" data-category="all">
+                Tous
+              </button>
+              <button class="filter-btn text-xs font-medium px-3 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright" data-category="typescript">
+                TypeScript
+              </button>
+              <button class="filter-btn text-xs font-medium px-3 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright" data-category="react">
+                React
+              </button>
+              <button class="filter-btn text-xs font-medium px-3 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright" data-category="css">
+                CSS
+              </button>
+              <button class="filter-btn text-xs font-medium px-3 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright" data-category="performance">
+                Performance
+              </button>
+              <button class="filter-btn text-xs font-medium px-3 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright" data-category="a11y">
+                Accessibilite
+              </button>
+              <button class="filter-btn text-xs font-medium px-3 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright" data-category="tooling">
+                Tooling
+              </button>
+              <button class="filter-btn text-xs font-medium px-3 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright" data-category="design-systems">
+                Design Systems
+              </button>
+            </div>
+          </div>
+
+          <!-- Tags input -->
+          <div>
+            <h3 class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-3">Tags</h3>
+            <div class="tag-input-wrap relative">
+              <div id="tags-selected" class="flex flex-wrap gap-1.5 mb-2"></div>
+              <div class="relative">
+                <input
+                  type="text"
+                  id="tag-input"
+                  placeholder="Ajouter un tag..."
+                  class="w-full h-9 px-3 bg-surface border border-border rounded-xs text-sm text-text-primary placeholder:text-text-muted focus:outline-hidden focus:border-teal/50 transition-colors"
+                  autocomplete="off"
+                >
+                <div class="tag-suggestions absolute top-full left-0 right-0 mt-1 bg-surface-raised border border-border rounded-xs shadow-sm overflow-hidden z-10 max-h-40 overflow-y-auto" id="tag-suggestions">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reading time -->
+          <div>
+            <h3 class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-3">Temps de lecture</h3>
+            <div class="flex flex-wrap gap-2" id="time-filters">
+              <button class="time-btn active text-xs font-medium px-3 py-1.5 rounded-xs border border-border whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright" data-time="all">
+                Tous
+              </button>
+              <button class="time-btn text-xs font-medium px-3 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright" data-time="short">
+                &lt; 5 min
+              </button>
+              <button class="time-btn text-xs font-medium px-3 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright" data-time="medium">
+                5 — 10 min
+              </button>
+              <button class="time-btn text-xs font-medium px-3 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright" data-time="long">
+                10 — 20 min
+              </button>
+              <button class="time-btn text-xs font-medium px-3 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright" data-time="deep">
+                20 min +
+              </button>
+            </div>
+          </div>
+
+          <!-- Publication date -->
+          <div>
+            <h3 class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-3">Date de publication</h3>
+            <div class="flex flex-wrap gap-2" id="date-filters">
+              <button class="date-btn active text-xs font-medium px-3 py-1.5 rounded-xs border border-border whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright" data-date="all">
+                Toutes
+              </button>
+              <button class="date-btn text-xs font-medium px-3 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright" data-date="week">
+                Cette semaine
+              </button>
+              <button class="date-btn text-xs font-medium px-3 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright" data-date="month">
+                Ce mois
+              </button>
+              <button class="date-btn text-xs font-medium px-3 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright" data-date="quarter">
+                3 derniers mois
+              </button>
+              <button class="date-btn text-xs font-medium px-3 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright" data-date="year">
+                Cette annee
+              </button>
+            </div>
+          </div>
+
+          <!-- Reset -->
+          <button id="reset-filters" class="w-full py-2 text-xs text-text-muted hover:text-text-primary border border-border rounded-xs transition-colors hover:border-border-hover">
+            Reinitialiser les filtres
+          </button>
+
+        </div>
+      </aside>
+
+      <!-- Results area -->
+      <section>
+        <!-- Results header -->
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-border">
+          <div class="flex items-center gap-3">
+            <span class="text-sm text-text-secondary">
+              <span id="result-count" class="font-semibold text-text-primary font-code">24</span> articles
+            </span>
+          </div>
+          <div class="flex items-center gap-4">
+            <!-- Sort -->
+            <div class="flex items-center gap-2">
+              <label class="text-xs text-text-muted hidden sm:block">Trier :</label>
+              <select id="sort-select" class="bg-surface border border-border rounded-xs text-xs text-text-secondary px-2.5 py-1.5 focus:outline-hidden focus:border-teal/50 transition-colors cursor-pointer">
+                <option value="recent">Plus recents</option>
+                <option value="oldest">Plus anciens</option>
+                <option value="reading-asc">Lecture ↑</option>
+                <option value="reading-desc">Lecture ↓</option>
+              </select>
+            </div>
+            <!-- View toggle -->
+            <div class="flex items-center border border-border rounded-xs overflow-hidden">
+              <button class="view-btn active p-1.5 transition-colors hover:text-teal-bright" data-view="grid" aria-label="Vue grille">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/></svg>
+              </button>
+              <button class="view-btn p-1.5 text-text-muted transition-colors hover:text-teal-bright" data-view="list" aria-label="Vue liste">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/><line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results grid -->
+        <div id="results-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+          <!-- Card 1 -->
+          <article class="group fade-up">
+            <a href="#" class="block">
+              <div class="relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors mb-4">
+                <img src="https://picsum.photos/seed/design-system/600/380" alt="" class="w-full aspect-[16/10] object-cover opacity-75 group-hover:opacity-100 transition-opacity">
+                <div class="absolute inset-0 bg-linear-to-t from-canvas/40 to-transparent"></div>
+                <span class="absolute top-3 left-3 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">design-systems</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-text-muted mb-2.5">
+                <time>15 Jan 2026</time>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <span>8 min</span>
+              </div>
+              <h3 class="text-lg font-semibold leading-snug mb-2 group-hover:text-teal-bright transition-colors">
+                Building a Modern Design System with Tailwind v4
+              </h3>
+              <p class="text-text-secondary text-sm leading-relaxed line-clamp-2 mb-3">
+                Exploring the new @theme directive and how it transforms the way we build design systems.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">design-systems</span>
+                <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">tailwind</span>
+                <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">css</span>
+              </div>
+            </a>
+          </article>
+
+          <!-- Card 2 -->
+          <article class="group fade-up" style="animation-delay: 0.05s">
+            <a href="#" class="block">
+              <div class="relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors mb-4">
+                <img src="https://picsum.photos/seed/ts54/600/380" alt="" class="w-full aspect-[16/10] object-cover opacity-75 group-hover:opacity-100 transition-opacity">
+                <div class="absolute inset-0 bg-linear-to-t from-canvas/40 to-transparent"></div>
+                <span class="absolute top-3 left-3 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">typescript</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-text-muted mb-2.5">
+                <time>10 Jan 2026</time>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <span>12 min</span>
+              </div>
+              <h3 class="text-lg font-semibold leading-snug mb-2 group-hover:text-teal-bright transition-colors">
+                TypeScript 5.4: Advanced Type Patterns for Safer APIs
+              </h3>
+              <p class="text-text-secondary text-sm leading-relaxed line-clamp-2 mb-3">
+                Deep dive into conditional types, mapped types, and template literal types for building safer APIs.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">typescript</span>
+                <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">advanced</span>
+              </div>
+            </a>
+          </article>
+
+          <!-- Card 3 -->
+          <article class="group fade-up" style="animation-delay: 0.1s">
+            <a href="#" class="block">
+              <div class="relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors mb-4">
+                <img src="https://picsum.photos/seed/rsc-prod/600/380" alt="" class="w-full aspect-[16/10] object-cover opacity-75 group-hover:opacity-100 transition-opacity">
+                <div class="absolute inset-0 bg-linear-to-t from-canvas/40 to-transparent"></div>
+                <span class="absolute top-3 left-3 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">react</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-text-muted mb-2.5">
+                <time>5 Jan 2026</time>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <span>6 min</span>
+              </div>
+              <h3 class="text-lg font-semibold leading-snug mb-2 group-hover:text-teal-bright transition-colors">
+                React Server Components in Production: Lessons from Scale
+              </h3>
+              <p class="text-text-secondary text-sm leading-relaxed line-clamp-2 mb-3">
+                Lessons learned from shipping RSC in a large-scale Next.js application.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">react</span>
+                <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">next.js</span>
+              </div>
+            </a>
+          </article>
+
+          <!-- Card 4 -->
+          <article class="group fade-up" style="animation-delay: 0.15s">
+            <a href="#" class="block">
+              <div class="relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors mb-4">
+                <img src="https://picsum.photos/seed/container-q/600/380" alt="" class="w-full aspect-[16/10] object-cover opacity-75 group-hover:opacity-100 transition-opacity">
+                <div class="absolute inset-0 bg-linear-to-t from-canvas/40 to-transparent"></div>
+                <span class="absolute top-3 left-3 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">css</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-text-muted mb-2.5">
+                <time>28 Dec 2025</time>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <span>10 min</span>
+              </div>
+              <h3 class="text-lg font-semibold leading-snug mb-2 group-hover:text-teal-bright transition-colors">
+                CSS Container Queries: The Future of Responsive Design
+              </h3>
+              <p class="text-text-secondary text-sm leading-relaxed line-clamp-2 mb-3">
+                How container queries are revolutionizing component-based responsive design patterns.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">css</span>
+                <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">responsive</span>
+              </div>
+            </a>
+          </article>
+
+          <!-- Card 5 -->
+          <article class="group fade-up" style="animation-delay: 0.2s">
+            <a href="#" class="block">
+              <div class="relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors mb-4">
+                <img src="https://picsum.photos/seed/radix-a11y/600/380" alt="" class="w-full aspect-[16/10] object-cover opacity-75 group-hover:opacity-100 transition-opacity">
+                <div class="absolute inset-0 bg-linear-to-t from-canvas/40 to-transparent"></div>
+                <span class="absolute top-3 left-3 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">a11y</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-text-muted mb-2.5">
+                <time>20 Dec 2025</time>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <span>15 min</span>
+              </div>
+              <h3 class="text-lg font-semibold leading-snug mb-2 group-hover:text-teal-bright transition-colors">
+                Building Accessible Forms with Radix UI and Tailwind
+              </h3>
+              <p class="text-text-secondary text-sm leading-relaxed line-clamp-2 mb-3">
+                A comprehensive guide to building WCAG-compliant forms using Radix primitives.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">a11y</span>
+                <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">radix</span>
+              </div>
+            </a>
+          </article>
+
+          <!-- Card 6 -->
+          <article class="group fade-up" style="animation-delay: 0.25s">
+            <a href="#" class="block">
+              <div class="relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors mb-4">
+                <img src="https://picsum.photos/seed/bun-perf/600/380" alt="" class="w-full aspect-[16/10] object-cover opacity-75 group-hover:opacity-100 transition-opacity">
+                <div class="absolute inset-0 bg-linear-to-t from-canvas/40 to-transparent"></div>
+                <span class="absolute top-3 left-3 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">performance</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-text-muted mb-2.5">
+                <time>12 Dec 2025</time>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <span>9 min</span>
+              </div>
+              <h3 class="text-lg font-semibold leading-snug mb-2 group-hover:text-teal-bright transition-colors">
+                Optimizing Web Performance with Bun Runtime
+              </h3>
+              <p class="text-text-secondary text-sm leading-relaxed line-clamp-2 mb-3">
+                Exploring the performance benefits of migrating from Node.js to Bun in real-world apps.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">performance</span>
+                <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">bun</span>
+              </div>
+            </a>
+          </article>
+
+          <!-- Card 7 -->
+          <article class="group fade-up" style="animation-delay: 0.3s">
+            <a href="#" class="block">
+              <div class="relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors mb-4">
+                <img src="https://picsum.photos/seed/edge-fn/600/380" alt="" class="w-full aspect-[16/10] object-cover opacity-75 group-hover:opacity-100 transition-opacity">
+                <div class="absolute inset-0 bg-linear-to-t from-canvas/40 to-transparent"></div>
+                <span class="absolute top-3 left-3 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">tooling</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-text-muted mb-2.5">
+                <time>5 Dec 2025</time>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <span>7 min</span>
+              </div>
+              <h3 class="text-lg font-semibold leading-snug mb-2 group-hover:text-teal-bright transition-colors">
+                Edge Functions: When and Why to Go Serverless
+              </h3>
+              <p class="text-text-secondary text-sm leading-relaxed line-clamp-2 mb-3">
+                A practical guide to deciding when edge functions make sense for your architecture.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">serverless</span>
+                <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">tooling</span>
+              </div>
+            </a>
+          </article>
+
+          <!-- Card 8 -->
+          <article class="group fade-up" style="animation-delay: 0.35s">
+            <a href="#" class="block">
+              <div class="relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors mb-4">
+                <img src="https://picsum.photos/seed/zod-valid/600/380" alt="" class="w-full aspect-[16/10] object-cover opacity-75 group-hover:opacity-100 transition-opacity">
+                <div class="absolute inset-0 bg-linear-to-t from-canvas/40 to-transparent"></div>
+                <span class="absolute top-3 left-3 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">typescript</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-text-muted mb-2.5">
+                <time>28 Nov 2025</time>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <span>5 min</span>
+              </div>
+              <h3 class="text-lg font-semibold leading-snug mb-2 group-hover:text-teal-bright transition-colors">
+                Zod + TypeScript: Runtime Validation That Scales
+              </h3>
+              <p class="text-text-secondary text-sm leading-relaxed line-clamp-2 mb-3">
+                How Zod bridges the gap between runtime validation and compile-time type safety.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">typescript</span>
+                <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">zod</span>
+                <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">validation</span>
+              </div>
+            </a>
+          </article>
+
+        </div>
+
+        <!-- Results list (hidden by default) -->
+        <div id="results-list" class="hidden space-y-4">
+
+          <a href="#" class="group flex gap-5 p-4 rounded-sm border border-border hover:border-teal/30 transition-colors fade-up">
+            <img src="https://picsum.photos/seed/design-system/200/130" alt="" class="hidden sm:block w-36 h-24 object-cover rounded-xs opacity-75 group-hover:opacity-100 transition-opacity shrink-0">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 text-xs text-text-muted mb-1.5">
+                <span class="font-code text-teal">design-systems</span>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <time>15 Jan 2026</time>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <span>8 min</span>
+              </div>
+              <h3 class="text-base font-semibold leading-snug mb-1 group-hover:text-teal-bright transition-colors">Building a Modern Design System with Tailwind v4</h3>
+              <p class="text-text-secondary text-sm leading-relaxed line-clamp-1">Exploring the new @theme directive and how it transforms the way we build design systems.</p>
+            </div>
+          </a>
+
+          <a href="#" class="group flex gap-5 p-4 rounded-sm border border-border hover:border-teal/30 transition-colors fade-up" style="animation-delay: 0.05s">
+            <img src="https://picsum.photos/seed/ts54/200/130" alt="" class="hidden sm:block w-36 h-24 object-cover rounded-xs opacity-75 group-hover:opacity-100 transition-opacity shrink-0">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 text-xs text-text-muted mb-1.5">
+                <span class="font-code text-teal">typescript</span>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <time>10 Jan 2026</time>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <span>12 min</span>
+              </div>
+              <h3 class="text-base font-semibold leading-snug mb-1 group-hover:text-teal-bright transition-colors">TypeScript 5.4: Advanced Type Patterns for Safer APIs</h3>
+              <p class="text-text-secondary text-sm leading-relaxed line-clamp-1">Deep dive into conditional types, mapped types, and template literal types for building safer APIs.</p>
+            </div>
+          </a>
+
+          <a href="#" class="group flex gap-5 p-4 rounded-sm border border-border hover:border-teal/30 transition-colors fade-up" style="animation-delay: 0.1s">
+            <img src="https://picsum.photos/seed/rsc-prod/200/130" alt="" class="hidden sm:block w-36 h-24 object-cover rounded-xs opacity-75 group-hover:opacity-100 transition-opacity shrink-0">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 text-xs text-text-muted mb-1.5">
+                <span class="font-code text-teal">react</span>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <time>5 Jan 2026</time>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <span>6 min</span>
+              </div>
+              <h3 class="text-base font-semibold leading-snug mb-1 group-hover:text-teal-bright transition-colors">React Server Components in Production: Lessons from Scale</h3>
+              <p class="text-text-secondary text-sm leading-relaxed line-clamp-1">Lessons learned from shipping RSC in a large-scale Next.js application.</p>
+            </div>
+          </a>
+
+          <a href="#" class="group flex gap-5 p-4 rounded-sm border border-border hover:border-teal/30 transition-colors fade-up" style="animation-delay: 0.15s">
+            <img src="https://picsum.photos/seed/container-q/200/130" alt="" class="hidden sm:block w-36 h-24 object-cover rounded-xs opacity-75 group-hover:opacity-100 transition-opacity shrink-0">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 text-xs text-text-muted mb-1.5">
+                <span class="font-code text-teal">css</span>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <time>28 Dec 2025</time>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <span>10 min</span>
+              </div>
+              <h3 class="text-base font-semibold leading-snug mb-1 group-hover:text-teal-bright transition-colors">CSS Container Queries: The Future of Responsive Design</h3>
+              <p class="text-text-secondary text-sm leading-relaxed line-clamp-1">How container queries are revolutionizing component-based responsive design patterns.</p>
+            </div>
+          </a>
+
+          <a href="#" class="group flex gap-5 p-4 rounded-sm border border-border hover:border-teal/30 transition-colors fade-up" style="animation-delay: 0.2s">
+            <img src="https://picsum.photos/seed/radix-a11y/200/130" alt="" class="hidden sm:block w-36 h-24 object-cover rounded-xs opacity-75 group-hover:opacity-100 transition-opacity shrink-0">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 text-xs text-text-muted mb-1.5">
+                <span class="font-code text-teal">a11y</span>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <time>20 Dec 2025</time>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <span>15 min</span>
+              </div>
+              <h3 class="text-base font-semibold leading-snug mb-1 group-hover:text-teal-bright transition-colors">Building Accessible Forms with Radix UI and Tailwind</h3>
+              <p class="text-text-secondary text-sm leading-relaxed line-clamp-1">A comprehensive guide to building WCAG-compliant forms using Radix primitives.</p>
+            </div>
+          </a>
+
+          <a href="#" class="group flex gap-5 p-4 rounded-sm border border-border hover:border-teal/30 transition-colors fade-up" style="animation-delay: 0.25s">
+            <img src="https://picsum.photos/seed/bun-perf/200/130" alt="" class="hidden sm:block w-36 h-24 object-cover rounded-xs opacity-75 group-hover:opacity-100 transition-opacity shrink-0">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 text-xs text-text-muted mb-1.5">
+                <span class="font-code text-teal">performance</span>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <time>12 Dec 2025</time>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <span>9 min</span>
+              </div>
+              <h3 class="text-base font-semibold leading-snug mb-1 group-hover:text-teal-bright transition-colors">Optimizing Web Performance with Bun Runtime</h3>
+              <p class="text-text-secondary text-sm leading-relaxed line-clamp-1">Exploring the performance benefits of migrating from Node.js to Bun in real-world apps.</p>
+            </div>
+          </a>
+
+          <a href="#" class="group flex gap-5 p-4 rounded-sm border border-border hover:border-teal/30 transition-colors fade-up" style="animation-delay: 0.3s">
+            <img src="https://picsum.photos/seed/edge-fn/200/130" alt="" class="hidden sm:block w-36 h-24 object-cover rounded-xs opacity-75 group-hover:opacity-100 transition-opacity shrink-0">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 text-xs text-text-muted mb-1.5">
+                <span class="font-code text-teal">tooling</span>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <time>5 Dec 2025</time>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <span>7 min</span>
+              </div>
+              <h3 class="text-base font-semibold leading-snug mb-1 group-hover:text-teal-bright transition-colors">Edge Functions: When and Why to Go Serverless</h3>
+              <p class="text-text-secondary text-sm leading-relaxed line-clamp-1">A practical guide to deciding when edge functions make sense for your architecture.</p>
+            </div>
+          </a>
+
+          <a href="#" class="group flex gap-5 p-4 rounded-sm border border-border hover:border-teal/30 transition-colors fade-up" style="animation-delay: 0.35s">
+            <img src="https://picsum.photos/seed/zod-valid/200/130" alt="" class="hidden sm:block w-36 h-24 object-cover rounded-xs opacity-75 group-hover:opacity-100 transition-opacity shrink-0">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 text-xs text-text-muted mb-1.5">
+                <span class="font-code text-teal">typescript</span>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <time>28 Nov 2025</time>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <span>5 min</span>
+              </div>
+              <h3 class="text-base font-semibold leading-snug mb-1 group-hover:text-teal-bright transition-colors">Zod + TypeScript: Runtime Validation That Scales</h3>
+              <p class="text-text-secondary text-sm leading-relaxed line-clamp-1">How Zod bridges the gap between runtime validation and compile-time type safety.</p>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- Empty state (hidden) -->
+        <div id="empty-state" class="hidden py-20 text-center">
+          <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-surface border border-border flex items-center justify-center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-text-muted"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M8 11h6"/></svg>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">Aucun resultat</h3>
+          <p class="text-text-secondary text-sm mb-6 max-w-sm mx-auto">Aucun article ne correspond a vos criteres de recherche. Essayez d'ajuster vos filtres.</p>
+          <button id="empty-reset" class="inline-flex items-center gap-2 text-sm text-teal hover:text-teal-bright transition-colors">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+            Reinitialiser les filtres
+          </button>
+        </div>
+
+        <!-- Load more -->
+        <div id="load-more-wrap" class="mt-10 text-center">
+          <button id="load-more" class="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-medium text-text-secondary border border-border rounded-sm hover:border-teal/40 hover:text-teal-bright transition-all">
+            Charger plus d'articles
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-border">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8 py-12">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-6 h-6 bg-teal/15 border border-teal/30 rounded-xs flex items-center justify-center text-teal font-code text-xs">&gt;_</span>
+            <span class="text-sm font-semibold">devblog</span>
+          </div>
+          <p class="text-text-muted text-sm max-w-xs">
+            Exploring modern web development through thoughtful articles and experiments.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-5">
+          <a href="#github" class="text-text-muted hover:text-text-primary transition-colors" aria-label="GitHub">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+          </a>
+          <a href="#twitter" class="text-text-muted hover:text-text-primary transition-colors" aria-label="Twitter">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+          </a>
+          <a href="#linkedin" class="text-text-muted hover:text-text-primary transition-colors" aria-label="LinkedIn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a href="#rss" class="text-text-muted hover:text-text-primary transition-colors" aria-label="RSS">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="glow-line w-full my-8"></div>
+
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-text-muted text-xs">
+        <p>&copy; 2026 devblog. Tous droits reserves.</p>
+        <div class="flex gap-6">
+          <a href="#privacy" class="hover:text-text-primary transition-colors">Confidentialite</a>
+          <a href="#mentions" class="hover:text-text-primary transition-colors">Mentions legales</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  (function() {
+
+    // --- Tag autocomplete ---
+    const allTags = [
+      'typescript','react','css','next.js','tailwind','design-systems','a11y',
+      'radix','performance','bun','serverless','tooling','responsive','advanced',
+      'validation','zod','testing','graphql','node.js','vue','svelte','rust',
+      'wasm','pwa','seo','animation','state-management','api','database','docker'
+    ];
+    const selectedTags = [];
+    const tagInput = document.getElementById('tag-input');
+    const tagSuggestions = document.getElementById('tag-suggestions');
+    const tagsSelected = document.getElementById('tags-selected');
+
+    function renderSuggestions(query) {
+      const q = query.toLowerCase().trim();
+      const filtered = allTags.filter(t => !selectedTags.includes(t) && (q === '' || t.includes(q)));
+      if (filtered.length === 0 || q === '') {
+        tagSuggestions.innerHTML = '';
+        tagSuggestions.style.display = 'none';
+        return;
+      }
+      tagSuggestions.style.display = 'block';
+      tagSuggestions.innerHTML = filtered.slice(0, 8).map(t => {
+        const idx = t.indexOf(q);
+        const before = t.slice(0, idx);
+        const match = t.slice(idx, idx + q.length);
+        const after = t.slice(idx + q.length);
+        return '<button type="button" class="w-full text-left px-3 py-2 text-sm text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-colors font-code" data-tag="' + t + '">'
+          + before + '<span class="text-teal-bright">' + match + '</span>' + after + '</button>';
+      }).join('');
+    }
+
+    function addTag(tag) {
+      if (selectedTags.includes(tag)) return;
+      selectedTags.push(tag);
+      renderSelectedTags();
+      tagInput.value = '';
+      tagSuggestions.innerHTML = '';
+      tagSuggestions.style.display = 'none';
+      updateActiveFilters();
+    }
+
+    function removeTag(tag) {
+      const idx = selectedTags.indexOf(tag);
+      if (idx > -1) selectedTags.splice(idx, 1);
+      renderSelectedTags();
+      updateActiveFilters();
+    }
+
+    function renderSelectedTags() {
+      tagsSelected.innerHTML = selectedTags.map(t =>
+        '<span class="inline-flex items-center gap-1 text-xs font-code text-teal bg-teal-dim px-2 py-1 rounded-xs border border-teal/20">'
+        + t
+        + '<button type="button" class="hover:text-teal-bright ml-0.5" data-remove-tag="' + t + '">&times;</button>'
+        + '</span>'
+      ).join('');
+    }
+
+    tagInput.addEventListener('input', function() {
+      renderSuggestions(this.value);
+    });
+
+    tagInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && this.value.trim()) {
+        e.preventDefault();
+        const first = tagSuggestions.querySelector('button');
+        if (first) addTag(first.dataset.tag);
+        else if (allTags.includes(this.value.trim().toLowerCase())) addTag(this.value.trim().toLowerCase());
+      }
+      if (e.key === 'Backspace' && this.value === '' && selectedTags.length) {
+        removeTag(selectedTags[selectedTags.length - 1]);
+      }
+    });
+
+    tagSuggestions.addEventListener('click', function(e) {
+      const btn = e.target.closest('[data-tag]');
+      if (btn) addTag(btn.dataset.tag);
+    });
+
+    tagsSelected.addEventListener('click', function(e) {
+      const btn = e.target.closest('[data-remove-tag]');
+      if (btn) removeTag(btn.dataset.removeTag);
+    });
+
+    // Close suggestions on outside click
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.tag-input-wrap')) {
+        tagSuggestions.style.display = 'none';
+      }
+    });
+
+
+    // --- Filter buttons ---
+    function setupFilterGroup(selector, activeClass) {
+      document.querySelectorAll(selector).forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll(selector).forEach(function(b) { b.classList.remove('active'); });
+          this.classList.add('active');
+          updateActiveFilters();
+        });
+      });
+    }
+    setupFilterGroup('.filter-btn');
+    setupFilterGroup('.time-btn');
+    setupFilterGroup('.date-btn');
+
+
+    // --- Active filters chips ---
+    const activeFiltersEl = document.getElementById('active-filters');
+    const filterChips = document.getElementById('filter-chips');
+    const filterCountBadge = document.getElementById('filter-count-badge');
+
+    function updateActiveFilters() {
+      const chips = [];
+      const activeCat = document.querySelector('.filter-btn.active');
+      if (activeCat && activeCat.dataset.category !== 'all') {
+        chips.push({ label: activeCat.textContent.trim(), type: 'category' });
+      }
+      selectedTags.forEach(function(t) {
+        chips.push({ label: t, type: 'tag' });
+      });
+      const activeTime = document.querySelector('.time-btn.active');
+      if (activeTime && activeTime.dataset.time !== 'all') {
+        chips.push({ label: activeTime.textContent.trim(), type: 'time' });
+      }
+      const activeDate = document.querySelector('.date-btn.active');
+      if (activeDate && activeDate.dataset.date !== 'all') {
+        chips.push({ label: activeDate.textContent.trim(), type: 'date' });
+      }
+
+      const count = chips.length;
+      if (count > 0) {
+        activeFiltersEl.classList.remove('hidden');
+        filterChips.innerHTML = chips.map(function(c) {
+          return '<span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-xs border border-teal/20 bg-teal-dim text-teal-bright font-code">'
+            + c.label
+            + '<button type="button" class="hover:text-white" data-clear="' + c.type + ':' + c.label + '">&times;</button>'
+            + '</span>';
+        }).join('');
+        filterCountBadge.textContent = count;
+        filterCountBadge.classList.remove('hidden');
+      } else {
+        activeFiltersEl.classList.add('hidden');
+        filterCountBadge.classList.add('hidden');
+      }
+    }
+
+    filterChips.addEventListener('click', function(e) {
+      var btn = e.target.closest('[data-clear]');
+      if (!btn) return;
+      var parts = btn.dataset.clear.split(':');
+      var type = parts[0];
+      var label = parts.slice(1).join(':');
+      if (type === 'category') {
+        document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+        document.querySelector('.filter-btn[data-category="all"]').classList.add('active');
+      } else if (type === 'tag') {
+        removeTag(label);
+      } else if (type === 'time') {
+        document.querySelectorAll('.time-btn').forEach(function(b) { b.classList.remove('active'); });
+        document.querySelector('.time-btn[data-time="all"]').classList.add('active');
+      } else if (type === 'date') {
+        document.querySelectorAll('.date-btn').forEach(function(b) { b.classList.remove('active'); });
+        document.querySelector('.date-btn[data-date="all"]').classList.add('active');
+      }
+      updateActiveFilters();
+    });
+
+
+    // --- Clear all / Reset ---
+    function resetAll() {
+      document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelector('.filter-btn[data-category="all"]').classList.add('active');
+      document.querySelectorAll('.time-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelector('.time-btn[data-time="all"]').classList.add('active');
+      document.querySelectorAll('.date-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelector('.date-btn[data-date="all"]').classList.add('active');
+      selectedTags.length = 0;
+      renderSelectedTags();
+      document.getElementById('search-input').value = '';
+      updateActiveFilters();
+    }
+
+    document.getElementById('clear-all-filters').addEventListener('click', resetAll);
+    document.getElementById('reset-filters').addEventListener('click', resetAll);
+    document.getElementById('empty-reset').addEventListener('click', resetAll);
+
+
+    // --- View toggle ---
+    var gridView = document.getElementById('results-grid');
+    var listView = document.getElementById('results-list');
+
+    document.querySelectorAll('.view-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.view-btn').forEach(function(b) { b.classList.remove('active'); b.classList.add('text-text-muted'); });
+        this.classList.add('active');
+        this.classList.remove('text-text-muted');
+        if (this.dataset.view === 'grid') {
+          gridView.classList.remove('hidden');
+          listView.classList.add('hidden');
+        } else {
+          gridView.classList.add('hidden');
+          listView.classList.remove('hidden');
+        }
+      });
+    });
+
+
+    // --- Mobile filters toggle ---
+    var filtersPanel = document.getElementById('filters-panel');
+    var filtersChevron = document.getElementById('filters-chevron');
+    document.getElementById('filters-toggle').addEventListener('click', function() {
+      filtersPanel.classList.toggle('hidden');
+      filtersChevron.style.transform = filtersPanel.classList.contains('hidden') ? '' : 'rotate(180deg)';
+    });
+
+
+    // --- Cmd+K shortcut ---
+    document.addEventListener('keydown', function(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        document.getElementById('search-input').focus();
+        document.getElementById('search-input').select();
+      }
+      if (e.key === 'Escape') {
+        document.getElementById('search-input').blur();
+      }
+    });
+
+  })();
+  </script>
+
+</body>
+</html>

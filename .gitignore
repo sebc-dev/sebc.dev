@@ -1,0 +1,32 @@
+# Build
+dist/
+.astro/
+
+# Dependencies
+node_modules/
+
+# Cloudflare
+.wrangler/
+.dev.vars
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Pagefind (generated at build)
+public/pagefind/
+
+# Stryker
+reports/
+.stryker-tmp/

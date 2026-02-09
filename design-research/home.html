@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevBlog — Thoughts on web development — v6</title>
+  <meta name="description" content="Blog personnel d'un développeur — articles techniques sur le développement web moderne, design systems et outils.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --color-void: #111111;
+      --color-canvas: #181818;
+      --color-surface: #232323;
+      --color-surface-raised: #2d2d2d;
+      --color-surface-hover: #383838;
+      --color-text-primary: #e6e6e6;
+      --color-text-secondary: #a0a0a0;
+      --color-text-muted: #6b6b6b;
+      --color-teal: #0D9488;
+      --color-teal-hover: #14B8A6;
+      --color-teal-bright: #2DD4BF;
+      --color-teal-glow: #0D948833;
+      --color-teal-dim: #0D94881a;
+      --color-border: #2a2a2a;
+      --color-border-subtle: #202020;
+      --color-border-hover: #0D9488;
+      --font-display: "Albert Sans", system-ui, sans-serif;
+      --font-body: "Albert Sans", system-ui, sans-serif;
+      --font-code: "Fira Code", ui-monospace, monospace;
+    }
+  </style>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body { line-height: 1.7; }
+    .glow-line { background: linear-gradient(90deg, transparent, #0D948860, transparent); height: 1px; }
+    .article-number { font-variant-numeric: tabular-nums; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.5s ease-out both; }
+    .fade-up-d1 { animation-delay: 0.1s; }
+    .fade-up-d2 { animation-delay: 0.15s; }
+    .fade-up-d3 { animation-delay: 0.2s; }
+    .fade-up-d4 { animation-delay: 0.25s; }
+    .filter-btn.active { color: #2DD4BF; border-color: #0D9488; background: #0D94881a; }
+  </style>
+</head>
+<body class="bg-canvas text-text-primary font-body antialiased">
+
+  <!-- Glow line top -->
+  <div class="glow-line w-full"></div>
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 bg-canvas/90 backdrop-blur-lg border-b border-border-subtle">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="/" class="flex items-center gap-2 group">
+          <span class="w-8 h-8 bg-teal/15 border border-teal/30 rounded-xs flex items-center justify-center text-teal font-code text-sm font-medium group-hover:bg-teal/25 transition-colors">&gt;_</span>
+          <span class="text-lg font-semibold tracking-tight text-text-primary">devblog</span>
+        </a>
+
+        <nav class="flex items-center gap-6 text-sm">
+          <a href="/" class="text-text-primary font-medium">Accueil</a>
+          <a href="#search" class="text-text-muted hover:text-text-primary transition-colors">Recherche</a>
+          <a href="#about" class="text-text-muted hover:text-text-primary transition-colors">A propos</a>
+        </nav>
+
+        <div class="flex items-center gap-1 text-sm text-text-muted">
+          <button class="px-2 py-1 rounded-xs text-text-primary font-medium bg-surface">FR</button>
+          <button class="px-2 py-1 rounded-xs hover:text-text-primary transition-colors">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-6 lg:px-8">
+
+    <!-- Latest article — featured, full-width -->
+    <section class="py-12 md:py-16 border-b border-border fade-up">
+      <a href="#article-1" class="block group md:grid md:grid-cols-[1.3fr_1fr] gap-10 items-center">
+        <div class="relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors mb-6 md:mb-0">
+          <img src="https://picsum.photos/seed/design-system/800/500" alt="Building a Modern Design System" class="w-full aspect-[16/10] object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+          <div class="absolute inset-0 bg-linear-to-t from-canvas/50 to-transparent"></div>
+          <span class="absolute top-4 left-4 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">design-systems</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-3 text-xs text-text-muted mb-4">
+            <time class="article-number">15 Jan 2026</time>
+            <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+            <span>8 min de lecture</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold leading-tight mb-4 group-hover:text-teal-bright transition-colors">
+            Building a Modern Design System with Tailwind v4
+          </h2>
+          <p class="text-text-secondary leading-relaxed mb-5">
+            Exploring the new @theme directive and how it transforms the way we build design systems — from token architecture to component composition.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">design-systems</span>
+            <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">tailwind</span>
+            <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">css</span>
+          </div>
+        </div>
+      </a>
+    </section>
+
+    <!-- Category filters -->
+    <section class="pt-10 pb-6 fade-up fade-up-d1">
+      <div class="flex items-center gap-3 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-none">
+        <button class="filter-btn active text-sm font-medium px-3.5 py-1.5 rounded-xs border border-border whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright">
+          Tous
+        </button>
+        <button class="filter-btn text-sm font-medium px-3.5 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright">
+          TypeScript
+        </button>
+        <button class="filter-btn text-sm font-medium px-3.5 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright">
+          React
+        </button>
+        <button class="filter-btn text-sm font-medium px-3.5 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright">
+          CSS
+        </button>
+        <button class="filter-btn text-sm font-medium px-3.5 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright">
+          Performance
+        </button>
+        <button class="filter-btn text-sm font-medium px-3.5 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright">
+          Accessibilite
+        </button>
+        <button class="filter-btn text-sm font-medium px-3.5 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright">
+          Tooling
+        </button>
+      </div>
+    </section>
+
+    <!-- Articles grid -->
+    <section class="pb-16">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Card 1 -->
+        <article class="group fade-up fade-up-d1">
+          <a href="#article-2" class="block">
+            <div class="relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors mb-4">
+              <img src="https://picsum.photos/seed/ts54/600/380" alt="TypeScript 5.4" class="w-full aspect-[16/10] object-cover opacity-75 group-hover:opacity-100 transition-opacity">
+              <div class="absolute inset-0 bg-linear-to-t from-canvas/40 to-transparent"></div>
+              <span class="absolute top-3 left-3 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">typescript</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-text-muted mb-2.5">
+              <time class="article-number">10 Jan 2026</time>
+              <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+              <span>12 min</span>
+            </div>
+            <h3 class="text-lg font-semibold leading-snug mb-2 group-hover:text-teal-bright transition-colors">
+              TypeScript 5.4: Advanced Type Patterns for Safer APIs
+            </h3>
+            <p class="text-text-secondary text-sm leading-relaxed line-clamp-2 mb-3">
+              Deep dive into conditional types, mapped types, and template literal types for building safer APIs.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">typescript</span>
+              <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">advanced</span>
+            </div>
+          </a>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="group fade-up fade-up-d2">
+          <a href="#article-3" class="block">
+            <div class="relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors mb-4">
+              <img src="https://picsum.photos/seed/rsc-prod/600/380" alt="React Server Components" class="w-full aspect-[16/10] object-cover opacity-75 group-hover:opacity-100 transition-opacity">
+              <div class="absolute inset-0 bg-linear-to-t from-canvas/40 to-transparent"></div>
+              <span class="absolute top-3 left-3 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">react</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-text-muted mb-2.5">
+              <time class="article-number">5 Jan 2026</time>
+              <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+              <span>6 min</span>
+            </div>
+            <h3 class="text-lg font-semibold leading-snug mb-2 group-hover:text-teal-bright transition-colors">
+              React Server Components in Production: Lessons from Scale
+            </h3>
+            <p class="text-text-secondary text-sm leading-relaxed line-clamp-2 mb-3">
+              Lessons learned from shipping RSC in a large-scale Next.js application at scale.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">react</span>
+              <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">next.js</span>
+            </div>
+          </a>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="group fade-up fade-up-d3">
+          <a href="#article-4" class="block">
+            <div class="relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors mb-4">
+              <img src="https://picsum.photos/seed/container-q/600/380" alt="CSS Container Queries" class="w-full aspect-[16/10] object-cover opacity-75 group-hover:opacity-100 transition-opacity">
+              <div class="absolute inset-0 bg-linear-to-t from-canvas/40 to-transparent"></div>
+              <span class="absolute top-3 left-3 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">css</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-text-muted mb-2.5">
+              <time class="article-number">28 Dec 2025</time>
+              <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+              <span>10 min</span>
+            </div>
+            <h3 class="text-lg font-semibold leading-snug mb-2 group-hover:text-teal-bright transition-colors">
+              CSS Container Queries: The Future of Responsive Design
+            </h3>
+            <p class="text-text-secondary text-sm leading-relaxed line-clamp-2 mb-3">
+              How container queries are revolutionizing component-based responsive design patterns.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">css</span>
+              <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">responsive</span>
+            </div>
+          </a>
+        </article>
+
+        <!-- Card 4 -->
+        <article class="group fade-up fade-up-d3">
+          <a href="#article-5" class="block">
+            <div class="relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors mb-4">
+              <img src="https://picsum.photos/seed/radix-a11y/600/380" alt="Accessible Forms" class="w-full aspect-[16/10] object-cover opacity-75 group-hover:opacity-100 transition-opacity">
+              <div class="absolute inset-0 bg-linear-to-t from-canvas/40 to-transparent"></div>
+              <span class="absolute top-3 left-3 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">a11y</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-text-muted mb-2.5">
+              <time class="article-number">20 Dec 2025</time>
+              <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+              <span>15 min</span>
+            </div>
+            <h3 class="text-lg font-semibold leading-snug mb-2 group-hover:text-teal-bright transition-colors">
+              Building Accessible Forms with Radix UI and Tailwind
+            </h3>
+            <p class="text-text-secondary text-sm leading-relaxed line-clamp-2 mb-3">
+              A comprehensive guide to building WCAG-compliant forms using Radix primitives.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">a11y</span>
+              <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">radix</span>
+            </div>
+          </a>
+        </article>
+
+        <!-- Card 5 -->
+        <article class="group fade-up fade-up-d4">
+          <a href="#article-6" class="block">
+            <div class="relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors mb-4">
+              <img src="https://picsum.photos/seed/bun-perf/600/380" alt="Bun Runtime" class="w-full aspect-[16/10] object-cover opacity-75 group-hover:opacity-100 transition-opacity">
+              <div class="absolute inset-0 bg-linear-to-t from-canvas/40 to-transparent"></div>
+              <span class="absolute top-3 left-3 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">performance</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-text-muted mb-2.5">
+              <time class="article-number">12 Dec 2025</time>
+              <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+              <span>9 min</span>
+            </div>
+            <h3 class="text-lg font-semibold leading-snug mb-2 group-hover:text-teal-bright transition-colors">
+              Optimizing Web Performance with Bun Runtime
+            </h3>
+            <p class="text-text-secondary text-sm leading-relaxed line-clamp-2 mb-3">
+              Exploring the performance benefits of migrating from Node.js to Bun in real-world apps.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">performance</span>
+              <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">bun</span>
+            </div>
+          </a>
+        </article>
+
+        <!-- Card 6 -->
+        <article class="group fade-up fade-up-d4">
+          <a href="#article-7" class="block">
+            <div class="relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors mb-4">
+              <img src="https://picsum.photos/seed/edge-fn/600/380" alt="Edge Functions" class="w-full aspect-[16/10] object-cover opacity-75 group-hover:opacity-100 transition-opacity">
+              <div class="absolute inset-0 bg-linear-to-t from-canvas/40 to-transparent"></div>
+              <span class="absolute top-3 left-3 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">serverless</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-text-muted mb-2.5">
+              <time class="article-number">5 Dec 2025</time>
+              <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+              <span>7 min</span>
+            </div>
+            <h3 class="text-lg font-semibold leading-snug mb-2 group-hover:text-teal-bright transition-colors">
+              Edge Functions: When and Why to Go Serverless
+            </h3>
+            <p class="text-text-secondary text-sm leading-relaxed line-clamp-2 mb-3">
+              A practical guide to deciding when edge functions make sense for your architecture.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">serverless</span>
+              <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">tooling</span>
+            </div>
+          </a>
+        </article>
+
+      </div>
+
+      <!-- Pagination -->
+      <nav class="mt-12 flex items-center justify-center gap-2" aria-label="Pagination">
+        <button disabled class="w-9 h-9 flex items-center justify-center rounded-xs border border-border text-text-muted opacity-40 cursor-not-allowed" aria-label="Page precedente">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <button class="w-9 h-9 flex items-center justify-center rounded-xs border border-teal bg-teal-dim text-teal-bright text-sm font-medium" aria-current="page">1</button>
+        <button class="w-9 h-9 flex items-center justify-center rounded-xs border border-border text-text-muted hover:border-teal/40 hover:text-text-primary text-sm transition-colors">2</button>
+        <button class="w-9 h-9 flex items-center justify-center rounded-xs border border-border text-text-muted hover:border-teal/40 hover:text-text-primary text-sm transition-colors">3</button>
+        <span class="w-9 h-9 flex items-center justify-center text-text-muted text-sm">...</span>
+        <button class="w-9 h-9 flex items-center justify-center rounded-xs border border-border text-text-muted hover:border-teal/40 hover:text-text-primary text-sm transition-colors">12</button>
+        <button class="w-9 h-9 flex items-center justify-center rounded-xs border border-border text-text-muted hover:border-teal/40 hover:text-text-primary transition-colors" aria-label="Page suivante">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </nav>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-border">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8 py-12">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-6 h-6 bg-teal/15 border border-teal/30 rounded-xs flex items-center justify-center text-teal font-code text-xs">&gt;_</span>
+            <span class="text-sm font-semibold">devblog</span>
+          </div>
+          <p class="text-text-muted text-sm max-w-xs">
+            Exploring modern web development through thoughtful articles and experiments.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-5">
+          <a href="#github" class="text-text-muted hover:text-text-primary transition-colors" aria-label="GitHub">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+          </a>
+          <a href="#twitter" class="text-text-muted hover:text-text-primary transition-colors" aria-label="Twitter">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+          </a>
+          <a href="#linkedin" class="text-text-muted hover:text-text-primary transition-colors" aria-label="LinkedIn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a href="#rss" class="text-text-muted hover:text-text-primary transition-colors" aria-label="RSS">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="glow-line w-full my-8"></div>
+
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-text-muted text-xs">
+        <p>&copy; 2026 devblog. Tous droits reserves.</p>
+        <div class="flex gap-6">
+          <a href="#privacy" class="hover:text-text-primary transition-colors">Confidentialite</a>
+          <a href="#mentions" class="hover:text-text-primary transition-colors">Mentions legales</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

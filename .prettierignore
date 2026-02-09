@@ -1,0 +1,12 @@
+dist/
+.astro/
+node_modules/
+.wrangler/
+public/pagefind/
+pnpm-lock.yaml
+package-lock.json
+.stryker-tmp/
+.claude/
+design-research/
+worker-configuration.d.ts
+*.md

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building a Modern Design System with Tailwind v4 — DevBlog</title>
+  <meta name="description" content="Exploring the new @theme directive and how it transforms the way we build design systems.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --color-void: #111111;
+      --color-canvas: #181818;
+      --color-surface: #232323;
+      --color-surface-raised: #2d2d2d;
+      --color-surface-hover: #383838;
+      --color-text-primary: #e6e6e6;
+      --color-text-secondary: #a0a0a0;
+      --color-text-muted: #6b6b6b;
+      --color-teal: #0D9488;
+      --color-teal-hover: #14B8A6;
+      --color-teal-bright: #2DD4BF;
+      --color-teal-glow: #0D948833;
+      --color-teal-dim: #0D94881a;
+      --color-border: #2a2a2a;
+      --color-border-subtle: #202020;
+      --color-border-hover: #0D9488;
+      --font-display: "Albert Sans", system-ui, sans-serif;
+      --font-body: "Albert Sans", system-ui, sans-serif;
+      --font-code: "Fira Code", ui-monospace, monospace;
+    }
+  </style>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body { line-height: 1.7; }
+    .glow-line { background: linear-gradient(90deg, transparent, #0D948860, transparent); height: 1px; }
+
+    /* Reading progress bar */
+    #progress-bar { transition: width 80ms linear; }
+
+    /* TOC active state */
+    .toc-link.active { color: #2DD4BF; border-color: #0D9488; }
+
+    /* Code line numbers */
+    .code-line::before {
+      content: attr(data-line);
+      display: inline-block;
+      width: 2rem;
+      text-align: right;
+      margin-right: 1.5rem;
+      color: #4b5563;
+      user-select: none;
+    }
+
+    /* Prose spacing for article content */
+    .prose > * + * { margin-top: 1.5rem; }
+    .prose h2 { margin-top: 3rem; margin-bottom: 1rem; }
+    .prose h3 { margin-top: 2rem; margin-bottom: 0.75rem; }
+    .prose ul, .prose ol { padding-left: 1.5rem; }
+    .prose li + li { margin-top: 0.5rem; }
+    .prose blockquote { border-left: 3px solid #0D9488; padding: 1rem 1.5rem; background: #23232380; border-radius: 0 4px 4px 0; }
+    .prose blockquote p { color: #a0a0a0; }
+    .prose a { color: #2DD4BF; text-decoration: underline; text-underline-offset: 3px; }
+    .prose a:hover { color: #14B8A6; }
+    .prose img { border-radius: 4px; border: 1px solid #2a2a2a; }
+  </style>
+</head>
+<body class="bg-canvas text-text-primary font-body antialiased">
+
+  <!-- Reading progress bar -->
+  <div class="fixed top-0 left-0 z-[60] h-0.5 bg-teal" id="progress-bar" style="width: 0%"></div>
+
+  <!-- Glow line top -->
+  <div class="glow-line w-full"></div>
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 bg-canvas/90 backdrop-blur-lg border-b border-border-subtle">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="/" class="flex items-center gap-2 group">
+          <span class="w-8 h-8 bg-teal/15 border border-teal/30 rounded-xs flex items-center justify-center text-teal font-code text-sm font-medium group-hover:bg-teal/25 transition-colors">&gt;_</span>
+          <span class="text-lg font-semibold tracking-tight text-text-primary">devblog</span>
+        </a>
+
+        <nav class="flex items-center gap-6 text-sm">
+          <a href="/" class="text-text-muted hover:text-text-primary transition-colors">Accueil</a>
+          <a href="#search" class="text-text-muted hover:text-text-primary transition-colors">Recherche</a>
+          <a href="#about" class="text-text-muted hover:text-text-primary transition-colors">A propos</a>
+        </nav>
+
+        <div class="flex items-center gap-1 text-sm text-text-muted">
+          <button class="px-2 py-1 rounded-xs text-text-primary font-medium bg-surface">FR</button>
+          <button class="px-2 py-1 rounded-xs hover:text-text-primary transition-colors">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-6xl mx-auto px-6 lg:px-8 py-12 md:py-16">
+    <div class="lg:grid lg:grid-cols-[1fr_240px] lg:gap-12">
+
+      <!-- Article -->
+      <article>
+
+        <!-- Back link -->
+        <a href="/" class="inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-teal transition-colors mb-8">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          Retour aux articles
+        </a>
+
+        <!-- Cover image with category badge -->
+        <div class="relative overflow-hidden rounded-xs border border-border mb-8">
+          <img src="https://picsum.photos/seed/design-system/1200/600" alt="Design System illustration" class="w-full aspect-[2/1] object-cover">
+          <div class="absolute inset-0 bg-linear-to-t from-canvas/50 to-transparent"></div>
+          <span class="absolute top-4 left-4 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">design-systems</span>
+        </div>
+
+        <!-- Metadata -->
+        <header class="mb-10">
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.15] tracking-tight mb-6">
+            Building a Modern Design System with Tailwind v4
+          </h1>
+
+          <p class="text-lg text-text-secondary leading-relaxed mb-8 max-w-2xl">
+            Exploring the new @theme directive and how it transforms the way we build design systems — from token architecture to component composition.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-6 text-sm text-text-muted pb-8 border-b border-border">
+            <!-- Date -->
+            <div class="flex items-center gap-1.5">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+              <time>15 Janvier 2026</time>
+            </div>
+            <!-- Reading time -->
+            <div class="flex items-center gap-1.5">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>8 min de lecture</span>
+            </div>
+            <!-- Updated -->
+            <div class="flex items-center gap-1.5">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+              <span>Mis a jour le 20 Jan 2026</span>
+            </div>
+          </div>
+        </header>
+
+        <!-- Article body -->
+        <div class="prose max-w-none" id="article-content">
+
+          <h2 id="introduction" class="text-2xl font-bold text-text-primary">Introduction</h2>
+          <p class="text-text-secondary">
+            Building a design system is more than choosing colors and fonts. It's about creating a shared language between designers and developers — a set of constraints that paradoxically enable more creativity. With Tailwind v4, the way we approach this has fundamentally changed.
+          </p>
+          <p class="text-text-secondary">
+            The introduction of the <code class="font-code text-sm text-teal-bright bg-surface px-1.5 py-0.5 rounded-xs">@theme</code> directive replaces the old JavaScript configuration file with a CSS-first approach that feels more natural and composable. In this article, we'll explore how to leverage these new primitives to build a robust, scalable design system.
+          </p>
+
+          <h2 id="theme-directive" class="text-2xl font-bold text-text-primary">The @theme Directive</h2>
+          <p class="text-text-secondary">
+            In Tailwind v3, configuration lived in a <code class="font-code text-sm text-teal-bright bg-surface px-1.5 py-0.5 rounded-xs">tailwind.config.js</code> file. This created a disconnect between your styles and your configuration. Tailwind v4 bridges this gap entirely.
+          </p>
+
+          <div class="bg-void border border-border rounded-xs overflow-hidden">
+            <div class="flex items-center justify-between px-4 py-3 border-b border-border bg-surface/50">
+              <span class="text-xs font-code text-text-muted uppercase tracking-wider">CSS</span>
+              <button class="copy-btn flex items-center gap-1.5 text-xs text-text-muted hover:text-teal transition-colors" aria-label="Copier le code">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                Copier
+              </button>
+            </div>
+            <pre class="p-5 overflow-x-auto text-sm leading-relaxed font-code"><code><span class="code-line" data-line="1"><span class="text-text-muted">/* Tailwind v4 — CSS-first config */</span></span>
+<span class="code-line" data-line="2"><span class="text-teal">@theme</span> {</span>
+<span class="code-line" data-line="3">  <span class="text-teal-bright">--color-brand</span>: <span class="text-text-primary">#6b5cff</span>;</span>
+<span class="code-line" data-line="4">  <span class="text-teal-bright">--color-brand-light</span>: <span class="text-text-primary">#8b7fff</span>;</span>
+<span class="code-line" data-line="5">  <span class="text-teal-bright">--font-display</span>: <span class="text-text-primary">"Playfair Display"</span>;</span>
+<span class="code-line" data-line="6">  <span class="text-teal-bright">--font-body</span>: <span class="text-text-primary">"Inter"</span>;</span>
+<span class="code-line" data-line="7">}</span></code></pre>
+          </div>
+
+          <p class="text-text-secondary">
+            The beauty of this approach is that your design tokens live alongside your styles. No more context-switching between CSS and JavaScript. Everything is in one place, composable, and immediately visible.
+          </p>
+
+          <h2 id="token-architecture" class="text-2xl font-bold text-text-primary">Token Architecture</h2>
+          <p class="text-text-secondary">
+            A well-structured token system is the foundation of any design system. We organize our tokens into three layers, each building on the previous one.
+          </p>
+
+          <h3 id="primitive-tokens" class="text-xl font-semibold text-text-primary">Primitive Tokens</h3>
+          <p class="text-text-secondary">
+            These are the raw values — hex colors, pixel sizes, font stacks. They have no semantic meaning and are rarely used directly in components.
+          </p>
+          <ul class="text-text-secondary list-disc">
+            <li><code class="font-code text-sm text-teal-bright bg-surface px-1.5 py-0.5 rounded-xs">--color-gray-900: #111827</code> — a raw color value</li>
+            <li><code class="font-code text-sm text-teal-bright bg-surface px-1.5 py-0.5 rounded-xs">--spacing-4: 1rem</code> — a raw spacing value</li>
+            <li><code class="font-code text-sm text-teal-bright bg-surface px-1.5 py-0.5 rounded-xs">--radius-sm: 0.25rem</code> — a raw radius value</li>
+          </ul>
+
+          <h3 id="semantic-tokens" class="text-xl font-semibold text-text-primary">Semantic Tokens</h3>
+          <p class="text-text-secondary">
+            Semantic tokens reference primitives but carry meaning. They describe intent rather than appearance. This is where the real power of a design system emerges.
+          </p>
+
+          <blockquote>
+            <p>
+              "A design system isn't a set of components. It's a shared understanding of how things work and why."
+            </p>
+          </blockquote>
+
+          <h2 id="component-patterns" class="text-2xl font-bold text-text-primary">Component Patterns</h2>
+          <p class="text-text-secondary">
+            With our token architecture in place, we can build components that are consistent, flexible, and easy to maintain. Let's look at a practical example — a button component.
+          </p>
+
+          <div class="bg-void border border-border rounded-xs overflow-hidden">
+            <div class="flex items-center justify-between px-4 py-3 border-b border-border bg-surface/50">
+              <span class="text-xs font-code text-text-muted uppercase tracking-wider">HTML</span>
+              <button class="copy-btn flex items-center gap-1.5 text-xs text-text-muted hover:text-teal transition-colors" aria-label="Copier le code">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                Copier
+              </button>
+            </div>
+            <pre class="p-5 overflow-x-auto text-sm leading-relaxed font-code"><code><span class="code-line" data-line="1"><span class="text-text-muted">&lt;!-- Primary button --&gt;</span></span>
+<span class="code-line" data-line="2">&lt;<span class="text-teal">button</span> <span class="text-teal-bright">class</span>=<span class="text-text-primary">"</span></span>
+<span class="code-line" data-line="3">  <span class="text-text-primary">bg-brand text-white</span></span>
+<span class="code-line" data-line="4">  <span class="text-text-primary">hover:bg-brand-light</span></span>
+<span class="code-line" data-line="5">  <span class="text-text-primary">px-4 py-2 rounded-sm</span></span>
+<span class="code-line" data-line="6">  <span class="text-text-primary">font-semibold text-sm</span></span>
+<span class="code-line" data-line="7">  <span class="text-text-primary">transition-colors</span></span>
+<span class="code-line" data-line="8"><span class="text-text-primary">"</span>&gt;</span>
+<span class="code-line" data-line="9">  Get Started</span>
+<span class="code-line" data-line="10">&lt;/<span class="text-teal">button</span>&gt;</span></code></pre>
+          </div>
+
+          <p class="text-text-secondary">
+            Notice how we use semantic token names (<code class="font-code text-sm text-teal-bright bg-surface px-1.5 py-0.5 rounded-xs">bg-brand</code>) instead of raw values (<code class="font-code text-sm text-teal-bright bg-surface px-1.5 py-0.5 rounded-xs">bg-[#6b5cff]</code>). If the brand color changes, every component updates automatically.
+          </p>
+
+          <h2 id="responsive-tokens" class="text-2xl font-bold text-text-primary">Responsive Tokens</h2>
+          <p class="text-text-secondary">
+            One of the most powerful patterns in Tailwind v4 is the ability to define responsive tokens. You can adjust your entire token system based on screen size, creating fluid, adaptive interfaces without media query spaghetti.
+          </p>
+          <p class="text-text-secondary">
+            This approach is particularly powerful for typography. Instead of manually adjusting every text size at every breakpoint, you define a responsive type scale once and let it cascade throughout your entire system.
+          </p>
+
+          <h2 id="conclusion" class="text-2xl font-bold text-text-primary">Conclusion</h2>
+          <p class="text-text-secondary">
+            Tailwind v4's CSS-first approach isn't just a syntactic change — it's a paradigm shift in how we think about design systems. By bringing configuration into CSS, we eliminate the gap between design intent and implementation. Tokens become first-class citizens, and the entire system becomes more transparent and maintainable.
+          </p>
+          <p class="text-text-secondary">
+            The key takeaway: start with a solid token architecture, build semantic layers on top of primitives, and let Tailwind v4's <code class="font-code text-sm text-teal-bright bg-surface px-1.5 py-0.5 rounded-xs">@theme</code> handle the rest.
+          </p>
+
+        </div>
+
+        <!-- Related articles -->
+        <div class="mt-16 pt-12 border-t border-border">
+          <h2 class="text-sm font-semibold uppercase tracking-widest text-text-muted mb-8">Articles similaires</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <a href="#" class="group block">
+              <div class="relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors mb-4">
+                <img src="https://picsum.photos/seed/container-q/600/380" alt="CSS Container Queries" class="w-full aspect-[16/10] object-cover opacity-75 group-hover:opacity-100 transition-opacity">
+                <div class="absolute inset-0 bg-linear-to-t from-canvas/40 to-transparent"></div>
+                <span class="absolute top-3 left-3 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">css</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-text-muted mb-2">
+                <time>28 Dec 2025</time>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <span>10 min</span>
+              </div>
+              <h3 class="text-lg font-semibold leading-snug group-hover:text-teal-bright transition-colors">CSS Container Queries: The Future of Responsive Design</h3>
+            </a>
+            <a href="#" class="group block">
+              <div class="relative overflow-hidden rounded-xs border border-border group-hover:border-teal/30 transition-colors mb-4">
+                <img src="https://picsum.photos/seed/ts54/600/380" alt="TypeScript 5.4" class="w-full aspect-[16/10] object-cover opacity-75 group-hover:opacity-100 transition-opacity">
+                <div class="absolute inset-0 bg-linear-to-t from-canvas/40 to-transparent"></div>
+                <span class="absolute top-3 left-3 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">typescript</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-text-muted mb-2">
+                <time>10 Jan 2026</time>
+                <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+                <span>12 min</span>
+              </div>
+              <h3 class="text-lg font-semibold leading-snug group-hover:text-teal-bright transition-colors">TypeScript 5.4: Advanced Type Patterns for Safer APIs</h3>
+            </a>
+          </div>
+        </div>
+
+      </article>
+
+      <!-- Sidebar — TOC + Share + Progress -->
+      <aside class="hidden lg:block">
+        <div class="sticky top-24">
+
+          <!-- Reading progress -->
+          <div class="mb-6 flex items-center gap-3">
+            <div class="flex-1 h-1 bg-surface rounded-full overflow-hidden">
+              <div class="h-full bg-teal rounded-full transition-all" id="sidebar-progress" style="width: 0%"></div>
+            </div>
+            <span class="text-xs font-code text-text-muted" id="progress-text">0%</span>
+          </div>
+
+          <!-- Table of contents -->
+          <nav class="mb-8">
+            <h3 class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-4">Sommaire</h3>
+            <ul class="space-y-1">
+              <li>
+                <a href="#introduction" class="toc-link block text-sm text-text-muted hover:text-text-primary py-1.5 pl-3 border-l-2 border-border transition-colors">Introduction</a>
+              </li>
+              <li>
+                <a href="#theme-directive" class="toc-link block text-sm text-text-muted hover:text-text-primary py-1.5 pl-3 border-l-2 border-border transition-colors">The @theme Directive</a>
+              </li>
+              <li>
+                <a href="#token-architecture" class="toc-link block text-sm text-text-muted hover:text-text-primary py-1.5 pl-3 border-l-2 border-border transition-colors">Token Architecture</a>
+              </li>
+              <li>
+                <a href="#primitive-tokens" class="toc-link block text-sm text-text-muted hover:text-text-primary py-1.5 pl-5 border-l-2 border-border transition-colors">Primitive Tokens</a>
+              </li>
+              <li>
+                <a href="#semantic-tokens" class="toc-link block text-sm text-text-muted hover:text-text-primary py-1.5 pl-5 border-l-2 border-border transition-colors">Semantic Tokens</a>
+              </li>
+              <li>
+                <a href="#component-patterns" class="toc-link block text-sm text-text-muted hover:text-text-primary py-1.5 pl-3 border-l-2 border-border transition-colors">Component Patterns</a>
+              </li>
+              <li>
+                <a href="#responsive-tokens" class="toc-link block text-sm text-text-muted hover:text-text-primary py-1.5 pl-3 border-l-2 border-border transition-colors">Responsive Tokens</a>
+              </li>
+              <li>
+                <a href="#conclusion" class="toc-link block text-sm text-text-muted hover:text-text-primary py-1.5 pl-3 border-l-2 border-border transition-colors">Conclusion</a>
+              </li>
+            </ul>
+          </nav>
+
+          <!-- Tags -->
+          <div class="mb-8">
+            <h3 class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-4">Tags</h3>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">design-systems</span>
+              <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">tailwind</span>
+              <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">css</span>
+              <span class="text-xs font-code text-text-secondary px-2.5 py-1 rounded-xs border border-border">tokens</span>
+            </div>
+          </div>
+
+          <!-- Share buttons -->
+          <div>
+            <h3 class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-4">Partager</h3>
+            <div class="flex gap-2">
+              <a href="#share-twitter" class="w-9 h-9 flex items-center justify-center rounded-xs border border-border text-text-muted hover:text-teal hover:border-teal/30 transition-colors" aria-label="Partager sur Twitter">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+              </a>
+              <a href="#share-linkedin" class="w-9 h-9 flex items-center justify-center rounded-xs border border-border text-text-muted hover:text-teal hover:border-teal/30 transition-colors" aria-label="Partager sur LinkedIn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+              </a>
+              <button class="w-9 h-9 flex items-center justify-center rounded-xs border border-border text-text-muted hover:text-teal hover:border-teal/30 transition-colors" aria-label="Copier le lien">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-border">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8 py-12">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-6 h-6 bg-teal/15 border border-teal/30 rounded-xs flex items-center justify-center text-teal font-code text-xs">&gt;_</span>
+            <span class="text-sm font-semibold">devblog</span>
+          </div>
+          <p class="text-text-muted text-sm max-w-xs">
+            Exploring modern web development through thoughtful articles and experiments.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-5">
+          <a href="#github" class="text-text-muted hover:text-text-primary transition-colors" aria-label="GitHub">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+          </a>
+          <a href="#twitter" class="text-text-muted hover:text-text-primary transition-colors" aria-label="Twitter">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+          </a>
+          <a href="#linkedin" class="text-text-muted hover:text-text-primary transition-colors" aria-label="LinkedIn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a href="#rss" class="text-text-muted hover:text-text-primary transition-colors" aria-label="RSS">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="glow-line w-full my-8"></div>
+
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-text-muted text-xs">
+        <p>&copy; 2026 devblog. Tous droits reserves.</p>
+        <div class="flex gap-6">
+          <a href="#privacy" class="hover:text-text-primary transition-colors">Confidentialite</a>
+          <a href="#mentions" class="hover:text-text-primary transition-colors">Mentions legales</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Reading progress + TOC highlight script -->
+  <script>
+    (function() {
+      const bar = document.getElementById('progress-bar');
+      const sidebarBar = document.getElementById('sidebar-progress');
+      const text = document.getElementById('progress-text');
+      const article = document.getElementById('article-content');
+      const tocLinks = document.querySelectorAll('.toc-link');
+      const headings = [];
+
+      tocLinks.forEach(link => {
+        const id = link.getAttribute('href').slice(1);
+        const el = document.getElementById(id);
+        if (el) headings.push({ id, el, link });
+      });
+
+      function update() {
+        // Progress
+        const rect = article.getBoundingClientRect();
+        const total = article.scrollHeight - window.innerHeight;
+        const scrolled = -rect.top;
+        const pct = Math.min(100, Math.max(0, (scrolled / total) * 100));
+        bar.style.width = pct + '%';
+        sidebarBar.style.width = pct + '%';
+        text.textContent = Math.round(pct) + '%';
+
+        // Active TOC heading
+        let current = headings[0];
+        for (const h of headings) {
+          if (h.el.getBoundingClientRect().top <= 100) current = h;
+        }
+        tocLinks.forEach(l => l.classList.remove('active'));
+        if (current) current.link.classList.add('active');
+      }
+
+      window.addEventListener('scroll', update, { passive: true });
+      update();
+
+      // Copy buttons
+      document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const code = this.closest('.bg-void').querySelector('code');
+          const text = code.textContent;
+          navigator.clipboard.writeText(text).then(() => {
+            const label = this.querySelector('svg + *') || this.lastChild;
+            const original = label.textContent;
+            label.textContent = 'Copie !';
+            this.classList.add('text-teal');
+            setTimeout(() => { label.textContent = original; this.classList.remove('text-teal'); }, 2000);
+          });
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>
