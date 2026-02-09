@@ -21,6 +21,24 @@ Les design systems sont le socle d'interfaces utilisateur coherentes et evolutiv
 
 La directive `@theme` permet de declarer des valeurs personnalisees que Tailwind transforme en classes utilitaires au moment du build. Cela signifie que votre palette de couleurs, votre echelle d'espacement et votre pile typographique vivent au meme endroit -- votre feuille de style -- plutot que repartis entre fichiers de configuration et proprietes CSS personnalisees.
 
+```css title="src/styles/theme.css"
+@theme {
+  --color-primary: #0d9488;
+  --color-surface: #0a0a0f;
+  --font-sans: "Albert Sans", system-ui, sans-serif;
+  --font-code: "Fira Code", monospace;
+  --spacing-gutter: 1.5rem;
+}
+```
+
+Une fois declares, ces tokens sont disponibles comme utilitaires Tailwind standards :
+
+```html
+<div class="bg-surface text-primary font-sans p-gutter">
+  Layout pilote par les tokens
+</div>
+```
+
 ## Lecons apprises
 
 Construire un design system n'est jamais un effort unique. Commencez par l'ensemble minimal de tokens couvrant vos patterns les plus courants, puis etendez au fur et a mesure que les composants reels necessitent de nouvelles valeurs. Resistez a l'envie de predefinir chaque nuance ou increment d'espacement possible.

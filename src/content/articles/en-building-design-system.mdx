@@ -21,6 +21,24 @@ Design systems are the backbone of consistent, scalable user interfaces. With Ta
 
 The `@theme` directive lets you declare custom values that Tailwind turns into utility classes at build time. This means your color palette, spacing scale, and typography stack all live in one place -- your stylesheet -- rather than split across configuration files and CSS custom properties.
 
+```css title="src/styles/theme.css"
+@theme {
+  --color-primary: #0d9488;
+  --color-surface: #0a0a0f;
+  --font-sans: "Albert Sans", system-ui, sans-serif;
+  --font-code: "Fira Code", monospace;
+  --spacing-gutter: 1.5rem;
+}
+```
+
+Once declared, these tokens are available as standard Tailwind utilities:
+
+```html
+<div class="bg-surface text-primary font-sans p-gutter">
+  Token-driven layout
+</div>
+```
+
 ## Lessons Learned
 
 Building a design system is never a one-shot effort. Start with the smallest set of tokens that covers your most common patterns, then expand as real components demand new values. Resist the urge to predefine every possible shade or spacing increment. Let usage drive the system, not the other way around.

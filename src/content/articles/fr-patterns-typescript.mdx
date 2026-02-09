@@ -21,6 +21,29 @@ Le systeme de types de TypeScript est bien plus puissant que de simples annotati
 
 Les types conditionnels agissent comme des instructions if-else au niveau des types. Ils sont inestimables pour creer des fonctions d'API dont le type de retour depend des parametres d'entree. Combines avec `infer`, ils peuvent extraire et transformer des types depuis des structures profondement imbriquees.
 
+```typescript title="api-contract.ts"
+type ApiResponse<T> = T extends { id: infer Id }
+  ? { data: T; id: Id }
+  : { data: T; id: never };
+
+// Le type de retour se restreint selon l'entree
+function fetchResource<T>(config: T): ApiResponse<T> {
+  // implementation
+}
+```
+
+Les template literal types permettent la securite au niveau des chaines :
+
+```typescript
+type EventName = `on${Capitalize<"click" | "hover" | "focus">}`;
+// → "onClick" | "onHover" | "onFocus"
+
+type CSSProperty = `--${string}`;
+function setVar(name: CSSProperty, value: string) {
+  document.documentElement.style.setProperty(name, value);
+}
+```
+
 ## Points pratiques
 
 Commencez par typer vos frontieres de donnees les plus critiques -- reponses d'API, requetes de base de donnees et contrats inter-modules. C'est la ou les erreurs de types causent le plus de degats. Puis poussez progressivement la securite des types vers les fonctions utilitaires et les composants d'interface.

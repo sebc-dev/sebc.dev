@@ -21,6 +21,29 @@ TypeScript's type system is far more powerful than simple annotations. Condition
 
 Conditional types act like if-else statements at the type level. They are invaluable for creating API functions whose return type depends on the input parameters. Combined with `infer`, they can extract and transform types from deeply nested structures.
 
+```typescript title="api-contract.ts"
+type ApiResponse<T> = T extends { id: infer Id }
+  ? { data: T; id: Id }
+  : { data: T; id: never };
+
+// Return type narrows based on input
+function fetchResource<T>(config: T): ApiResponse<T> {
+  // implementation
+}
+```
+
+Template literal types enable string-level type safety:
+
+```typescript
+type EventName = `on${Capitalize<"click" | "hover" | "focus">}`;
+// → "onClick" | "onHover" | "onFocus"
+
+type CSSProperty = `--${string}`;
+function setVar(name: CSSProperty, value: string) {
+  document.documentElement.style.setProperty(name, value);
+}
+```
+
 ## Practical Takeaways
 
 Start by typing your most critical data boundaries -- API responses, database queries, and inter-module contracts. These are where type errors cause the most damage. Then gradually push type safety outward into helper functions and UI components.
