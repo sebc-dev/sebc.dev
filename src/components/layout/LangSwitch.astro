@@ -2,10 +2,16 @@
 import { languages } from "@/i18n/ui";
 import { getLangFromUrl } from "@/i18n/utils";
 
+interface Props {
+  translationMap?: Record<string, string>;
+}
+
+const { translationMap } = Astro.props;
 const currentLang = getLangFromUrl(Astro.url);
 const currentPath = Astro.url.pathname;
 
 function getLocalizedPath(targetLang: string): string {
+  if (translationMap?.[targetLang]) return translationMap[targetLang];
   const cleanPath = currentPath.replace(/^\/[a-z]{2}(\/|$)/, "/");
   const pathSuffix = cleanPath === "/" ? "" : cleanPath;
   return `/${targetLang}${pathSuffix}`;

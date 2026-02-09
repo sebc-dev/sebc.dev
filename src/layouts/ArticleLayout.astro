@@ -23,9 +23,23 @@ const relatedArticles = await getRelatedArticles(article);
 
 // Compute article URL for sharing
 const articleUrl = new URL(Astro.url.pathname, Astro.site).href;
+
+// Build translation map for LangSwitch
+const otherLang = lang === "en" ? "fr" : "en";
+const translationMap: Record<string, string> = {
+  [lang]: `/${lang}/articles/${article.id}`,
+};
+if (article.data.translationSlug) {
+  translationMap[otherLang] =
+    `/${otherLang}/articles/${article.data.translationSlug}`;
+}
 ---
 
-<BaseLayout title={article.data.title} description={article.data.description}>
+<BaseLayout
+  title={article.data.title}
+  description={article.data.description}
+  translationMap={translationMap}
+>
   <ReadingProgress />
   <div class="max-w-6xl mx-auto px-6 lg:px-8 py-12 md:py-16">
     <div class="lg:grid lg:grid-cols-[1fr_240px] lg:gap-12">

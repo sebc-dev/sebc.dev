@@ -3,6 +3,11 @@ import Nav from "@/components/layout/Nav.astro";
 import LangSwitch from "@/components/layout/LangSwitch.astro";
 import { getLangFromUrl } from "@/i18n/utils";
 
+interface Props {
+  translationMap?: Record<string, string>;
+}
+
+const { translationMap } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 ---
 
@@ -24,7 +29,7 @@ const lang = getLangFromUrl(Astro.url);
 
       <div class="flex items-center gap-6">
         <Nav />
-        <LangSwitch />
+        <LangSwitch translationMap={translationMap} />
       </div>
     </div>
   </div>

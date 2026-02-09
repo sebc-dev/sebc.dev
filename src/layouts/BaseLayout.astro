@@ -6,10 +6,14 @@ import Footer from "@/components/layout/Footer.astro";
 interface Props {
   title: string;
   description?: string;
+  translationMap?: Record<string, string>;
 }
 
-const { title, description = "Blog technique — IA × Ingénierie × UX" } =
-  Astro.props;
+const {
+  title,
+  description = "Blog technique — IA × Ingénierie × UX",
+  translationMap,
+} = Astro.props;
 const lang = Astro.currentLocale ?? "en";
 ---
 
@@ -31,7 +35,7 @@ const lang = Astro.currentLocale ?? "en";
   <body
     class="bg-canvas text-text-primary font-body leading-relaxed min-h-screen flex flex-col"
   >
-    <Header />
+    <Header translationMap={translationMap} />
     <main class="flex-1">
       <slot />
     </main>
