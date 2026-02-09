@@ -62,11 +62,11 @@ Plans:
   3. User sees a reading progress bar at the top of the page that fills proportionally as they scroll through the article
   4. User can see article metadata (date, reading time, category, tags, pillar tags with distinctive visual treatment) and share the article via Twitter/X, LinkedIn, dev.to, or copy link
   5. User can discover related articles at the bottom of the page and click heading anchor links to copy section URLs
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
+- [ ] 03-01-PLAN.md -- Expressive Code + rehype config, global CSS updates, article data layer (getRelatedArticles), i18n strings
+- [ ] 03-02-PLAN.md -- Article components (PillarTag, ArticleHeader, ShareButtons, TOC, ReadingProgress, RelatedArticles), ArticleLayout, dynamic route pages, visual verification
 
 ### Phase 4: Search Page
 **Goal**: Users can search articles full-text and filter results by category, tags, and view mode using a custom-styled Pagefind integration.
@@ -119,7 +119,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 |-------|---------------|--------|-----------|
 | 1. Foundation | 3/3 | ✓ Complete | 2026-02-09 |
 | 2. Home Page | 2/2 | ✓ Complete | 2026-02-09 |
-| 3. Article Page | 0/TBD | Not started | - |
+| 3. Article Page | 0/2 | In progress | - |
 | 4. Search Page | 0/TBD | Not started | - |
 | 5. About Page | 0/TBD | Not started | - |
 | 6. SEO, Polish & Deployment | 0/TBD | Not started | - |
