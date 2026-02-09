@@ -50,6 +50,99 @@ if (article.data.translationSlug) {
         </div>
         <RelatedArticles articles={relatedArticles} />
       </article>
+      <!-- Mobile TOC: floating button + slide-in panel -->
+      <button
+        id="toc-mobile-btn"
+        class="lg:hidden fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-teal text-canvas flex items-center justify-center shadow-lg shadow-teal-glow hover:bg-teal-hover transition-colors"
+        aria-label={t("article.toc")}
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="3" y1="6" x2="21" y2="6"></line><line
+            x1="3"
+            y1="12"
+            x2="15"
+            y2="12"></line><line x1="3" y1="18" x2="9" y2="18"></line>
+        </svg>
+      </button>
+
+      <div
+        id="toc-mobile-overlay"
+        class="lg:hidden fixed inset-0 z-50 pointer-events-none opacity-0 transition-opacity duration-300"
+      >
+        <div
+          class="absolute inset-0 bg-canvas/80 backdrop-blur-sm"
+          data-toc-backdrop
+        >
+        </div>
+        <div
+          id="toc-mobile-panel"
+          class="absolute inset-y-0 right-0 w-full max-w-sm bg-canvas border-l border-border translate-x-full transition-transform duration-300 ease-out flex flex-col"
+        >
+          <div
+            class="flex items-center justify-between px-6 py-4 border-b border-border"
+          >
+            <h3
+              class="text-xs font-semibold uppercase tracking-widest text-text-muted"
+            >
+              {t("article.toc")}
+            </h3>
+            <button
+              data-toc-close
+              class="text-text-muted hover:text-text-primary p-1"
+              aria-label="Fermer"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18"></line><line
+                  x1="6"
+                  y1="6"
+                  x2="18"
+                  y2="18"></line>
+              </svg>
+            </button>
+          </div>
+          <nav class="flex-1 overflow-y-auto px-6 py-6">
+            <ul class="space-y-1">
+              {
+                headings
+                  .filter((h) => h.depth === 2 || h.depth === 3)
+                  .map((heading) => (
+                    <li>
+                      <a
+                        href={`#${heading.slug}`}
+                        data-toc-mobile-link
+                        class:list={[
+                          "toc-link block text-base text-text-muted hover:text-text-primary py-2.5 border-l-2 border-border transition-colors",
+                          heading.depth === 2 ? "pl-4" : "pl-7",
+                        ]}
+                      >
+                        {heading.text}
+                      </a>
+                    </li>
+                  ))
+              }
+            </ul>
+          </nav>
+        </div>
+      </div>
+
       <aside class="hidden lg:block">
         <div class="sticky top-24">
           <TableOfContents headings={headings} />
@@ -118,4 +211,43 @@ if (article.data.translationSlug) {
 
   initCodeBlockHeaders();
   document.addEventListener("astro:after-swap", initCodeBlockHeaders);
+
+  function initMobileToc() {
+    const btn = document.getElementById("toc-mobile-btn");
+    const ov = document.getElementById("toc-mobile-overlay");
+    const pn = document.getElementById("toc-mobile-panel");
+    if (!btn || !ov || !pn) return;
+    const overlay = ov as HTMLElement;
+    const panel = pn as HTMLElement;
+
+    function open() {
+      overlay.classList.remove("pointer-events-none", "opacity-0");
+      overlay.classList.add("pointer-events-auto", "opacity-100");
+      panel.classList.remove("translate-x-full");
+      panel.classList.add("translate-x-0");
+      document.body.style.overflow = "hidden";
+    }
+
+    function close() {
+      overlay.classList.add("pointer-events-none", "opacity-0");
+      overlay.classList.remove("pointer-events-auto", "opacity-100");
+      panel.classList.add("translate-x-full");
+      panel.classList.remove("translate-x-0");
+      document.body.style.overflow = "";
+    }
+
+    btn.addEventListener("click", open);
+    overlay
+      .querySelector("[data-toc-backdrop]")
+      ?.addEventListener("click", close);
+    overlay.querySelector("[data-toc-close]")?.addEventListener("click", close);
+    overlay.querySelectorAll("[data-toc-mobile-link]").forEach((link) => {
+      link.addEventListener("click", () => {
+        close();
+      });
+    });
+  }
+
+  initMobileToc();
+  document.addEventListener("astro:after-swap", initMobileToc);
 </script>
