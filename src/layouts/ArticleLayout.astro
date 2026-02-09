@@ -84,4 +84,28 @@ const articleUrl = new URL(Astro.url.pathname, Astro.site).href;
 
   initHeadingAnchorCopy();
   document.addEventListener("astro:after-swap", initHeadingAnchorCopy);
+
+  function initCodeBlockHeaders() {
+    document.querySelectorAll(".expressive-code .frame").forEach((frame) => {
+      const header = frame.querySelector(".header");
+      const pre = frame.querySelector("pre[data-language]");
+      if (!header || !pre) return;
+      // Skip if already processed
+      if (header.querySelector(".ec-lang-label")) return;
+
+      const lang = pre.getAttribute("data-language") || "";
+      const title = header.querySelector(".title");
+
+      if (!title || !title.textContent?.trim()) {
+        // No title: inject language label as the header text
+        const label = document.createElement("span");
+        label.className = "ec-lang-label";
+        label.textContent = lang;
+        header.insertBefore(label, header.firstChild);
+      }
+    });
+  }
+
+  initCodeBlockHeaders();
+  document.addEventListener("astro:after-swap", initCodeBlockHeaders);
 </script>
