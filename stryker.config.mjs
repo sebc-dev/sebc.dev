@@ -5,6 +5,9 @@ export default {
   mutate: [
     "src/utils/**/*.ts",
     "src/lib/**/*.ts",
+    "src/i18n/**/*.ts",
+    "!src/**/*.test.ts",
+    "!src/**/*.spec.ts",
     "!src/**/*.astro",
     "!src/**/*.d.ts",
   ],
