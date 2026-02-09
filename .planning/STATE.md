@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-09)
 
 **Core value:** Le site incarne les valeurs defendues (UX, performance, qualite) tout en permettant une publication reguliere d'articles. Le medium est le message.
-**Current focus:** Phase 2 - Home Page
+**Current focus:** Phase 3 - Article Page
 
 ## Current Position
 
-Phase: 2 of 6 (Home Page) -- COMPLETE
-Plan: 2 of 2 in current phase (all plans complete)
-Status: Phase 2 complete -- home page fully functional with featured hero, article grid, category filtering
-Last activity: 2026-02-09 -- Completed 02-02-PLAN.md (Home Page Components)
+Phase: 3 of 6 (Article Page) -- IN PROGRESS
+Plan: 1 of 2 in current phase
+Status: Article page foundation complete -- EC, rehype, data layer, i18n configured
+Last activity: 2026-02-09 -- Completed 03-01-PLAN.md (Article Page Foundation)
 
-Progress: [██████░░░░] 35%
+Progress: [███████░░░] 41%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
+- Total plans completed: 6
 - Average duration: 4min
-- Total execution time: 0.35 hours
+- Total execution time: 0.59 hours
 
 **By Phase:**
 
@@ -29,9 +29,10 @@ Progress: [██████░░░░] 35%
 |-------|-------|-------|----------|
 | 01-foundation | 3 | 9min | 3min |
 | 02-home-page | 2 | 12min | 6min |
+| 03-article-page | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (2min), 01-03 (5min), 02-01 (4min), 02-02 (8min)
+- Last 5 plans: 01-03 (5min), 02-01 (4min), 02-02 (8min), 03-01 (2min)
 - Trend: Consistent
 
 *Updated after each plan completion*
@@ -60,6 +61,10 @@ Recent decisions affecting current work:
 - [02-02]: Category badge as inline span (not Tag component) for absolute positioning inside image container
 - [02-02]: Script init pattern: direct call + astro:after-swap (not astro:page-load which requires ClientRouter)
 - [02-02]: Featured article excluded from grid via ID comparison to prevent duplication
+- [03-01]: EC placed before mdx() integration (EC must process code blocks before MDX)
+- [03-01]: Removed markdown.shikiConfig (replaced by EC configuration)
+- [03-01]: Removed pre.astro-code CSS selector (EC uses figure wrapper structure)
+- [03-01]: Related articles scored by category (+2) and tag overlap (+1 per shared tag)
 
 ### Pending Todos
 
@@ -74,5 +79,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-09
-Stopped at: Completed 02-02-PLAN.md (Home Page Components) -- Phase 2 complete
-Resume file: Ready for Phase 3 planning
+Stopped at: Completed 03-01-PLAN.md (Article Page Foundation)
+Resume file: Ready for 03-02-PLAN.md (Article Page Components)
