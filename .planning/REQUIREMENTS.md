@@ -109,48 +109,48 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LAYO-01 | TBD | Pending |
-| LAYO-02 | TBD | Pending |
-| LAYO-03 | TBD | Pending |
-| LAYO-04 | TBD | Pending |
-| LAYO-05 | TBD | Pending |
-| HOME-01 | TBD | Pending |
-| HOME-02 | TBD | Pending |
-| HOME-03 | TBD | Pending |
-| ARTI-01 | TBD | Pending |
-| ARTI-02 | TBD | Pending |
-| ARTI-03 | TBD | Pending |
-| ARTI-04 | TBD | Pending |
-| ARTI-05 | TBD | Pending |
-| ARTI-06 | TBD | Pending |
-| ARTI-07 | TBD | Pending |
-| ARTI-08 | TBD | Pending |
-| SRCH-01 | TBD | Pending |
-| SRCH-02 | TBD | Pending |
-| SRCH-03 | TBD | Pending |
-| SRCH-04 | TBD | Pending |
-| SRCH-05 | TBD | Pending |
-| ABOU-01 | TBD | Pending |
-| ABOU-02 | TBD | Pending |
-| SEO-01 | TBD | Pending |
-| SEO-02 | TBD | Pending |
-| SEO-03 | TBD | Pending |
-| SEO-04 | TBD | Pending |
-| SEO-05 | TBD | Pending |
-| I18N-01 | TBD | Pending |
-| I18N-02 | TBD | Pending |
-| I18N-03 | TBD | Pending |
-| INFR-01 | TBD | Pending |
-| INFR-02 | TBD | Pending |
-| INFR-03 | TBD | Pending |
-| INFR-04 | TBD | Pending |
-| INFR-05 | TBD | Pending |
+| LAYO-01 | Phase 1: Foundation | Pending |
+| LAYO-02 | Phase 1: Foundation | Pending |
+| LAYO-03 | Phase 1: Foundation | Pending |
+| LAYO-04 | Phase 6: SEO, Polish & Deployment | Pending |
+| LAYO-05 | Phase 1: Foundation | Pending |
+| HOME-01 | Phase 2: Home Page | Pending |
+| HOME-02 | Phase 2: Home Page | Pending |
+| HOME-03 | Phase 2: Home Page | Pending |
+| ARTI-01 | Phase 3: Article Page | Pending |
+| ARTI-02 | Phase 3: Article Page | Pending |
+| ARTI-03 | Phase 3: Article Page | Pending |
+| ARTI-04 | Phase 3: Article Page | Pending |
+| ARTI-05 | Phase 3: Article Page | Pending |
+| ARTI-06 | Phase 3: Article Page | Pending |
+| ARTI-07 | Phase 3: Article Page | Pending |
+| ARTI-08 | Phase 3: Article Page | Pending |
+| SRCH-01 | Phase 4: Search Page | Pending |
+| SRCH-02 | Phase 4: Search Page | Pending |
+| SRCH-03 | Phase 4: Search Page | Pending |
+| SRCH-04 | Phase 4: Search Page | Pending |
+| SRCH-05 | Phase 4: Search Page | Pending |
+| ABOU-01 | Phase 5: About Page | Pending |
+| ABOU-02 | Phase 5: About Page | Pending |
+| SEO-01 | Phase 6: SEO, Polish & Deployment | Pending |
+| SEO-02 | Phase 6: SEO, Polish & Deployment | Pending |
+| SEO-03 | Phase 6: SEO, Polish & Deployment | Pending |
+| SEO-04 | Phase 6: SEO, Polish & Deployment | Pending |
+| SEO-05 | Phase 6: SEO, Polish & Deployment | Pending |
+| I18N-01 | Phase 1: Foundation | Pending |
+| I18N-02 | Phase 1: Foundation | Pending |
+| I18N-03 | Phase 1: Foundation | Pending |
+| INFR-01 | Phase 6: SEO, Polish & Deployment | Pending |
+| INFR-02 | Phase 6: SEO, Polish & Deployment | Pending |
+| INFR-03 | Phase 1: Foundation | Pending |
+| INFR-04 | Phase 1: Foundation | Pending |
+| INFR-05 | Phase 6: SEO, Polish & Deployment | Pending |
 
 **Coverage:**
 - v1 requirements: 36 total
-- Mapped to phases: 0
-- Unmapped: 36
+- Mapped to phases: 36
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-09*
-*Last updated: 2026-02-09 after initial definition*
+*Last updated: 2026-02-09 after roadmap creation*
