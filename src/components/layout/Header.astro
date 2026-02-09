@@ -1,0 +1,31 @@
+---
+import Nav from "@/components/layout/Nav.astro";
+import LangSwitch from "@/components/layout/LangSwitch.astro";
+import { getLangFromUrl } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+---
+
+<header
+  class="sticky top-0 z-50 bg-canvas/90 backdrop-blur-lg border-b border-border-subtle"
+>
+  <div class="max-w-6xl mx-auto px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <a href={`/${lang}`} class="flex items-center gap-2 group">
+        <span
+          class="w-8 h-8 bg-teal/15 border border-teal/30 rounded-sm flex items-center justify-center text-teal-bright font-code text-sm font-medium group-hover:bg-teal/25 transition-colors"
+          >&gt;_</span
+        >
+        <span
+          class="hidden sm:inline text-lg font-semibold tracking-tight text-text-primary"
+          >sebc.dev</span
+        >
+      </a>
+
+      <div class="flex items-center gap-6">
+        <Nav />
+        <LangSwitch />
+      </div>
+    </div>
+  </div>
+</header>
