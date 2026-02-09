@@ -12,7 +12,7 @@ Build a premium bilingual (FR/EN) technical blog from the existing Astro 5 + Clo
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - Layout shell, i18n system, shared components, and design token validation
+- [x] **Phase 1: Foundation** - Layout shell, i18n system, shared components, and design token validation (completed 2026-02-09)
 - [ ] **Phase 2: Home Page** - Featured article, article grid with cards, category filtering
 - [ ] **Phase 3: Article Page** - Full MDX rendering, TOC, reading progress, share buttons, related articles
 - [ ] **Phase 4: Search Page** - Custom Pagefind search UI with filters, grid/list toggle
@@ -34,9 +34,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans:** 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md -- i18n translation system, GlowLine component, WCAG contrast documentation
-- [ ] 01-02-PLAN.md -- Layout components (Nav, LangSwitch, Header, Footer)
-- [ ] 01-03-PLAN.md -- BaseLayout integration, placeholder pages, 404, visual verification
+- [x] 01-01-PLAN.md -- i18n translation system, GlowLine component, WCAG contrast documentation
+- [x] 01-02-PLAN.md -- Layout components (Nav, LangSwitch, Header, Footer)
+- [x] 01-03-PLAN.md -- BaseLayout integration, placeholder pages, 404, visual verification
 
 ### Phase 2: Home Page
 **Goal**: Users land on the home page and can browse articles through a featured article hero and a filterable responsive grid of article cards.
@@ -116,7 +116,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|---------------|--------|-----------|
-| 1. Foundation | 0/3 | Planning complete | - |
+| 1. Foundation | 3/3 | ✓ Complete | 2026-02-09 |
 | 2. Home Page | 0/TBD | Not started | - |
 | 3. Article Page | 0/TBD | Not started | - |
 | 4. Search Page | 0/TBD | Not started | - |
