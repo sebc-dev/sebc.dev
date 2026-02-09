@@ -212,7 +212,7 @@
   border-top-right-radius: 0 !important;
 }
 
-/* Copy button: inside code block, top-right */
+/* Copy button: inside code block, top-right, no border */
 .expressive-code .copy {
   inset-block-start: calc(var(--ec-brdWd, 0px) + 0.5rem) !important;
   inset-inline-end: calc(var(--ec-brdWd, 0px) + 0.5rem) !important;
@@ -220,6 +220,12 @@
 .expressive-code .frame.has-title .copy,
 .expressive-code .frame:not(.has-title) .copy {
   inset-block-start: calc(2.45rem + 0.5rem) !important;
+}
+.expressive-code .copy button::before {
+  display: none !important;
+}
+.expressive-code .copy button div {
+  display: none !important;
 }
 
 /* ---- HEADING ANCHORS ---- */
