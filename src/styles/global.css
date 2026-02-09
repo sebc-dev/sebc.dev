@@ -239,9 +239,9 @@
 }
 .mobile-copy-feedback {
   position: absolute;
-  top: 0.75rem;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%) translateY(-4px);
+  transform: translate(-50%, -50%) scale(0.9);
   font-family: var(--font-code);
   font-size: 0.75rem;
   font-weight: 600;
@@ -260,7 +260,7 @@
 }
 .mobile-copy-feedback.show {
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
+  transform: translate(-50%, -50%) scale(1);
 }
 
 /* ---- HEADING ANCHORS ---- */

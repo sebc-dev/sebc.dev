@@ -233,14 +233,14 @@ if (article.data.translationSlug) {
         }
 
         // Show feedback overlay
-        const existing = pre.querySelector(".mobile-copy-feedback");
+        const existing = frame.querySelector(".mobile-copy-feedback");
         if (existing) existing.remove();
 
         const feedback = document.createElement("div");
         feedback.className = "mobile-copy-feedback";
         feedback.textContent =
           document.documentElement.lang === "fr" ? "Copié !" : "Copied!";
-        pre.appendChild(feedback);
+        frame.appendChild(feedback);
 
         requestAnimationFrame(() => feedback.classList.add("show"));
         setTimeout(() => {
