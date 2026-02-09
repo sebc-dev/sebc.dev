@@ -1,0 +1,25 @@
+---
+interface Props {
+  label: string;
+  variant?: "default" | "active" | "badge";
+  class?: string;
+}
+
+const { label, variant = "default", class: className } = Astro.props;
+
+const variantClasses = {
+  default: "text-text-secondary border-border",
+  active: "text-teal-bright border-teal/20 bg-teal-dim",
+  badge: "text-teal bg-canvas/80 backdrop-blur-sm border-teal/20",
+};
+---
+
+<span
+  class:list={[
+    "text-xs font-code px-2.5 py-1 rounded-xs border",
+    variantClasses[variant],
+    className,
+  ]}
+>
+  {label}
+</span>
