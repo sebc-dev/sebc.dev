@@ -1,6 +1,6 @@
 {
   "name": "sebc-dev",
   "compatibility_date": "2025-01-01",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": ["nodejs_compat", "nodejs_compat_populate_process_env"],
   "pages_build_output_dir": "dist",
 }
