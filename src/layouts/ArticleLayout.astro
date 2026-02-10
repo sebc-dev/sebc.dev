@@ -58,6 +58,11 @@ if (article.data.translationSlug) {
             <meta data-pagefind-filter="tag[content]" content={tag} />
           ))
         }
+        {
+          article.data.pillarTags.map((pillar) => (
+            <meta data-pagefind-filter="tag[content]" content={pillar} />
+          ))
+        }
         <!-- Pagefind metadata -->
         <meta
           data-pagefind-meta="title[content]"

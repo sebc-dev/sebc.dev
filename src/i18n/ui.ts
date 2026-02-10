@@ -49,6 +49,22 @@ export const ui = {
     "search.dateTo": "To",
     "search.readingTime": "Reading time",
     "search.minutes": "min",
+    "about.description": "About the author and blog philosophy",
+    "about.hero.tagline": "[Placeholder: Learn in public tagline]",
+    "about.hero.intro":
+      "[Placeholder: Short intro about learn in public philosophy at the intersection of AI x Engineering x UX]",
+    "about.hero.bio": "[Placeholder: Short bio - who you are, background]",
+    "about.pillar.ia.title": "AI",
+    "about.pillar.ia.description":
+      "[Placeholder: Short description of AI pillar focus]",
+    "about.pillar.engineering.title": "Engineering",
+    "about.pillar.engineering.description":
+      "[Placeholder: Short description of Engineering pillar focus]",
+    "about.pillar.ux.title": "UX",
+    "about.pillar.ux.description":
+      "[Placeholder: Short description of UX pillar focus]",
+    "about.cta": "Discover my articles",
+    "about.photo.alt": "Profile photo",
   },
   fr: {
     "nav.home": "Accueil",
@@ -94,5 +110,21 @@ export const ui = {
     "search.dateTo": "Au",
     "search.readingTime": "Temps de lecture",
     "search.minutes": "min",
+    "about.description": "A propos de l'auteur et philosophie du blog",
+    "about.hero.tagline": "[Placeholder: Accroche learn in public]",
+    "about.hero.intro":
+      "[Placeholder: Courte intro sur la philosophie learn in public a l'intersection IA x Ingenierie x UX]",
+    "about.hero.bio": "[Placeholder: Courte bio - qui vous etes, parcours]",
+    "about.pillar.ia.title": "IA",
+    "about.pillar.ia.description":
+      "[Placeholder: Courte description du pilier IA]",
+    "about.pillar.engineering.title": "Ingenierie",
+    "about.pillar.engineering.description":
+      "[Placeholder: Courte description du pilier Ingenierie]",
+    "about.pillar.ux.title": "UX",
+    "about.pillar.ux.description":
+      "[Placeholder: Courte description du pilier UX]",
+    "about.cta": "Decouvrir mes articles",
+    "about.photo.alt": "Photo de profil",
   },
 } as const;

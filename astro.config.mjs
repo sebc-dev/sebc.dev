@@ -22,7 +22,11 @@ export default defineConfig({
         rehypeAutolinkHeadings,
         {
           behavior: "append",
-          properties: { class: "heading-anchor", ariaHidden: true, tabIndex: -1 },
+          properties: {
+            class: "heading-anchor",
+            ariaHidden: true,
+            tabIndex: -1,
+          },
           content: h("span.heading-anchor-icon", "#"),
         },
       ],
