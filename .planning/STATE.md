@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-09)
 
 **Core value:** Le site incarne les valeurs defendues (UX, performance, qualite) tout en permettant une publication reguliere d'articles. Le medium est le message.
-**Current focus:** Phase 5 - About Page (IN PROGRESS)
+**Current focus:** Phase 6 - SEO, Polish & Deployment (IN PROGRESS)
 
 ## Current Position
 
 Phase: 6 of 6 (Polish & SEO)
-Plan: 1 of ? in current phase (READY TO START)
-Status: Phase 5 (About Page) complete. Both plans 05-01 and 05-02 delivered.
-Last activity: 2026-02-10 -- Plan 05-02 complete with trailing slash fix and verification checkpoint approval
+Plan: 2 of ? in current phase (READY TO START)
+Status: Plan 06-01 (SEO Infrastructure) complete. OG, Twitter Card, canonical, hreflang, JSON-LD, RSS all wired.
+Last activity: 2026-02-10 -- Plan 06-01 complete in 5min, all pages have SEO meta tags
 
-Progress: [██████████████] 78%
+Progress: [███████████████] 83%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
+- Total plans completed: 12
 - Average duration: 9min
-- Total execution time: ~1.7 hours
+- Total execution time: ~1.8 hours
 
 **By Phase:**
 
@@ -32,10 +32,11 @@ Progress: [██████████████] 78%
 | 03-article-page | 2 | 47min | 24min |
 | 04-search-page | 3 | 25min | 8min |
 | 05-about-page | 2 | 12min | 6min |
+| 06-seo-polish-deployment | 1 | 5min | 5min |
 
 **Recent Trend:**
-- Last 5 plans: 04-01 (3min), 04-02 (6min), 04-03 (16min), 05-01 (4min), 05-02 (8min)
-- Trend: 05-02 required checkpoint fix for trailing slash, clean execution otherwise
+- Last 5 plans: 04-02 (6min), 04-03 (16min), 05-01 (4min), 05-02 (8min), 06-01 (5min)
+- Trend: Clean execution, ESLint non-null assertion fixes handled inline
 
 *Updated after each plan completion*
 
@@ -83,6 +84,10 @@ Recent decisions affecting current work:
 - [05-01]: PillarBlock component uses getPillarColorClass for pillar-specific styling
 - [05-02]: CTA link removes trailing slash (/{lang} not /{lang}/) to prevent 404s on Cloudflare Pages
 - [05-02]: Hero section intentionally structures philosophy (tagline+intro) separately from bio paragraph (mt-6 spacing) per locked decision
+- [06-01]: Astro.site fallback pattern (Astro.site ?? new URL) instead of non-null assertions for ESLint compliance
+- [06-01]: x-default hreflang always points to English version per SEO best practice
+- [06-01]: translationMap computed via path replacement for static pages, translationSlug for articles
+- [06-01]: RSS descriptions use double dashes (--) not em dashes to avoid XML encoding issues
 
 ### Pending Todos
 
@@ -97,5 +102,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: 05-02-PLAN.md Task 1 complete - checkpoint for human verification
-Resume file: Continue from Task 2 after user approval
+Stopped at: Completed 06-01-PLAN.md
+Resume file: Continue with next plan in phase 06
