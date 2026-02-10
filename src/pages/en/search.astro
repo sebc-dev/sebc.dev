@@ -8,6 +8,14 @@ import { computeCategoryCounts, computeTagCounts } from "@/lib/filterCounts";
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
+const otherLang = lang === "en" ? "fr" : "en";
+const currentPath = Astro.url.pathname;
+const otherPath =
+  currentPath === `/${lang}`
+    ? `/${otherLang}`
+    : currentPath.replace(`/${lang}/`, `/${otherLang}/`);
+const translationMap = { [lang]: currentPath, [otherLang]: otherPath };
+
 const allArticles = await getArticlesByLocale(lang);
 const categories = await getCategories(lang);
 const tags = await getTags(lang);
@@ -21,7 +29,11 @@ const minReadingTime = Math.min(...readingTimes);
 const maxReadingTime = Math.max(...readingTimes);
 ---
 
-<BaseLayout title={t("search.title")} description={t("search.description")}>
+<BaseLayout
+  title={t("search.title")}
+  description={t("search.description")}
+  translationMap={translationMap}
+>
   <section
     data-pagefind-ignore
     class="max-w-6xl mx-auto px-6 lg:px-8 py-12 md:py-16"

@@ -6,6 +6,7 @@ import ShareButtons from "@/components/article/ShareButtons.astro";
 import RelatedArticles from "@/components/article/RelatedArticles.astro";
 import ReadingProgress from "@/components/ui/ReadingProgress.astro";
 import Tag from "@/components/ui/Tag.astro";
+import JsonLd from "@/components/seo/JsonLd.astro";
 import {
   getRelatedArticles,
   getArticleUrl,
@@ -42,8 +43,20 @@ if (article.data.translationSlug) {
 <BaseLayout
   title={article.data.title}
   description={article.data.description}
+  image={article.data.image}
+  type="article"
+  publishedDate={article.data.date}
   translationMap={translationMap}
 >
+  <JsonLd
+    headline={article.data.title}
+    description={article.data.description}
+    datePublished={article.data.date}
+    image={article.data.image}
+    authorName="Seb C"
+    authorUrl="https://sebc.dev"
+    url={articleUrl}
+  />
   <ReadingProgress />
   <div class="max-w-6xl mx-auto px-6 lg:px-8 py-12 md:py-16">
     <div class="lg:grid lg:grid-cols-[1fr_240px] lg:gap-12">

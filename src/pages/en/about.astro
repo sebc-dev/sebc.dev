@@ -6,6 +6,14 @@ import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
+const otherLang = lang === "en" ? "fr" : "en";
+const currentPath = Astro.url.pathname;
+const otherPath =
+  currentPath === `/${lang}`
+    ? `/${otherLang}`
+    : currentPath.replace(`/${lang}/`, `/${otherLang}/`);
+const translationMap = { [lang]: currentPath, [otherLang]: otherPath };
+
 // Social links for About page (GitHub, Twitter/X, LinkedIn, dev.to)
 // Same URLs as Footer.astro for GitHub/Twitter/LinkedIn. dev.to is About-only.
 const socialLinks = [
@@ -43,7 +51,11 @@ const pillarIcons = {
 };
 ---
 
-<BaseLayout title={t("nav.about")} description={t("about.description")}>
+<BaseLayout
+  title={t("nav.about")}
+  description={t("about.description")}
+  translationMap={translationMap}
+>
   <!-- HERO SECTION -->
   <section
     class="max-w-4xl mx-auto px-6 lg:px-8 pt-16 pb-12 md:pt-24 md:pb-16 fade-up"

@@ -19,9 +19,21 @@ const categories = await getCategories(lang);
 const gridArticles = featured
   ? allArticles.filter((a) => a.id !== featured.id)
   : allArticles;
+
+const otherLang = lang === "en" ? "fr" : "en";
+const currentPath = Astro.url.pathname;
+const otherPath =
+  currentPath === `/${lang}`
+    ? `/${otherLang}`
+    : currentPath.replace(`/${lang}/`, `/${otherLang}/`);
+const translationMap = { [lang]: currentPath, [otherLang]: otherPath };
 ---
 
-<BaseLayout title={t("nav.home")} description={t("home.description")}>
+<BaseLayout
+  title={t("nav.home")}
+  description={t("home.description")}
+  translationMap={translationMap}
+>
   <div class="max-w-6xl mx-auto px-6 lg:px-8">
     {featured && <FeaturedArticle article={featured} />}
 
