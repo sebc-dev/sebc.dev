@@ -11,6 +11,7 @@ import {
   getArticlesByLocale,
   getFeaturedArticle,
   getCategories,
+  getTags,
   getArticleUrl,
   getRelatedArticles,
 } from "./articles";
@@ -129,6 +130,13 @@ describe("getCategories", () => {
   it("returns sorted unique categories", async () => {
     const categories = await getCategories("en");
     expect(categories).toEqual(["design", "engineering"]);
+  });
+});
+
+describe("getTags", () => {
+  it("returns sorted unique tags across all articles", async () => {
+    const tags = await getTags("en");
+    expect(tags).toEqual(["css", "node", "typescript"]);
   });
 });
 
