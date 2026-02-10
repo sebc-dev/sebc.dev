@@ -1662,8 +1662,9 @@ const maxReadingTime = Math.max(...readingTimes);
     }
   }
 
-  initSearch();
-  document.addEventListener("astro:after-swap", initSearch);
+  document.addEventListener("astro:page-load", () => {
+    initSearch();
+  });
 </script>
 
 <style is:global>

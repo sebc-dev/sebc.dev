@@ -32,7 +32,7 @@ const t = useTranslations(lang);
 </section>
 
 <script>
-  function initCategoryFilter() {
+  document.addEventListener("astro:page-load", () => {
     const buttons = document.querySelectorAll("[data-filter]");
     const cards = document.querySelectorAll("[data-category]");
 
@@ -66,8 +66,5 @@ const t = useTranslations(lang);
         });
       });
     });
-  }
-
-  initCategoryFilter();
-  document.addEventListener("astro:after-swap", initCategoryFilter);
+  });
 </script>

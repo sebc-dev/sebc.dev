@@ -6,7 +6,7 @@
 </div>
 
 <script>
-  function initReadingProgress() {
+  document.addEventListener("astro:page-load", () => {
     const bar = document.getElementById("reading-progress");
     const article = document.querySelector("article");
     if (!bar || !article) return;
@@ -26,8 +26,5 @@
 
     window.addEventListener("scroll", updateProgress, { passive: true });
     updateProgress();
-  }
-
-  initReadingProgress();
-  document.addEventListener("astro:after-swap", initReadingProgress);
+  });
 </script>

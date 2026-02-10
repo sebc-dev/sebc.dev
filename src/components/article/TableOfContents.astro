@@ -40,7 +40,7 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 </nav>
 
 <script>
-  function initScrollSpy() {
+  document.addEventListener("astro:page-load", () => {
     const headings = document.querySelectorAll(
       "article :is(h2, h3)",
     ) as NodeListOf<HTMLHeadingElement>;
@@ -67,8 +67,5 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
     );
 
     headings.forEach((heading) => observer.observe(heading));
-  }
-
-  initScrollSpy();
-  document.addEventListener("astro:after-swap", initScrollSpy);
+  });
 </script>

@@ -118,7 +118,7 @@ const devtoUrl = buildDevToShareUrl(title, url);
 </div>
 
 <script>
-  function initCopyLink() {
+  document.addEventListener("astro:page-load", () => {
     const buttons = document.querySelectorAll(
       "[data-copy-url]",
     ) as NodeListOf<HTMLButtonElement>;
@@ -148,8 +148,5 @@ const devtoUrl = buildDevToShareUrl(title, url);
         }
       });
     });
-  }
-
-  initCopyLink();
-  document.addEventListener("astro:after-swap", initCopyLink);
+  });
 </script>
