@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-09)
 
 **Core value:** Le site incarne les valeurs defendues (UX, performance, qualite) tout en permettant une publication reguliere d'articles. Le medium est le message.
-**Current focus:** Phase 4 - Search Page (COMPLETE, pending verification)
+**Current focus:** Phase 5 - About Page (IN PROGRESS)
 
 ## Current Position
 
-Phase: 4 of 6 (Search Page)
-Plan: 3 of 3 in current phase (COMPLETE)
-Status: All plans complete. Human verification passed. Pending phase goal verification.
-Last activity: 2026-02-10 -- Plan 04-03 approved after iterative fixes (calendar, filters, pre-filter links)
+Phase: 5 of 6 (About Page)
+Plan: 1 of 2 in current phase (COMPLETE)
+Status: Plan 05-01 complete. Ready for 05-02.
+Last activity: 2026-02-10 -- Plan 05-01 complete (about i18n keys, pillar tag indexing, PillarBlock component)
 
-Progress: [████████████░] 67%
+Progress: [█████████████] 72%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10
-- Average duration: 10min
-- Total execution time: ~1.6 hours
+- Total plans completed: 11
+- Average duration: 9min
+- Total execution time: ~1.7 hours
 
 **By Phase:**
 
@@ -31,10 +31,11 @@ Progress: [████████████░] 67%
 | 02-home-page | 2 | 12min | 6min |
 | 03-article-page | 2 | 47min | 24min |
 | 04-search-page | 3 | 25min | 8min |
+| 05-about-page | 1 | 4min | 4min |
 
 **Recent Trend:**
-- Last 5 plans: 03-02 (45min), 04-01 (3min), 04-02 (6min), 04-03 (16min)
-- Trend: 04-03 included iterative checkpoint fixes (calendar, date filters, reading time slider)
+- Last 5 plans: 04-01 (3min), 04-02 (6min), 04-03 (16min), 05-01 (4min)
+- Trend: 05-01 clean foundation plan with no checkpoint fixes
 
 *Updated after each plan completion*
 
@@ -77,6 +78,9 @@ Recent decisions affecting current work:
 - [04-03]: Custom calendar picker instead of native date input (dark theme consistency)
 - [04-03]: Date/reading time filters are post-Pagefind (client-side filtering on loaded results)
 - [04-03]: Grid/list toggle initializes Pagefind on first click in initial state
+- [05-01]: Pillar tags indexed in same 'tag' namespace as regular tags for simplicity (no search page JS changes needed)
+- [05-01]: All about.* i18n text values are placeholders (user will provide real content later per locked decision)
+- [05-01]: PillarBlock component uses getPillarColorClass for pillar-specific styling
 
 ### Pending Todos
 
@@ -91,5 +95,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: Phase 4 all plans complete, pending verification
-Resume file: Ready for phase 4 verification then /gsd:plan-phase 5
+Stopped at: Completed 05-01-PLAN.md
+Resume file: Ready for 05-02 or next phase planning
