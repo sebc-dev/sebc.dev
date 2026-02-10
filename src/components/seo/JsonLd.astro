@@ -1,0 +1,58 @@
+---
+interface Props {
+  headline: string;
+  description: string;
+  datePublished: Date;
+  image?: string;
+  authorName: string;
+  authorUrl?: string;
+  url: string;
+}
+
+const {
+  headline,
+  description,
+  datePublished,
+  image,
+  authorName,
+  authorUrl,
+  url,
+} = Astro.props;
+
+const author: Record<string, string> = {
+  "@type": "Person",
+  name: authorName,
+};
+if (authorUrl) {
+  author.url = authorUrl;
+}
+
+const jsonLd: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline,
+  description,
+  datePublished: datePublished.toISOString(),
+  dateModified: datePublished.toISOString(),
+  url,
+  author: [author],
+  publisher: {
+    "@type": "Person",
+    name: authorName,
+  },
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": url,
+  },
+};
+
+if (image) {
+  const siteUrl = Astro.site ?? new URL("https://sebc.dev");
+  const absoluteImage = image.startsWith("http")
+    ? image
+    : new URL(image, siteUrl).href;
+  jsonLd.image = [absoluteImage];
+}
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

@@ -1,0 +1,80 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  type?: "website" | "article";
+  publishedDate?: Date;
+  translationMap?: Record<string, string>;
+}
+
+const {
+  title,
+  description,
+  image = "/images/og-default.png",
+  type = "website",
+  translationMap,
+} = Astro.props;
+
+const siteUrl = Astro.site ?? new URL("https://sebc.dev");
+const lang = Astro.currentLocale ?? "en";
+const canonicalURL = new URL(Astro.url.pathname, siteUrl).href;
+const ogImage = new URL(image, siteUrl).href;
+
+const ogLocale = lang === "fr" ? "fr_FR" : "en_US";
+const otherLang = lang === "en" ? "fr" : "en";
+
+// Build hreflang alternates
+const alternates: { lang: string; href: string }[] = [];
+
+// Current language
+alternates.push({ lang, href: canonicalURL });
+
+// Other language (if translation exists)
+if (translationMap?.[otherLang]) {
+  const otherHref = new URL(translationMap[otherLang], siteUrl).href;
+  alternates.push({ lang: otherLang, href: otherHref });
+}
+
+// x-default points to English version (or current if English not available)
+const xDefaultHref =
+  lang === "en"
+    ? canonicalURL
+    : translationMap?.["en"]
+      ? new URL(translationMap["en"], siteUrl).href
+      : canonicalURL;
+---
+
+<!-- Canonical URL -->
+<link rel="canonical" href={canonicalURL} />
+
+<!-- Hreflang alternates -->
+{
+  alternates.map((alt) => (
+    <link rel="alternate" hreflang={alt.lang} href={alt.href} />
+  ))
+}
+<link rel="alternate" hreflang="x-default" href={xDefaultHref} />
+
+<!-- Open Graph -->
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:site_name" content="sebc.dev" />
+<meta property="og:type" content={type} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:locale" content={ogLocale} />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<!-- RSS Autodiscovery -->
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title={`sebc.dev (${lang.toUpperCase()})`}
+  href={`/${lang}/rss.xml`}
+/>
