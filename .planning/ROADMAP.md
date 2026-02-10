@@ -80,9 +80,9 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 04-01-PLAN.md -- Pagefind instrumentation on ArticleLayout, getTags helper, search i18n strings
-- [ ] 04-02-PLAN.md -- Complete EN/FR search pages with Pagefind integration, sidebar filters, grid/list toggle, URL sync
-- [ ] 04-03-PLAN.md -- Cross-page pre-filter links (category badges, tags), visual verification checkpoint
+- [x] 04-01-PLAN.md -- Pagefind instrumentation on ArticleLayout, getTags helper, search i18n strings
+- [x] 04-02-PLAN.md -- Complete EN/FR search pages with Pagefind integration, sidebar filters, grid/list toggle, URL sync
+- [x] 04-03-PLAN.md -- Cross-page pre-filter links (category badges, tags), visual verification checkpoint
 
 ### Phase 5: About Page
 **Goal**: Users can learn about the blog author, the "learn in public" philosophy, and find social media links.
@@ -107,11 +107,12 @@ Plans:
   3. RSS feeds are available at /en/rss.xml and /fr/rss.xml with autodiscovery links in the HTML head
   4. User experiences smooth page transitions via View Transitions (ClientRouter) when navigating between pages
   5. Site is deployed on Cloudflare Pages with Cloudflare Analytics integrated, and all pages score >= 90 on Lighthouse Performance, Accessibility, and SEO
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 06-01: TBD
-- [ ] 06-02: TBD
+- [ ] 06-01-PLAN.md -- SEO components (OG, Twitter Cards, canonical/hreflang, RSS autodiscovery), JsonLd component, RSS feed endpoints, wiring into all pages
+- [ ] 06-02-PLAN.md -- View Transitions (ClientRouter) + migration of all 11 scripts from astro:after-swap to astro:page-load
+- [ ] 06-03-PLAN.md -- Default OG image, Lighthouse CI config update, quality validation, Cloudflare Analytics checkpoint
 
 ## Progress
 
@@ -125,4 +126,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 3. Article Page | 2/2 | ✓ Complete | 2026-02-09 |
 | 4. Search Page | 3/3 | ✓ Complete | 2026-02-10 |
 | 5. About Page | 2/2 | ✓ Complete | 2026-02-10 |
-| 6. SEO, Polish & Deployment | 0/TBD | Not started | - |
+| 6. SEO, Polish & Deployment | 0/3 | In progress | - |
