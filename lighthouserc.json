@@ -5,7 +5,9 @@
       "url": [
         "http://localhost:4321/en/",
         "http://localhost:4321/fr/",
-        "http://localhost:4321/en/search"
+        "http://localhost:4321/en/search",
+        "http://localhost:4321/en/articles/en-building-design-system",
+        "http://localhost:4321/en/about"
       ],
       "numberOfRuns": 1
     },
