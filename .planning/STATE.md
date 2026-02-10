@@ -10,17 +10,17 @@ See: .planning/PROJECT.md (updated 2026-02-09)
 ## Current Position
 
 Phase: 6 of 6 (Polish & SEO)
-Plan: 2 of ? in current phase (READY TO START)
-Status: Plan 06-01 (SEO Infrastructure) complete. OG, Twitter Card, canonical, hreflang, JSON-LD, RSS all wired.
-Last activity: 2026-02-10 -- Plan 06-01 complete in 5min, all pages have SEO meta tags
+Plan: 3 of ? in current phase (READY TO START)
+Status: Plan 06-02 (View Transitions) complete. ClientRouter active, all 11 scripts migrated to astro:page-load.
+Last activity: 2026-02-10 -- Plan 06-02 complete in 3min, View Transitions enabled
 
-Progress: [███████████████] 83%
+Progress: [████████████████] 87%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
-- Average duration: 9min
+- Total plans completed: 13
+- Average duration: 8min
 - Total execution time: ~1.8 hours
 
 **By Phase:**
@@ -32,11 +32,11 @@ Progress: [███████████████] 83%
 | 03-article-page | 2 | 47min | 24min |
 | 04-search-page | 3 | 25min | 8min |
 | 05-about-page | 2 | 12min | 6min |
-| 06-seo-polish-deployment | 1 | 5min | 5min |
+| 06-seo-polish-deployment | 2 | 8min | 4min |
 
 **Recent Trend:**
-- Last 5 plans: 04-02 (6min), 04-03 (16min), 05-01 (4min), 05-02 (8min), 06-01 (5min)
-- Trend: Clean execution, ESLint non-null assertion fixes handled inline
+- Last 5 plans: 04-03 (16min), 05-01 (4min), 05-02 (8min), 06-01 (5min), 06-02 (3min)
+- Trend: Fast execution, View Transitions migration was mechanical pattern replacement
 
 *Updated after each plan completion*
 
@@ -88,6 +88,9 @@ Recent decisions affecting current work:
 - [06-01]: x-default hreflang always points to English version per SEO best practice
 - [06-01]: translationMap computed via path replacement for static pages, translationSlug for articles
 - [06-01]: RSS descriptions use double dashes (--) not em dashes to avoid XML encoding issues
+- [06-02]: Consolidated ArticleLayout 4 script blocks into single astro:page-load handler with IIFEs
+- [06-02]: Search pages keep initSearch as named function inside page-load for readability
+- [06-02]: Script init pattern now astro:page-load (supersedes 02-02 after-swap pattern since ClientRouter is active)
 
 ### Pending Todos
 
@@ -102,5 +105,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: Completed 06-01-PLAN.md
+Stopped at: Completed 06-02-PLAN.md
 Resume file: Continue with next plan in phase 06
