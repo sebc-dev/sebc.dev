@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Home Page** - Featured article, article grid with cards, category filtering (completed 2026-02-09)
 - [x] **Phase 3: Article Page** - Full MDX rendering, TOC, reading progress, share buttons, related articles (completed 2026-02-09)
 - [x] **Phase 4: Search Page** - Custom Pagefind search UI with filters, grid/list toggle (completed 2026-02-10)
-- [ ] **Phase 5: About Page** - Personal presentation and social links
+- [x] **Phase 5: About Page** - Personal presentation and social links (completed 2026-02-10)
 - [ ] **Phase 6: SEO, Polish & Deployment** - Meta tags, structured data, RSS, View Transitions, analytics, Lighthouse validation
 
 ## Phase Details
@@ -94,8 +94,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 05-01-PLAN.md -- i18n keys, Pagefind pillar tag indexing, PillarBlock component
-- [ ] 05-02-PLAN.md -- EN/FR About pages (hero, pillar blocks, social icons, CTA), visual verification
+- [x] 05-01-PLAN.md -- i18n keys, Pagefind pillar tag indexing, PillarBlock component
+- [x] 05-02-PLAN.md -- EN/FR About pages (hero, pillar blocks, social icons, CTA), visual verification
 
 ### Phase 6: SEO, Polish & Deployment
 **Goal**: Every page has proper SEO meta tags, structured data, RSS feeds, View Transitions, analytics, and passes Lighthouse audits -- the site is production-ready.
@@ -124,5 +124,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 2. Home Page | 2/2 | ✓ Complete | 2026-02-09 |
 | 3. Article Page | 2/2 | ✓ Complete | 2026-02-09 |
 | 4. Search Page | 3/3 | ✓ Complete | 2026-02-10 |
-| 5. About Page | 0/TBD | Not started | - |
+| 5. About Page | 2/2 | ✓ Complete | 2026-02-10 |
 | 6. SEO, Polish & Deployment | 0/TBD | Not started | - |
