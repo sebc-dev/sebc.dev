@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-09)
 
 **Core value:** Le site incarne les valeurs defendues (UX, performance, qualite) tout en permettant une publication reguliere d'articles. Le medium est le message.
-**Current focus:** Phase 4 - Search Page (in progress)
+**Current focus:** Phase 4 - Search Page (COMPLETE, pending verification)
 
 ## Current Position
 
 Phase: 4 of 6 (Search Page)
-Plan: 2 of 3 in current phase (COMPLETE)
-Status: Plan 04-02 complete. Full search pages built with Pagefind. Ready for Plan 04-03.
-Last activity: 2026-02-09 -- Completed 04-02-PLAN.md (search page UI)
+Plan: 3 of 3 in current phase (COMPLETE)
+Status: All plans complete. Human verification passed. Pending phase goal verification.
+Last activity: 2026-02-10 -- Plan 04-03 approved after iterative fixes (calendar, filters, pre-filter links)
 
-Progress: [███████████░] 60%
+Progress: [████████████░] 67%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
-- Average duration: 9min
-- Total execution time: 1.34 hours
+- Total plans completed: 10
+- Average duration: 10min
+- Total execution time: ~1.6 hours
 
 **By Phase:**
 
@@ -30,11 +30,11 @@ Progress: [███████████░] 60%
 | 01-foundation | 3 | 9min | 3min |
 | 02-home-page | 2 | 12min | 6min |
 | 03-article-page | 2 | 47min | 24min |
-| 04-search-page | 2 | 9min | 5min |
+| 04-search-page | 3 | 25min | 8min |
 
 **Recent Trend:**
-- Last 5 plans: 03-01 (2min), 03-02 (45min), 04-01 (3min), 04-02 (6min)
-- Trend: 04-02 moderate -- full search page implementation with Pagefind JS API
+- Last 5 plans: 03-02 (45min), 04-01 (3min), 04-02 (6min), 04-03 (16min)
+- Trend: 04-03 included iterative checkpoint fixes (calendar, date filters, reading time slider)
 
 *Updated after each plan completion*
 
@@ -73,6 +73,10 @@ Recent decisions affecting current work:
 - [04-02]: Mobile drawer slides from left matching sidebar position
 - [04-02]: Safe DOM reference pattern with const aliases after null guard for ESLint compliance
 - [04-02]: Filter counts server-computed initially, then updated from Pagefind totalFilters
+- [04-03]: Stretch-link pattern for ArticleCard and FeaturedArticle (no nested anchors)
+- [04-03]: Custom calendar picker instead of native date input (dark theme consistency)
+- [04-03]: Date/reading time filters are post-Pagefind (client-side filtering on loaded results)
+- [04-03]: Grid/list toggle initializes Pagefind on first click in initial state
 
 ### Pending Todos
 
@@ -80,12 +84,12 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Research]: ~~Pagefind custom search UI integration with Astro is MEDIUM confidence~~ RESOLVED in 04-02: Full Pagefind JS API integration working
+- [Research]: ~~Pagefind custom search UI integration with Astro is MEDIUM confidence~~ RESOLVED in 04-02
 - [Research]: About page mockup (about.html) must be redesigned -- do not implement as-is
 - [Research]: Trailing slash config must be validated on Cloudflare Pages staging early
 
 ## Session Continuity
 
-Last session: 2026-02-09
-Stopped at: Completed 04-02-PLAN.md (search page UI with Pagefind)
-Resume file: Ready for /gsd:execute-phase 4 (plan 03 next)
+Last session: 2026-02-10
+Stopped at: Phase 4 all plans complete, pending verification
+Resume file: Ready for phase 4 verification then /gsd:plan-phase 5
