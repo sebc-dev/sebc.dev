@@ -44,6 +44,11 @@ export const ui = {
     "search.resultCount": "results",
     "search.resultCountSingular": "result",
     "search.loading": "Loading search...",
+    "search.dateRange": "Date range",
+    "search.dateFrom": "From",
+    "search.dateTo": "To",
+    "search.readingTime": "Reading time",
+    "search.minutes": "min",
   },
   fr: {
     "nav.home": "Accueil",
@@ -84,5 +89,10 @@ export const ui = {
     "search.resultCount": "résultats",
     "search.resultCountSingular": "résultat",
     "search.loading": "Chargement de la recherche...",
+    "search.dateRange": "Période",
+    "search.dateFrom": "Du",
+    "search.dateTo": "Au",
+    "search.readingTime": "Temps de lecture",
+    "search.minutes": "min",
   },
 } as const;
