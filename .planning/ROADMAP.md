@@ -91,10 +91,11 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. User can read a personal presentation covering the blog's philosophy (learn in public, IA x Ingenierie x UX intersection) in both FR and EN
   2. User can access social media links (GitHub, Twitter/X, LinkedIn, dev.to) from the About page
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 05-01: TBD
+- [ ] 05-01-PLAN.md -- i18n keys, Pagefind pillar tag indexing, PillarBlock component
+- [ ] 05-02-PLAN.md -- EN/FR About pages (hero, pillar blocks, social icons, CTA), visual verification
 
 ### Phase 6: SEO, Polish & Deployment
 **Goal**: Every page has proper SEO meta tags, structured data, RSS feeds, View Transitions, analytics, and passes Lighthouse audits -- the site is production-ready.
