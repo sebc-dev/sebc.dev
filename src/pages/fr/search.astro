@@ -3,6 +3,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import ArticleCard from "@/components/article/ArticleCard.astro";
 import { getArticlesByLocale, getCategories, getTags } from "@/lib/articles";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+import { computeCategoryCounts, computeTagCounts } from "@/lib/filterCounts";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -11,18 +12,8 @@ const allArticles = await getArticlesByLocale(lang);
 const categories = await getCategories(lang);
 const tags = await getTags(lang);
 
-// Compute initial filter counts
-const categoryCounts: Record<string, number> = {};
-for (const cat of categories) {
-  categoryCounts[cat] = allArticles.filter(
-    (a) => a.data.category === cat,
-  ).length;
-}
-
-const tagCounts: Record<string, number> = {};
-for (const tag of tags) {
-  tagCounts[tag] = allArticles.filter((a) => a.data.tags.includes(tag)).length;
-}
+const categoryCounts = computeCategoryCounts(allArticles, categories);
+const tagCounts = computeTagCounts(allArticles, tags);
 
 // Reading time and date ranges for filters
 const readingTimes = allArticles.map((a) => a.data.readingTime);

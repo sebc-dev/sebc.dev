@@ -1,5 +1,10 @@
 ---
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+import {
+  buildTwitterShareUrl,
+  buildLinkedInShareUrl,
+  buildDevToShareUrl,
+} from "@/lib/shareUrls";
 
 interface Props {
   url: string;
@@ -10,11 +15,9 @@ const { url, title } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-// Build share URLs
-const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
-const linkedinUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`;
-const devtoContent = `---\ntitle: ${title}\npublished: false\n---\n\nOriginally posted at ${url}`;
-const devtoUrl = `https://dev.to/new?prefill=${encodeURIComponent(devtoContent)}`;
+const twitterUrl = buildTwitterShareUrl(title, url);
+const linkedinUrl = buildLinkedInShareUrl(title, url);
+const devtoUrl = buildDevToShareUrl(title, url);
 ---
 
 <div>
