@@ -230,133 +230,135 @@ if (article.data.translationSlug) {
 </BaseLayout>
 
 <script>
-  function initHeadingAnchorCopy() {
-    document.querySelectorAll(".heading-anchor").forEach((anchor: Element) => {
-      anchor.addEventListener("click", async (e: Event) => {
-        e.preventDefault();
-        const hash = anchor.getAttribute("href");
-        if (!hash) return;
+  document.addEventListener("astro:page-load", () => {
+    // Heading anchor copy
+    (function () {
+      document
+        .querySelectorAll(".heading-anchor")
+        .forEach((anchor: Element) => {
+          anchor.addEventListener("click", async (e: Event) => {
+            e.preventDefault();
+            const hash = anchor.getAttribute("href");
+            if (!hash) return;
 
-        const url = window.location.origin + window.location.pathname + hash;
+            const url =
+              window.location.origin + window.location.pathname + hash;
 
-        try {
-          await navigator.clipboard.writeText(url);
-          // Update URL hash for navigation
-          window.history.pushState(null, "", hash);
-          // Visual feedback
-          anchor.classList.add("text-teal-bright");
-          setTimeout(() => anchor.classList.remove("text-teal-bright"), 1500);
-        } catch (error) {
-          console.error("Failed to copy URL:", error);
-        }
-      });
-    });
-  }
-
-  initHeadingAnchorCopy();
-  document.addEventListener("astro:after-swap", initHeadingAnchorCopy);
-
-  function initCodeBlockHeaders() {
-    document.querySelectorAll(".expressive-code .frame").forEach((frame) => {
-      const header = frame.querySelector(".header");
-      const pre = frame.querySelector("pre[data-language]");
-      if (!header || !pre) return;
-      if (header.querySelector(".ec-lang-label")) return;
-
-      const lang = pre.getAttribute("data-language") || "";
-
-      // Language label always appended at end (right side via margin-left:auto)
-      const label = document.createElement("span");
-      label.className = "ec-lang-label";
-      label.textContent = lang;
-      header.appendChild(label);
-    });
-  }
-
-  initCodeBlockHeaders();
-  document.addEventListener("astro:after-swap", initCodeBlockHeaders);
-
-  function initMobileCodeCopy() {
-    const isMobile = window.matchMedia("(max-width: 1023px)").matches;
-    if (!isMobile) return;
-
-    document.querySelectorAll(".expressive-code .frame").forEach((frame) => {
-      const pre = frame.querySelector("pre");
-      if (!pre || pre.hasAttribute("data-mobile-copy")) return;
-      pre.setAttribute("data-mobile-copy", "");
-
-      pre.addEventListener("click", async () => {
-        const code = pre.querySelector("code");
-        if (!code) return;
-        const text = code.innerText || code.textContent || "";
-
-        try {
-          await navigator.clipboard.writeText(text);
-        } catch {
-          return;
-        }
-
-        // Show feedback overlay
-        const existing = document.querySelector(".mobile-copy-feedback");
-        if (existing) existing.remove();
-
-        const feedback = document.createElement("div");
-        feedback.className = "mobile-copy-feedback";
-        feedback.textContent =
-          document.documentElement.lang === "fr" ? "Copié !" : "Copied!";
-        document.body.appendChild(feedback);
-
-        // Double-RAF ensures element is painted before triggering transition
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => feedback.classList.add("show"));
+            try {
+              await navigator.clipboard.writeText(url);
+              // Update URL hash for navigation
+              window.history.pushState(null, "", hash);
+              // Visual feedback
+              anchor.classList.add("text-teal-bright");
+              setTimeout(
+                () => anchor.classList.remove("text-teal-bright"),
+                1500,
+              );
+            } catch (error) {
+              console.error("Failed to copy URL:", error);
+            }
+          });
         });
-        setTimeout(() => {
-          feedback.classList.remove("show");
-          setTimeout(() => feedback.remove(), 200);
-        }, 1200);
+    })();
+
+    // Code block headers
+    (function () {
+      document.querySelectorAll(".expressive-code .frame").forEach((frame) => {
+        const header = frame.querySelector(".header");
+        const pre = frame.querySelector("pre[data-language]");
+        if (!header || !pre) return;
+        if (header.querySelector(".ec-lang-label")) return;
+
+        const lang = pre.getAttribute("data-language") || "";
+
+        // Language label always appended at end (right side via margin-left:auto)
+        const label = document.createElement("span");
+        label.className = "ec-lang-label";
+        label.textContent = lang;
+        header.appendChild(label);
       });
-    });
-  }
+    })();
 
-  initMobileCodeCopy();
-  document.addEventListener("astro:after-swap", initMobileCodeCopy);
+    // Mobile code copy
+    (function () {
+      const isMobile = window.matchMedia("(max-width: 1023px)").matches;
+      if (!isMobile) return;
 
-  function initMobileToc() {
-    const btn = document.getElementById("toc-mobile-btn");
-    const ov = document.getElementById("toc-mobile-overlay");
-    const pn = document.getElementById("toc-mobile-panel");
-    if (!btn || !ov || !pn) return;
-    const overlay = ov as HTMLElement;
-    const panel = pn as HTMLElement;
+      document.querySelectorAll(".expressive-code .frame").forEach((frame) => {
+        const pre = frame.querySelector("pre");
+        if (!pre || pre.hasAttribute("data-mobile-copy")) return;
+        pre.setAttribute("data-mobile-copy", "");
 
-    function open() {
-      overlay.classList.remove("pointer-events-none", "opacity-0");
-      overlay.classList.add("pointer-events-auto", "opacity-100");
-      panel.classList.remove("translate-x-full");
-      panel.classList.add("translate-x-0");
-      document.body.style.overflow = "hidden";
-    }
+        pre.addEventListener("click", async () => {
+          const code = pre.querySelector("code");
+          if (!code) return;
+          const text = code.innerText || code.textContent || "";
 
-    function close() {
-      overlay.classList.add("pointer-events-none", "opacity-0");
-      overlay.classList.remove("pointer-events-auto", "opacity-100");
-      panel.classList.add("translate-x-full");
-      panel.classList.remove("translate-x-0");
-      document.body.style.overflow = "";
-    }
+          try {
+            await navigator.clipboard.writeText(text);
+          } catch {
+            return;
+          }
 
-    btn.addEventListener("click", open);
-    overlay
-      .querySelector("[data-toc-backdrop]")
-      ?.addEventListener("click", close);
-    overlay.querySelector("[data-toc-close]")?.addEventListener("click", close);
-    overlay.querySelectorAll("[data-toc-mobile-link]").forEach((link) => {
-      link.addEventListener("click", () => {
-        close();
+          // Show feedback overlay
+          const existing = document.querySelector(".mobile-copy-feedback");
+          if (existing) existing.remove();
+
+          const feedback = document.createElement("div");
+          feedback.className = "mobile-copy-feedback";
+          feedback.textContent =
+            document.documentElement.lang === "fr" ? "Copié !" : "Copied!";
+          document.body.appendChild(feedback);
+
+          // Double-RAF ensures element is painted before triggering transition
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => feedback.classList.add("show"));
+          });
+          setTimeout(() => {
+            feedback.classList.remove("show");
+            setTimeout(() => feedback.remove(), 200);
+          }, 1200);
+        });
       });
-    });
-  }
+    })();
 
-  initMobileToc();
-  document.addEventListener("astro:after-swap", initMobileToc);
+    // Mobile TOC
+    (function () {
+      const btn = document.getElementById("toc-mobile-btn");
+      const ov = document.getElementById("toc-mobile-overlay");
+      const pn = document.getElementById("toc-mobile-panel");
+      if (!btn || !ov || !pn) return;
+      const overlay = ov as HTMLElement;
+      const panel = pn as HTMLElement;
+
+      function open() {
+        overlay.classList.remove("pointer-events-none", "opacity-0");
+        overlay.classList.add("pointer-events-auto", "opacity-100");
+        panel.classList.remove("translate-x-full");
+        panel.classList.add("translate-x-0");
+        document.body.style.overflow = "hidden";
+      }
+
+      function close() {
+        overlay.classList.add("pointer-events-none", "opacity-0");
+        overlay.classList.remove("pointer-events-auto", "opacity-100");
+        panel.classList.add("translate-x-full");
+        panel.classList.remove("translate-x-0");
+        document.body.style.overflow = "";
+      }
+
+      btn.addEventListener("click", open);
+      overlay
+        .querySelector("[data-toc-backdrop]")
+        ?.addEventListener("click", close);
+      overlay
+        .querySelector("[data-toc-close]")
+        ?.addEventListener("click", close);
+      overlay.querySelectorAll("[data-toc-mobile-link]").forEach((link) => {
+        link.addEventListener("click", () => {
+          close();
+        });
+      });
+    })();
+  });
 </script>
