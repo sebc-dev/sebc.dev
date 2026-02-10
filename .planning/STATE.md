@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-09)
 
 **Core value:** Le site incarne les valeurs defendues (UX, performance, qualite) tout en permettant une publication reguliere d'articles. Le medium est le message.
-**Current focus:** Phase 6 - SEO, Polish & Deployment (IN PROGRESS)
+**Current focus:** All phases complete -- site production-ready
 
 ## Current Position
 
 Phase: 6 of 6 (Polish & SEO)
-Plan: 3 of ? in current phase (READY TO START)
-Status: Plan 06-02 (View Transitions) complete. ClientRouter active, all 11 scripts migrated to astro:page-load.
-Last activity: 2026-02-10 -- Plan 06-02 complete in 3min, View Transitions enabled
+Plan: 3 of 3 in current phase (COMPLETE)
+Status: Phase 6 complete. All 3 plans executed: SEO infrastructure, View Transitions, quality validation. Full roadmap done.
+Last activity: 2026-02-10 -- Plan 06-03 complete in 4min, quality validated and user-approved
 
-Progress: [████████████████] 87%
+Progress: [████████████████████] 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 13
+- Total plans completed: 14
 - Average duration: 8min
-- Total execution time: ~1.8 hours
+- Total execution time: ~1.9 hours
 
 **By Phase:**
 
@@ -32,11 +32,11 @@ Progress: [████████████████] 87%
 | 03-article-page | 2 | 47min | 24min |
 | 04-search-page | 3 | 25min | 8min |
 | 05-about-page | 2 | 12min | 6min |
-| 06-seo-polish-deployment | 2 | 8min | 4min |
+| 06-seo-polish-deployment | 3 | 12min | 4min |
 
 **Recent Trend:**
-- Last 5 plans: 04-03 (16min), 05-01 (4min), 05-02 (8min), 06-01 (5min), 06-02 (3min)
-- Trend: Fast execution, View Transitions migration was mechanical pattern replacement
+- Last 5 plans: 05-01 (4min), 05-02 (8min), 06-01 (5min), 06-02 (3min), 06-03 (4min)
+- Trend: Consistent fast execution across final phase, all quality gates passing
 
 *Updated after each plan completion*
 
@@ -91,6 +91,8 @@ Recent decisions affecting current work:
 - [06-02]: Consolidated ArticleLayout 4 script blocks into single astro:page-load handler with IIFEs
 - [06-02]: Search pages keep initSearch as named function inside page-load for readability
 - [06-02]: Script init pattern now astro:page-load (supersedes 02-02 after-swap pattern since ClientRouter is active)
+- [06-03]: Default OG image uses site dark theme colors for brand-consistent social sharing fallback
+- [06-03]: Lighthouse CI expanded to 5 URLs covering all distinct page templates
 
 ### Pending Todos
 
@@ -105,5 +107,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: Completed 06-02-PLAN.md
-Resume file: Continue with next plan in phase 06
+Stopped at: Completed 06-03-PLAN.md -- ALL PHASES COMPLETE
+Resume file: N/A -- full roadmap executed
