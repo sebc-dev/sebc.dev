@@ -1,0 +1,52 @@
+---
+import { getPillarColorClass } from "@/lib/pillarTags";
+
+interface Props {
+  pillar: "IA" | "Ingenierie" | "UX";
+  title: string;
+  description: string;
+  lang: string;
+  icon: string;
+}
+
+const { pillar, title, description, lang, icon } = Astro.props;
+
+// Map display pillar names to actual schema values (with accent for Ingénierie)
+const pillarTagMap = { IA: "IA", Ingenierie: "Ingénierie", UX: "UX" };
+const pillarLabel = pillarTagMap[pillar];
+const searchUrl = `/${lang}/search?tags=${encodeURIComponent(pillarLabel)}`;
+
+const colorClass = getPillarColorClass(pillar as "IA" | "Ingénierie" | "UX");
+---
+
+<a
+  href={searchUrl}
+  class="block p-6 rounded-xs border border-border bg-surface hover:border-teal/30 hover:shadow-[0_0_16px_var(--color-teal-glow)] transition-all duration-300 group"
+  data-pagefind-ignore
+>
+  <div
+    class={`w-12 h-12 rounded-xs flex items-center justify-center mb-4 ${colorClass}`}
+  >
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <Fragment set:html={icon} />
+    </svg>
+  </div>
+  <h3
+    class="text-lg font-semibold text-text-primary mb-2 group-hover:text-teal-bright transition-colors"
+  >
+    {title}
+  </h3>
+  <p class="text-sm text-text-secondary leading-relaxed">
+    {description}
+  </p>
+</a>
