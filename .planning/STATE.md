@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-09)
 
 ## Current Position
 
-Phase: 5 of 6 (About Page)
-Plan: 2 of 2 in current phase (IN PROGRESS - CHECKPOINT)
-Status: Plan 05-02 Task 1 complete (About pages built). Awaiting human verification.
-Last activity: 2026-02-10 -- Plan 05-02 Task 1 complete (EN/FR About pages with hero, pillar blocks, social icons, CTA)
+Phase: 6 of 6 (Polish & SEO)
+Plan: 1 of ? in current phase (READY TO START)
+Status: Phase 5 (About Page) complete. Both plans 05-01 and 05-02 delivered.
+Last activity: 2026-02-10 -- Plan 05-02 complete with trailing slash fix and verification checkpoint approval
 
-Progress: [█████████████] 72%
+Progress: [██████████████] 78%
 
 ## Performance Metrics
 
@@ -31,11 +31,11 @@ Progress: [█████████████] 72%
 | 02-home-page | 2 | 12min | 6min |
 | 03-article-page | 2 | 47min | 24min |
 | 04-search-page | 3 | 25min | 8min |
-| 05-about-page | 1 | 4min | 4min |
+| 05-about-page | 2 | 12min | 6min |
 
 **Recent Trend:**
-- Last 5 plans: 04-01 (3min), 04-02 (6min), 04-03 (16min), 05-01 (4min)
-- Trend: 05-01 clean foundation plan with no checkpoint fixes
+- Last 5 plans: 04-01 (3min), 04-02 (6min), 04-03 (16min), 05-01 (4min), 05-02 (8min)
+- Trend: 05-02 required checkpoint fix for trailing slash, clean execution otherwise
 
 *Updated after each plan completion*
 
@@ -81,6 +81,8 @@ Recent decisions affecting current work:
 - [05-01]: Pillar tags indexed in same 'tag' namespace as regular tags for simplicity (no search page JS changes needed)
 - [05-01]: All about.* i18n text values are placeholders (user will provide real content later per locked decision)
 - [05-01]: PillarBlock component uses getPillarColorClass for pillar-specific styling
+- [05-02]: CTA link removes trailing slash (/{lang} not /{lang}/) to prevent 404s on Cloudflare Pages
+- [05-02]: Hero section intentionally structures philosophy (tagline+intro) separately from bio paragraph (mt-6 spacing) per locked decision
 
 ### Pending Todos
 
