@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-09)
 ## Current Position
 
 Phase: 5 of 6 (About Page)
-Plan: 1 of 2 in current phase (COMPLETE)
-Status: Plan 05-01 complete. Ready for 05-02.
-Last activity: 2026-02-10 -- Plan 05-01 complete (about i18n keys, pillar tag indexing, PillarBlock component)
+Plan: 2 of 2 in current phase (IN PROGRESS - CHECKPOINT)
+Status: Plan 05-02 Task 1 complete (About pages built). Awaiting human verification.
+Last activity: 2026-02-10 -- Plan 05-02 Task 1 complete (EN/FR About pages with hero, pillar blocks, social icons, CTA)
 
 Progress: [█████████████] 72%
 
@@ -95,5 +95,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: Completed 05-01-PLAN.md
-Resume file: Ready for 05-02 or next phase planning
+Stopped at: 05-02-PLAN.md Task 1 complete - checkpoint for human verification
+Resume file: Continue from Task 2 after user approval
