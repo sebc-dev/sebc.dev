@@ -9,7 +9,7 @@
         "http://localhost:4321/en/articles/en-building-design-system",
         "http://localhost:4321/en/about"
       ],
-      "numberOfRuns": 1
+      "numberOfRuns": 3
     },
     "assert": {
       "assertions": {

@@ -5,6 +5,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: production
     permissions:
       contents: read
       deployments: write
@@ -20,7 +21,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: node_modules/.astro
-          key: astro-${{ hashFiles('src/**') }}
+          key: astro-${{ hashFiles('src/**', 'astro.config.*') }}
 
       - run: npm ci
       - run: npm run build

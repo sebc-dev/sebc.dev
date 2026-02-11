@@ -1,8 +1,8 @@
 ---
-import { getPillarColorClass } from "@/lib/pillarTags";
+import { getPillarColorClass, type PillarType } from "@/lib/pillarTags";
 
 interface Props {
-  pillar: "IA" | "Ingenierie" | "UX";
+  pillar: PillarType;
   title: string;
   description: string;
   lang: string;
@@ -11,12 +11,9 @@ interface Props {
 
 const { pillar, title, description, lang, icon } = Astro.props;
 
-// Map display pillar names to actual schema values (with accent for Ingénierie)
-const pillarTagMap = { IA: "IA", Ingenierie: "Ingénierie", UX: "UX" };
-const pillarLabel = pillarTagMap[pillar];
-const searchUrl = `/${lang}/search?tags=${encodeURIComponent(pillarLabel)}`;
+const searchUrl = `/${lang}/search?tags=${encodeURIComponent(pillar)}`;
 
-const colorClass = getPillarColorClass(pillar as "IA" | "Ingénierie" | "UX");
+const colorClass = getPillarColorClass(pillar);
 ---
 
 <a

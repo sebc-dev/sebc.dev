@@ -1,13 +1,18 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
-<BaseLayout title="404" description="Page not found">
+<BaseLayout title="404" description={t("404.title")}>
+  <meta slot="head" name="robots" content="noindex" />
   <section class="max-w-6xl mx-auto px-6 lg:px-8 py-32 text-center fade-up">
     <h1 class="text-6xl font-bold mb-4">404</h1>
-    <p class="text-text-secondary text-lg mb-8">Page not found</p>
-    <a href="/en" class="text-teal-bright underline hover:no-underline">
-      Go to homepage
+    <p class="text-text-secondary text-lg mb-8">{t("404.message")}</p>
+    <a href={`/${lang}`} class="text-teal-bright underline hover:no-underline">
+      {t("404.back")}
     </a>
   </section>
 </BaseLayout>

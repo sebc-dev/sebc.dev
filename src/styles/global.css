@@ -32,8 +32,8 @@
   --color-border-hover: #0d9488;
 
   /* ---- TYPOGRAPHIE ---- */
-  --font-display: "Albert Sans", system-ui, sans-serif;
-  --font-body: "Albert Sans", system-ui, sans-serif;
+  --font-display: "Albert Sans Variable", system-ui, sans-serif;
+  --font-body: "Albert Sans Variable", system-ui, sans-serif;
   --font-code: "Fira Code", ui-monospace, monospace;
 }
 

@@ -28,9 +28,9 @@
 | `[x]` | `stryker.config.mjs` | Mutation testing | Scope cible `src/utils/`, `src/lib/`, `src/i18n/` -- correct |
 | `[~]` | `knip.json` | Dead code | OK, ajouter `entry`/`project` si faux positifs |
 | `[x]` | `lefthook.yml` | Git hooks | Pre-commit parallele, staged files OK |
-| `[~]` | `lighthouserc.json` | Performance CI | WARNING: `numberOfRuns: 1` peut produire des scores instables. URL article hardcodee. |
+| `[x]` | `lighthouserc.json` | Performance CI | CORRIGE: `numberOfRuns: 3`. URL article hardcodee. |
 | `[~]` | `wrangler.jsonc` | Cloudflare deploy | `compatibility_date` pourrait etre mis a jour |
-| `[!]` | `package.json` | Dependencies | WARNING: `@astrojs/check`, `typescript`, `hastscript`, `rehype-autolink-headings` en `dependencies` au lieu de `devDependencies` |
+| `[x]` | `package.json` | Dependencies | CORRIGE: `@astrojs/check`, `typescript`, `hastscript`, `rehype-autolink-headings` deplaces vers `devDependencies` |
 | `[x]` | `.markdownlint-cli2.jsonc` | MDX linting | MD013/MD033/MD041 desactives -- correct pour MDX |
 | `[x]` | `.prettierignore` | Prettier exclusions | OK |
 | `[x]` | `.gitignore` | Git exclusions | OK |
@@ -96,7 +96,7 @@
 | Statut | Fichier | Lignes | Categorie | Verdict |
 |--------|---------|--------|-----------|---------|
 | `[x]` | `src/pages/index.astro` | ~10 | Redirect locale | Redirect vers `/en/` OK |
-| `[!]` | `src/pages/404.astro` | ~20 | Erreur 404 | Texte anglais hardcode, pas de detection locale. Manque `noindex`. |
+| `[x]` | `src/pages/404.astro` | ~20 | Erreur 404 | CORRIGE: Detection locale, traductions i18n, `<meta name="robots" content="noindex">` via slot `head`. |
 | `[!]` | `src/pages/en/index.astro` | 72 | Home EN | **100% identique a fr/index.astro** -- duplication totale |
 | `[!]` | `src/pages/fr/index.astro` | 72 | Home FR | **100% identique a en/index.astro** -- duplication totale |
 | `[!]` | `src/pages/en/about.astro` | 174 | About EN | **100% identique a fr/about.astro** -- duplication totale |
@@ -109,7 +109,7 @@
 | `[~]` | `src/pages/fr/rss.xml.ts` | 22 | RSS feed FR | 3 lignes de diff avec EN |
 
 **Issues search.astro additionnelles:**
-- Dead code ligne 734: `lang === "fr" ? "min" : "min"` -- branches identiques
+- ~~Dead code ligne 734: `lang === "fr" ? "min" : "min"` -- branches identiques~~ CORRIGE
 - `aria-pressed` manquant sur les boutons filtres
 - `role="search"` manquant
 - Pas de focus trapping sur le drawer mobile
@@ -122,7 +122,7 @@
 
 | Statut | Fichier | Lignes | Categorie | Verdict |
 |--------|---------|--------|-----------|---------|
-| `[~]` | `src/layouts/BaseLayout.astro` | 82 | Layout principal | `ClientRouter` OK (Astro 5). Google Fonts externe = render-blocking. Description par defaut en FR uniquement. |
+| `[x]` | `src/layouts/BaseLayout.astro` | 82 | Layout principal | `ClientRouter` OK (Astro 5). CORRIGE: Google Fonts self-hosted via `@fontsource`. Slot `head` ajoute. Description par defaut en FR uniquement. |
 | `[x]` | `src/layouts/ArticleLayout.astro` | 364 | Layout article | CORRIGE: `aria-label` utilise `t("article.closeToc")` i18n. Risque DOM orphelin avec View Transitions (latent). |
 
 ---
@@ -171,7 +171,7 @@
 
 | Statut | Fichier | Lignes | Verdict |
 |--------|---------|--------|---------|
-| `[!]` | `PillarBlock.astro` | 52 | Type `"Ingenierie"` (sans accent) != `PillarType` `"Ingenierie"` (avec accent). Cast `as` masque le probleme. |
+| `[x]` | `PillarBlock.astro` | 52 | CORRIGE: Props utilise `PillarType` directement, cast `as` supprime. |
 
 ---
 
@@ -181,7 +181,7 @@
 |--------|---------|--------|---------|
 | `[~]` | `src/lib/articles.ts` | 59 | Astro 5 OK (`entry.id`, `getCollection`). Cast `as "en" \| "fr"` redondant (Zod type deja). `getRelatedArticles` ignore `pillarTags` dans le scoring. |
 | `[x]` | `src/lib/filterCounts.ts` | ~30 | Fonctions pures, pas d'effets de bord |
-| `[!]` | `src/lib/pillarTags.ts` | ~20 | Cast `as keyof typeof pillarClasses` masque le type. Cle `Ingenierie` sans accent vs type `Ingenierie` avec accent -- normalisation runtime fragile. |
+| `[x]` | `src/lib/pillarTags.ts` | ~20 | CORRIGE: `Record<PillarType, string>` avec cle accentuee, normalisation NFD supprimee. |
 | `[x]` | `src/lib/shareUrls.ts` | ~25 | `encodeURIComponent` sur toutes les valeurs -- pas de vecteur XSS |
 
 ---
@@ -229,7 +229,7 @@
 | Statut | Fichier | Lignes | Verdict |
 |--------|---------|--------|---------|
 | `[~]` | `.github/workflows/quality.yml` | - | CORRIGE: `permissions: contents: read` + `concurrency` ajoutes. E2E tests ajoutes. Actions non pinnees au SHA (restant). |
-| `[~]` | `.github/workflows/deploy.yml` | - | `workflow_dispatch` OK. Secrets OK. Manque `environment:` pour protection rules. Cache key ne hash pas `astro.config.*`. |
+| `[x]` | `.github/workflows/deploy.yml` | - | CORRIGE: `environment: production` ajoute. Cache key hash `astro.config.*`. `workflow_dispatch` OK. Secrets OK. |
 
 ---
 
@@ -255,22 +255,22 @@
 
 | Categorie | Fichiers | OK | Issues | Suggestions |
 |-----------|----------|----|--------|-------------|
-| Config racine | 17 | 14 | 0 | 3 |
+| Config racine | 17 | 16 | 0 | 1 |
 | Content config | 1 | 1 | 0 | 0 |
 | Articles EN | 15 | 15 | 0 | 0 |
 | Articles FR | 15 | 15 | 0 | 0 |
-| Pages | 12 | 1 | 7 | 4 |
-| Layouts | 2 | 1 | 0 | 1 |
-| Components | 19 | 16 | 1 | 2 |
-| Lib (logique) | 4 | 2 | 1 | 1 |
+| Pages | 12 | 5 | 3 | 4 |
+| Layouts | 2 | 2 | 0 | 0 |
+| Components | 19 | 17 | 0 | 2 |
+| Lib (logique) | 4 | 3 | 0 | 1 |
 | Utils | 1 | 1 | 0 | 0 |
 | i18n | 2 | 2 | 0 | 0 |
 | Styles | 1 | 1 | 0 | 0 |
 | Tests | 6 | 4 | 0 | 2 |
-| CI/CD | 2 | 0 | 0 | 2 |
+| CI/CD | 2 | 2 | 0 | 0 |
 | Scripts | 1 | 0 | 0 | 1 |
-| Assets publics | 3 | 2 | 1 | 0 |
-| **Total** | **101** | **75** | **10** | **16** |
+| Assets publics | 3 | 2 | 0 | 1 |
+| **Total** | **101** | **86** | **3** | **12** |
 
 ---
 
@@ -291,7 +291,7 @@
 
 ---
 
-## Top 10 -- Actions prioritaires
+## Top 10 -- Actions prioritaires (toutes CORRIGEES)
 
 ### CRITIQUE -- CORRIGE
 
@@ -318,7 +318,7 @@
 | 9 | **`translationSlug` manquant** | CORRIGE | `translationSlug` ajoute dans `en-css-container-queries.mdx` et `fr-css-container-queries.mdx` |
 | 10 | **`env.d.ts` masque `Cloudflare.Env`** | CORRIGE | Interface locale `Env { [key: string]: unknown }` supprimee, utilise `Env` de `worker-configuration.d.ts` |
 
-### LOW / INFO -- partiellement CORRIGE
+### LOW / INFO -- CORRIGE
 
 | Issue | Statut | Resolution |
 |-------|--------|------------|
@@ -328,14 +328,14 @@
 | `ReadingProgress.astro`: a11y | CORRIGE | `aria-hidden="true"` ajoute |
 | `i18n/utils.ts`: `\|\|` au lieu de `??` | CORRIGE | Remplace par `??` |
 | `utils.test.ts`: test fallback | CORRIGE | Assertion mise a jour pour refléter les accents corriges |
-| `package.json`: deps de build en `dependencies` | OUVERT | |
-| `PillarBlock.astro`: type mismatch avec `PillarType` | OUVERT | |
-| `search.astro:734`: dead code `"min" : "min"` | OUVERT | |
-| `BaseLayout.astro`: Google Fonts externe render-blocking | OUVERT | |
-| `404.astro`: pas de locale detection, manque `noindex` | OUVERT | |
-| `pillarTags.ts`: normalisation diacritiques fragile | OUVERT | |
-| `deploy.yml`: manque `environment:` protection rules | OUVERT | |
-| `lighthouserc.json`: `numberOfRuns: 1` instable | OUVERT | |
+| `package.json`: deps de build en `dependencies` | CORRIGE | `@astrojs/check`, `typescript`, `hastscript`, `rehype-autolink-headings` deplaces vers `devDependencies` |
+| `PillarBlock.astro`: type mismatch avec `PillarType` | CORRIGE | Props utilise `PillarType` directement, about.astro passe `"Ingénierie"` avec accent |
+| `search.astro:734`: dead code `"min" : "min"` | CORRIGE | Ternaire remplace par constante `"min"` |
+| `BaseLayout.astro`: Google Fonts externe render-blocking | CORRIGE | Remplace par `@fontsource-variable/albert-sans` + `@fontsource/fira-code` (self-hosted) |
+| `404.astro`: pas de locale detection, manque `noindex` | CORRIGE | Detection locale via `getLangFromUrl`, traductions i18n, `<meta name="robots" content="noindex">` via slot `head` |
+| `pillarTags.ts`: normalisation diacritiques fragile | CORRIGE | `pillarClasses` utilise cle accentuee `"Ingénierie"` + type `Record<PillarType, string>`, normalisation NFD supprimee |
+| `deploy.yml`: manque `environment:` protection rules | CORRIGE | `environment: production` ajoute, cache key inclut `astro.config.*` |
+| `lighthouserc.json`: `numberOfRuns: 1` instable | CORRIGE | `numberOfRuns` augmente a 3 |
 
 ---
 

@@ -735,7 +735,7 @@ const maxReadingTime = Math.max(...readingTimes);
       const rightPercent = ((max - maxVal) / range) * 100;
       fill.style.left = `${leftPercent}%`;
       fill.style.right = `${rightPercent}%`;
-      const minuteLabel = lang === "fr" ? "min" : "min";
+      const minuteLabel = "min";
       if (minLabel) minLabel.textContent = `${minVal} ${minuteLabel}`;
       if (maxLabel) maxLabel.textContent = `${maxVal} ${minuteLabel}`;
     }
