@@ -3,6 +3,10 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import PillarBlock from "@/components/about/PillarBlock.astro";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
+export function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "fr" } }];
+}
+
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 

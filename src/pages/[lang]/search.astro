@@ -3,6 +3,10 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import ArticleCard from "@/components/article/ArticleCard.astro";
 import { getArticlesByLocale, getCategories, getTags } from "@/lib/articles";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "fr" } }];
+}
 import { computeCategoryCounts, computeTagCounts } from "@/lib/filterCounts";
 
 const lang = getLangFromUrl(Astro.url);

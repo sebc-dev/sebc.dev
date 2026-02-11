@@ -3,12 +3,17 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import FeaturedArticle from "@/components/article/FeaturedArticle.astro";
 import ArticleCard from "@/components/article/ArticleCard.astro";
 import CategoryFilter from "@/components/article/CategoryFilter.astro";
+import Pagination from "@/components/ui/Pagination.astro";
 import {
   getArticlesByLocale,
   getFeaturedArticle,
   getCategories,
 } from "@/lib/articles";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "fr" } }];
+}
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -41,8 +46,11 @@ const translationMap = { [lang]: currentPath, [otherLang]: otherPath };
 
     {
       gridArticles.length > 0 ? (
-        <section class="pb-16">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <section class="pb-4">
+          <div
+            data-article-grid
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
             {gridArticles.map((article, i) => (
               <ArticleCard
                 article={article}
@@ -53,6 +61,7 @@ const translationMap = { [lang]: currentPath, [otherLang]: otherPath };
               />
             ))}
           </div>
+          <Pagination />
         </section>
       ) : (
         !featured && (
