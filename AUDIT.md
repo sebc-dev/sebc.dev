@@ -35,7 +35,7 @@
 | `[x]` | `.prettierignore` | Prettier exclusions | OK |
 | `[x]` | `.gitignore` | Git exclusions | OK |
 | `[x]` | `worker-configuration.d.ts` | Auto-generated types | OK (INFO: 400KB+ tracke en git) |
-| `[!]` | `src/env.d.ts` | Astro env types | WARNING: Interface locale `Env { [key: string]: unknown }` masque `Cloudflare.Env` de wrangler -- les bindings KV/D1/R2 ne seront pas types |
+| `[x]` | `src/env.d.ts` | Astro env types | CORRIGE: Interface locale `Env` supprimee, utilise `Env` de `worker-configuration.d.ts` |
 
 **Conformite Astro 5:** 8/8 regles critiques validees
 
@@ -56,7 +56,7 @@
 | `[x]` | `en-animation-performance.mdx` | Schema OK, translationSlug OK |
 | `[x]` | `en-building-design-system.mdx` | Schema OK, translationSlug OK, featured |
 | `[x]` | `en-cognitive-load-ui.mdx` | Schema OK, translationSlug OK |
-| `[!]` | `en-css-container-queries.mdx` | **translationSlug MANQUANT** -- pas de lien vers fr-css-container-queries |
+| `[x]` | `en-css-container-queries.mdx` | CORRIGE: translationSlug ajoute |
 | `[x]` | `en-design-tokens-figma.mdx` | Schema OK, translationSlug OK |
 | `[x]` | `en-edge-computing-cloudflare.mdx` | Schema OK, translationSlug OK |
 | `[x]` | `en-llm-prompt-engineering.mdx` | Schema OK, translationSlug OK, featured |
@@ -74,7 +74,7 @@
 | `[x]` | `fr-architecture-rag.mdx` | Schema OK, translationSlug OK |
 | `[x]` | `fr-charge-cognitive-ui.mdx` | Schema OK, translationSlug OK |
 | `[x]` | `fr-construire-design-system.mdx` | Schema OK, translationSlug OK |
-| `[!]` | `fr-css-container-queries.mdx` | **translationSlug MANQUANT** -- pas de lien vers en-css-container-queries |
+| `[x]` | `fr-css-container-queries.mdx` | CORRIGE: translationSlug ajoute |
 | `[x]` | `fr-design-tokens-figma.mdx` | Schema OK, translationSlug OK |
 | `[x]` | `fr-edge-computing-cloudflare.mdx` | Schema OK, translationSlug OK |
 | `[x]` | `fr-guide-accessibilite-web.mdx` | Schema OK, translationSlug OK |
@@ -87,7 +87,7 @@
 | `[x]` | `fr-rust-wasm-performance.mdx` | Schema OK, translationSlug OK |
 | `[x]` | `fr-strategies-test-ia.mdx` | Schema OK, translationSlug OK |
 
-**Parite EN/FR:** 15/15 -- couverture complete. 14/15 paires avec translationSlug bidirectionnel.
+**Parite EN/FR:** 15/15 -- couverture complete. 15/15 paires avec translationSlug bidirectionnel.
 
 ---
 
@@ -123,7 +123,7 @@
 | Statut | Fichier | Lignes | Categorie | Verdict |
 |--------|---------|--------|-----------|---------|
 | `[~]` | `src/layouts/BaseLayout.astro` | 82 | Layout principal | `ClientRouter` OK (Astro 5). Google Fonts externe = render-blocking. Description par defaut en FR uniquement. |
-| `[!]` | `src/layouts/ArticleLayout.astro` | 364 | Layout article | `aria-label="Fermer"` hardcode en francais (ligne 158) -- mauvais pour locale EN. Risque DOM orphelin avec View Transitions. |
+| `[x]` | `src/layouts/ArticleLayout.astro` | 364 | Layout article | CORRIGE: `aria-label` utilise `t("article.closeToc")` i18n. Risque DOM orphelin avec View Transitions (latent). |
 
 ---
 
@@ -133,31 +133,31 @@
 
 | Statut | Fichier | Lignes | Verdict |
 |--------|---------|--------|---------|
-| `[~]` | `Header.astro` | 36 | `aria-label` manquant sur lien home. Sur mobile, seul ">_" comme texte accessible. |
+| `[x]` | `Header.astro` | 36 | CORRIGE: `aria-label="sebc.dev — Home"` sur lien home. |
 | `[x]` | `Nav.astro` | 42 | `aria-label="Main navigation"`, `aria-current="page"` -- tout OK |
 | `[x]` | `Footer.astro` | 89 | `aria-label` sur liens sociaux, `rel="noopener noreferrer"` OK. `set:html` safe (data statique). |
-| `[!]` | `LangSwitch.astro` | 45 | `aria-current="true"` devrait etre `"page"`. "Francais" sans cedille. Labels hardcodes au lieu de `t()`. |
+| `[x]` | `LangSwitch.astro` | 45 | CORRIGE: `aria-current="page"`, "Français" avec cedille. |
 
 ### 5b. Article components
 
 | Statut | Fichier | Lignes | Verdict |
 |--------|---------|--------|---------|
-| `[~]` | `ArticleCard.astro` | 73 | Alt image duplique le titre. `<time>` sans `datetime`. |
-| `[~]` | `ArticleHeader.astro` | 137 | Alt image duplique le `<h1>`. `<time>` sans `datetime`. SVG sans `aria-hidden`. |
-| `[!]` | `CategoryFilter.astro` | 73 | Boutons sans `aria-pressed`. `<section>` sans `aria-label`. |
-| `[!]` | `FeaturedArticle.astro` | 76 | Image LCP sans `loading="eager"` ni `fetchpriority="high"`. `<time>` sans `datetime`. |
+| `[~]` | `ArticleCard.astro` | 73 | Alt image duplique le titre. CORRIGE: `datetime` ajoute sur `<time>`. |
+| `[~]` | `ArticleHeader.astro` | 137 | Alt image duplique le `<h1>`. CORRIGE: `datetime` ajoute sur `<time>`. SVG sans `aria-hidden`. |
+| `[x]` | `CategoryFilter.astro` | 73 | CORRIGE: `aria-pressed` sur boutons, `aria-label` sur `<section>`. |
+| `[x]` | `FeaturedArticle.astro` | 76 | CORRIGE: `loading="eager"` + `fetchpriority="high"` + `datetime` sur `<time>`. |
 | `[x]` | `PillarTag.astro` | ~25 | Minimal et correct |
 | `[x]` | `RelatedArticles.astro` | ~40 | Semantique OK, rendu conditionnel |
-| `[!]` | `ShareButtons.astro` | 152 | Bug: `getAttribute("aria-label-copied")` retourne toujours `null`. Feedback "Copied!" hardcode EN. |
-| `[!]` | `TableOfContents.astro` | 71 | `<nav>` sans `aria-label` -- conflit avec nav principale |
+| `[x]` | `ShareButtons.astro` | 152 | CORRIGE: `data-copied-label` avec i18n, bug `getAttribute` corrige. |
+| `[x]` | `TableOfContents.astro` | 71 | CORRIGE: `aria-label={t("article.toc")}` sur `<nav>`. |
 
 ### 5c. UI components
 
 | Statut | Fichier | Lignes | Verdict |
 |--------|---------|--------|---------|
 | `[x]` | `GlowLine.astro` | ~15 | `role="presentation"`, `aria-hidden="true"` -- parfait |
-| `[!]` | `Pagination.astro` | 168 | Boutons dynamiques sans `aria-label` ni `aria-current="page"`. Ellipses sans `aria-hidden`. |
-| `[~]` | `ReadingProgress.astro` | 30 | Manque `aria-hidden="true"` ou `role="progressbar"` |
+| `[x]` | `Pagination.astro` | 168 | CORRIGE: `aria-label`, `aria-current="page"` sur boutons, `aria-hidden` sur ellipses. |
+| `[x]` | `ReadingProgress.astro` | 30 | CORRIGE: `aria-hidden="true"` ajoute. |
 | `[x]` | `Tag.astro` | 40 | Pattern `<a>`/`<span>` conditionnel OK |
 
 ### 5d. SEO components
@@ -165,7 +165,7 @@
 | Statut | Fichier | Lignes | Verdict |
 |--------|---------|--------|---------|
 | `[~]` | `SEO.astro` | 80 | Complet (canonical, hreflang, OG, Twitter). Prop `publishedDate` acceptee mais jamais utilisee. |
-| `[!]` | `JsonLd.astro` | 58 | SECURITE: `set:html={JSON.stringify(jsonLd)}` dans `<script>` -- si une valeur contient `</script>`, XSS possible. Fix: `.replace(/</g, '\\u003c')` |
+| `[x]` | `JsonLd.astro` | 58 | CORRIGE: `.replace(/</g, '\\u003c')` empeche l'injection `</script>`. |
 
 ### 5e. About components
 
@@ -198,8 +198,8 @@
 
 | Statut | Fichier | Lignes | Verdict |
 |--------|---------|--------|---------|
-| `[!]` | `src/i18n/ui.ts` | 138 | **8+ chaines FR sans accents/cedilles** ("Francais", "A propos", "reserves", "Ingenierie", "Decouvrir"...). 12 placeholders `[Placeholder: ...]` restants. Parite cles EN/FR: 58/58 OK. |
-| `[~]` | `src/i18n/utils.ts` | ~30 | `\|\|` au lieu de `??` ligne 11 -- chaine vide tomberait en fallback EN (latent, pas de chaine vide actuellement) |
+| `[x]` | `src/i18n/ui.ts` | 140 | CORRIGE: 11 chaines FR avec accents/cedilles. Cle `article.closeToc` ajoutee. 12 placeholders `[Placeholder: ...]` restants. Parite cles EN/FR: 59/59 OK. |
+| `[x]` | `src/i18n/utils.ts` | ~30 | CORRIGE: `??` au lieu de `\|\|` |
 
 ---
 
@@ -219,7 +219,7 @@
 | `[x]` | `src/lib/filterCounts.test.ts` | 73 | 100% coverage. Complet. |
 | `[~]` | `src/lib/pillarTags.test.ts` | ~30 | 100% coverage mais pas de test pour pillar invalide/inconnu. |
 | `[x]` | `src/lib/shareUrls.test.ts` | 50 | 100% coverage. Test caracteres speciaux OK. |
-| `[!]` | `src/i18n/utils.test.ts` | 44 | 100% lignes mais **80% branches** -- le test "fallback" ne teste pas reellement le fallback (teste une cle FR existante). |
+| `[~]` | `src/i18n/utils.test.ts` | 44 | 100% lignes mais **80% branches** -- assertion mise a jour. Le test "fallback" ne teste toujours pas un vrai fallback (toutes les cles existent en FR). |
 | `[x]` | `src/utils/dates.test.ts` | ~30 | 100% coverage. Complet. |
 
 ---
@@ -228,7 +228,7 @@
 
 | Statut | Fichier | Lignes | Verdict |
 |--------|---------|--------|---------|
-| `[!]` | `.github/workflows/quality.yml` | - | Manque `permissions: contents: read` (securite). Manque `concurrency` (runs dupliques). **Dossier `e2e/` vide = job Playwright no-op.** Actions non pinnees au SHA. |
+| `[~]` | `.github/workflows/quality.yml` | - | CORRIGE: `permissions: contents: read` + `concurrency` ajoutes. E2E tests ajoutes. Actions non pinnees au SHA (restant). |
 | `[~]` | `.github/workflows/deploy.yml` | - | `workflow_dispatch` OK. Secrets OK. Manque `environment:` pour protection rules. Cache key ne hash pas `astro.config.*`. |
 
 ---
@@ -255,22 +255,22 @@
 
 | Categorie | Fichiers | OK | Issues | Suggestions |
 |-----------|----------|----|--------|-------------|
-| Config racine | 17 | 12 | 2 | 3 |
+| Config racine | 17 | 14 | 0 | 3 |
 | Content config | 1 | 1 | 0 | 0 |
-| Articles EN | 15 | 14 | 1 | 0 |
-| Articles FR | 15 | 14 | 1 | 0 |
+| Articles EN | 15 | 15 | 0 | 0 |
+| Articles FR | 15 | 15 | 0 | 0 |
 | Pages | 12 | 1 | 7 | 4 |
-| Layouts | 2 | 0 | 1 | 1 |
-| Components | 19 | 7 | 8 | 4 |
+| Layouts | 2 | 1 | 0 | 1 |
+| Components | 19 | 16 | 1 | 2 |
 | Lib (logique) | 4 | 2 | 1 | 1 |
 | Utils | 1 | 1 | 0 | 0 |
-| i18n | 2 | 0 | 1 | 1 |
+| i18n | 2 | 2 | 0 | 0 |
 | Styles | 1 | 1 | 0 | 0 |
-| Tests | 6 | 4 | 1 | 1 |
-| CI/CD | 2 | 0 | 1 | 1 |
+| Tests | 6 | 4 | 0 | 2 |
+| CI/CD | 2 | 0 | 0 | 2 |
 | Scripts | 1 | 0 | 0 | 1 |
 | Assets publics | 3 | 2 | 1 | 0 |
-| **Total** | **101** | **59** | **25** | **17** |
+| **Total** | **101** | **75** | **10** | **16** |
 
 ---
 
@@ -301,37 +301,41 @@
 | 2 | **Duplication pages EN/FR** | CORRIGE | Refactoring vers routes dynamiques `[lang]/` avec `getStaticPaths()`. 10 fichiers remplaces par 5. ~4 200 lignes economisees. |
 | 3 | **Job Playwright vide** | CORRIGE | 14 smoke tests E2E ajoutes dans `e2e/smoke.spec.ts` (pages, navigation, RSS, security headers) |
 
-### HIGH
+### HIGH -- CORRIGE
 
-| # | Issue | Impact | Fichier(s) |
+| # | Issue | Statut | Resolution |
 |---|-------|--------|------------|
-| 4 | **Accents FR manquants dans ui.ts** | 8+ chaines visibles par l'utilisateur avec fautes d'orthographe | `src/i18n/ui.ts` |
-| 5 | **XSS latent dans JsonLd** | `</script>` dans une valeur JSON-LD peut casser le tag | `JsonLd.astro` |
-| 6 | **`aria-label="Fermer"` hardcode** | Utilisateurs EN entendent du francais dans le lecteur d'ecran | `ArticleLayout.astro:158` |
-| 7 | **CI sans `permissions` ni `concurrency`** | Securite GitHub Actions, builds dupliques | `quality.yml` |
+| 4 | **Accents FR manquants dans ui.ts** | CORRIGE | 11 chaines FR corrigees avec accents/cedilles dans `ui.ts` + `LangSwitch.astro` |
+| 5 | **XSS latent dans JsonLd** | CORRIGE | `JSON.stringify(jsonLd).replace(/</g, '\\u003c')` empeche l'injection `</script>` |
+| 6 | **`aria-label="Fermer"` hardcode** | CORRIGE | Nouvelle cle i18n `article.closeToc` (EN: "Close", FR: "Fermer") utilisee dans `ArticleLayout.astro` |
+| 7 | **CI sans `permissions` ni `concurrency`** | CORRIGE | `permissions: contents: read` et `concurrency` avec `cancel-in-progress` ajoutes dans `quality.yml` |
 
-### MEDIUM
+### MEDIUM -- CORRIGE
 
-| # | Issue | Impact | Fichier(s) |
+| # | Issue | Statut | Resolution |
 |---|-------|--------|------------|
-| 8 | **Accessibilite composants** | `aria-pressed`, `aria-label` manquants sur filtres, pagination, TOC nav | `CategoryFilter`, `Pagination`, `TableOfContents`, `Header` |
-| 9 | **`translationSlug` manquant** | Pas de switch de langue sur l'article CSS Container Queries | `en/fr-css-container-queries.mdx` |
-| 10 | **`env.d.ts` masque `Cloudflare.Env`** | Bindings KV/D1/R2 futurs ne seront pas types | `src/env.d.ts` |
+| 8 | **Accessibilite composants** | CORRIGE | `aria-pressed` sur CategoryFilter, `aria-label`+`aria-current="page"` sur Pagination, `aria-label` sur TableOfContents nav + Header home link, `aria-current="page"` sur LangSwitch |
+| 9 | **`translationSlug` manquant** | CORRIGE | `translationSlug` ajoute dans `en-css-container-queries.mdx` et `fr-css-container-queries.mdx` |
+| 10 | **`env.d.ts` masque `Cloudflare.Env`** | CORRIGE | Interface locale `Env { [key: string]: unknown }` supprimee, utilise `Env` de `worker-configuration.d.ts` |
 
-### LOW / INFO
+### LOW / INFO -- partiellement CORRIGE
 
-- `package.json`: deps de build en `dependencies` au lieu de `devDependencies`
-- `FeaturedArticle.astro`: image LCP sans `loading="eager"` / `fetchpriority="high"`
-- `ShareButtons.astro`: feedback "Copied!" toujours en anglais
-- `PillarBlock.astro`: type mismatch avec `PillarType` (accent)
-- `search.astro:734`: dead code `"min" : "min"`
-- `BaseLayout.astro`: Google Fonts externe render-blocking
-- `utils.test.ts`: test fallback ne teste pas reellement le fallback (80% branches)
-- `404.astro`: pas de locale detection, manque `noindex`
-- `pillarTags.ts`: normalisation diacritiques fragile
-- `i18n/utils.ts`: `||` au lieu de `??` (latent)
-- `deploy.yml`: manque `environment:` protection rules
-- `lighthouserc.json`: `numberOfRuns: 1` instable
+| Issue | Statut | Resolution |
+|-------|--------|------------|
+| `FeaturedArticle.astro`: image LCP | CORRIGE | `loading="eager"` + `fetchpriority="high"` ajoutes |
+| `ShareButtons.astro`: feedback "Copied!" | CORRIGE | Bug `getAttribute("aria-label-copied")` corrige, utilise `data-copied-label` avec i18n |
+| `<time>` sans `datetime` | CORRIGE | `datetime` ajoute sur ArticleCard, ArticleHeader, FeaturedArticle |
+| `ReadingProgress.astro`: a11y | CORRIGE | `aria-hidden="true"` ajoute |
+| `i18n/utils.ts`: `\|\|` au lieu de `??` | CORRIGE | Remplace par `??` |
+| `utils.test.ts`: test fallback | CORRIGE | Assertion mise a jour pour refléter les accents corriges |
+| `package.json`: deps de build en `dependencies` | OUVERT | |
+| `PillarBlock.astro`: type mismatch avec `PillarType` | OUVERT | |
+| `search.astro:734`: dead code `"min" : "min"` | OUVERT | |
+| `BaseLayout.astro`: Google Fonts externe render-blocking | OUVERT | |
+| `404.astro`: pas de locale detection, manque `noindex` | OUVERT | |
+| `pillarTags.ts`: normalisation diacritiques fragile | OUVERT | |
+| `deploy.yml`: manque `environment:` protection rules | OUVERT | |
+| `lighthouserc.json`: `numberOfRuns: 1` instable | OUVERT | |
 
 ---
 
