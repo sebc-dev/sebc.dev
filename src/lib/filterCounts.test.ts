@@ -12,7 +12,7 @@ function makeArticle(
       title: "Test Article",
       description: "A test article",
       date: new Date("2025-01-15"),
-      category: "engineering",
+      category: "tutoriel",
       tags: ["typescript"],
       pillarTags: ["Ingénierie"] as Article["data"]["pillarTags"],
       readingTime: 5,
@@ -28,24 +28,27 @@ function makeArticle(
 
 describe("computeCategoryCounts", () => {
   const articles = [
-    makeArticle({ id: "a1", category: "engineering" }),
-    makeArticle({ id: "a2", category: "engineering" }),
-    makeArticle({ id: "a3", category: "design" }),
+    makeArticle({ id: "a1", category: "tutoriel" }),
+    makeArticle({ id: "a2", category: "tutoriel" }),
+    makeArticle({ id: "a3", category: "analyse-approfondie" }),
   ];
 
   it("counts articles per category", () => {
-    const result = computeCategoryCounts(articles, ["engineering", "design"]);
-    expect(result).toEqual({ engineering: 2, design: 1 });
+    const result = computeCategoryCounts(articles, [
+      "tutoriel",
+      "analyse-approfondie",
+    ]);
+    expect(result).toEqual({ tutoriel: 2, "analyse-approfondie": 1 });
   });
 
   it("returns 0 for categories with no articles", () => {
-    const result = computeCategoryCounts(articles, ["marketing"]);
-    expect(result).toEqual({ marketing: 0 });
+    const result = computeCategoryCounts(articles, ["actualites"]);
+    expect(result).toEqual({ actualites: 0 });
   });
 
   it("handles empty articles array", () => {
-    const result = computeCategoryCounts([], ["engineering"]);
-    expect(result).toEqual({ engineering: 0 });
+    const result = computeCategoryCounts([], ["tutoriel"]);
+    expect(result).toEqual({ tutoriel: 0 });
   });
 });
 

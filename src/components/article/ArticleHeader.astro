@@ -1,6 +1,10 @@
 ---
 import { formatDate } from "@/utils/dates";
-import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+import {
+  getLangFromUrl,
+  useTranslations,
+  getCategoryLabel,
+} from "@/i18n/utils";
 import { type Article } from "@/lib/articles";
 import Tag from "@/components/ui/Tag.astro";
 import PillarTag from "@/components/article/PillarTag.astro";
@@ -50,7 +54,7 @@ const t = useTranslations(lang);
           href={`/${lang}/search?cat=${encodeURIComponent(article.data.category)}`}
           class="absolute top-4 left-4 z-10 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20 hover:bg-canvas/90 transition-colors"
         >
-          {article.data.category}
+          {getCategoryLabel(article.data.category, lang)}
         </a>
       </div>
     )

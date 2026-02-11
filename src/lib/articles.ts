@@ -18,10 +18,25 @@ export async function getFeaturedArticle(
   return articles.find((a) => a.data.featured) ?? articles[0];
 }
 
+/** Canonical category order matching architecture spec */
+export const CATEGORIES = [
+  "actualites",
+  "analyse-approfondie",
+  "parcours-apprentissage",
+  "retrospective",
+  "tutoriel",
+  "etude-de-cas",
+  "astuces-rapides",
+  "dans-les-coulisses",
+  "test-outil",
+] as const;
+
+export type Category = (typeof CATEGORIES)[number];
+
 export async function getCategories(lang: "en" | "fr"): Promise<string[]> {
   const articles = await getArticlesByLocale(lang);
-  const categories = [...new Set(articles.map((a) => a.data.category))];
-  return categories.sort();
+  const used = new Set(articles.map((a) => a.data.category));
+  return CATEGORIES.filter((c) => used.has(c));
 }
 
 export async function getTags(lang: "en" | "fr"): Promise<string[]> {

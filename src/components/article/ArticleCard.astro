@@ -2,7 +2,11 @@
 import Tag from "@/components/ui/Tag.astro";
 import { formatDate } from "@/utils/dates";
 import { getArticleUrl, type Article } from "@/lib/articles";
-import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+import {
+  getLangFromUrl,
+  useTranslations,
+  getCategoryLabel,
+} from "@/i18n/utils";
 
 interface Props {
   article: Article;
@@ -42,7 +46,7 @@ const url = getArticleUrl(article);
       href={`/${lang}/search?cat=${encodeURIComponent(article.data.category)}`}
       class="absolute top-3 left-3 z-10 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20 hover:bg-canvas/90 transition-colors"
     >
-      {article.data.category}
+      {getCategoryLabel(article.data.category, lang)}
     </a>
   </div>
   <div class="flex items-center gap-2 text-xs text-text-muted mb-2.5">

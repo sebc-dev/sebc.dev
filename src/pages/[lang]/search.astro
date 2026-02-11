@@ -2,7 +2,11 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import ArticleCard from "@/components/article/ArticleCard.astro";
 import { getArticlesByLocale, getCategories, getTags } from "@/lib/articles";
-import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+import {
+  getLangFromUrl,
+  useTranslations,
+  getCategoryLabel,
+} from "@/i18n/utils";
 
 export function getStaticPaths() {
   return [{ params: { lang: "en" } }, { params: { lang: "fr" } }];
@@ -25,6 +29,9 @@ const categories = await getCategories(lang);
 const tags = await getTags(lang);
 
 const categoryCounts = computeCategoryCounts(allArticles, categories);
+const categoryLabels: Record<string, string> = Object.fromEntries(
+  categories.map((c) => [c, getCategoryLabel(c, lang)]),
+);
 const tagCounts = computeTagCounts(allArticles, tags);
 
 // Reading time and date ranges for filters
@@ -40,6 +47,7 @@ const maxReadingTime = Math.max(...readingTimes);
 >
   <section
     data-pagefind-ignore
+    data-category-labels={JSON.stringify(categoryLabels)}
     class="max-w-6xl mx-auto px-6 lg:px-8 py-12 md:py-16"
   >
     <!-- Page header -->
@@ -83,7 +91,7 @@ const maxReadingTime = Math.max(...readingTimes);
                     data-count={categoryCounts[cat]}
                     class="text-sm font-medium px-3.5 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright text-left"
                   >
-                    {cat}
+                    {getCategoryLabel(cat, lang)}
                   </button>
                 ))
               }
@@ -266,7 +274,7 @@ const maxReadingTime = Math.max(...readingTimes);
                       data-count={categoryCounts[cat]}
                       class="text-sm font-medium px-3.5 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright text-left"
                     >
-                      {cat}{" "}
+                      {getCategoryLabel(cat, lang)}{" "}
                       <span class="text-text-muted opacity-60">
                         ({categoryCounts[cat]})
                       </span>
@@ -486,6 +494,15 @@ const maxReadingTime = Math.max(...readingTimes);
 
 <script>
   function initSearch() {
+    // --- Category labels for i18n ---
+    const catLabelsEl = document.querySelector("[data-category-labels]");
+    const catLabels: Record<string, string> = catLabelsEl
+      ? JSON.parse(catLabelsEl.getAttribute("data-category-labels") || "{}")
+      : {};
+    function catLabel(key: string): string {
+      return catLabels[key] || key;
+    }
+
     // --- DOM references ---
     const searchInput = document.getElementById(
       "search-input",
@@ -785,7 +802,7 @@ const maxReadingTime = Math.max(...readingTimes);
                 : `<div class="w-full aspect-[16/10] bg-surface flex items-center justify-center"><span class="text-3xl font-code text-text-muted">&gt;_</span></div>`
             }
             <div class="absolute inset-0 bg-linear-to-t from-canvas/40 to-transparent"></div>
-            <span class="absolute top-3 left-3 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">${escapeHtml(category)}</span>
+            <span class="absolute top-3 left-3 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20">${escapeHtml(catLabel(category))}</span>
           </div>
           <div class="flex items-center gap-2 text-xs text-text-muted mb-2.5">
             <time class="tabular-nums">${formatDate(date)}</time>
@@ -826,7 +843,7 @@ const maxReadingTime = Math.max(...readingTimes);
             <h3 class="text-lg font-semibold leading-snug mb-1.5 group-hover:text-teal-bright transition-colors">${data.excerpt ? highlightTitle(title, data.excerpt) : escapeHtml(title)}</h3>
             <p class="text-text-secondary text-sm leading-relaxed line-clamp-2 mb-3">${data.excerpt || escapeHtml(description)}</p>
             <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-muted">
-              <span class="font-code text-teal px-2 py-0.5 rounded-xs border border-teal/20 bg-canvas/80">${escapeHtml(category)}</span>
+              <span class="font-code text-teal px-2 py-0.5 rounded-xs border border-teal/20 bg-canvas/80">${escapeHtml(catLabel(category))}</span>
               <time class="tabular-nums">${formatDate(date)}</time>
               <span>${escapeHtml(readingTime)} ${readingTimeLabel()}</span>
               ${tags.map((t: string) => `<span class="font-code text-text-secondary">${escapeHtml(t)}</span>`).join("")}
@@ -1000,8 +1017,8 @@ const maxReadingTime = Math.max(...readingTimes);
 
       if (state.category) {
         chips.push(`<span class="inline-flex items-center gap-1.5 text-xs font-code px-2.5 py-1 rounded-xs border text-teal-bright border-teal/20 bg-teal-dim">
-          ${escapeHtml(state.category)}
-          <button data-remove-filter="category" class="hover:text-text-primary transition-colors" aria-label="Remove ${escapeHtml(state.category)} filter">&times;</button>
+          ${escapeHtml(catLabel(state.category))}
+          <button data-remove-filter="category" class="hover:text-text-primary transition-colors" aria-label="Remove ${escapeHtml(catLabel(state.category))} filter">&times;</button>
         </span>`);
       }
 
@@ -1221,7 +1238,9 @@ const maxReadingTime = Math.max(...readingTimes);
           lang === "fr" ? "Aucun résultat pour" : "No results for";
         const queryDisplay =
           state.query ||
-          [state.category, ...state.tags].filter(Boolean).join(", ");
+          [state.category ? catLabel(state.category) : "", ...state.tags]
+            .filter(Boolean)
+            .join(", ");
         if ($noResultsP)
           $noResultsP.innerHTML = `${noResultsLabel} <span class="font-semibold text-text-primary">"${escapeHtml(queryDisplay)}"</span>`;
         $noResults.classList.remove("hidden");

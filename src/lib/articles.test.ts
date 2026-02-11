@@ -28,7 +28,7 @@ function makeArticle(
       title: "Test Article",
       description: "A test article",
       date: new Date("2025-01-15"),
-      category: "engineering",
+      category: "tutoriel",
       tags: ["typescript"],
       pillarTags: ["Ingénierie"] as Article["data"]["pillarTags"],
       readingTime: 5,
@@ -61,7 +61,7 @@ const allArticles = [
     id: "a2",
     title: "Second",
     date: new Date("2025-02-01"),
-    category: "design",
+    category: "analyse-approfondie",
     tags: ["css"],
     featured: true,
   }),
@@ -127,9 +127,9 @@ describe("getFeaturedArticle", () => {
 });
 
 describe("getCategories", () => {
-  it("returns sorted unique categories", async () => {
+  it("returns unique categories in canonical order", async () => {
     const categories = await getCategories("en");
-    expect(categories).toEqual(["design", "engineering"]);
+    expect(categories).toEqual(["analyse-approfondie", "tutoriel"]);
   });
 });
 
@@ -154,11 +154,7 @@ describe("getArticleUrl", () => {
 
 describe("getRelatedArticles", () => {
   it("scores category match higher than tag-only match", async () => {
-    // Source: a2 (category=design, tags=[css])
-    // a1: category=engineering, tags=[typescript] → score 0
-    // a3: category=engineering, tags=[typescript, node] → score 0
-    // Both score 0 — so let's test from a1's perspective:
-    // Source: a1 (category=engineering, tags=[typescript])
+    // Source: a1 (category=tutoriel, tags=[typescript])
     // a3: same category + shared tag "typescript" → score 3
     // a2: different category, no shared tags → score 0
     const related = await getRelatedArticles(allArticles[1], 3); // a1
@@ -169,22 +165,22 @@ describe("getRelatedArticles", () => {
   it("category match alone outranks single tag match", async () => {
     const source = makeArticle({
       id: "src",
-      category: "devops",
+      category: "etude-de-cas",
       tags: ["docker"],
     });
     const catMatch = makeArticle({
       id: "cat",
-      category: "devops",
+      category: "etude-de-cas",
       tags: ["k8s"],
     }); // score: 2 (category only)
     const tagMatch = makeArticle({
       id: "tag",
-      category: "frontend",
+      category: "actualites",
       tags: ["docker"],
     }); // score: 1 (tag only)
     const noMatch = makeArticle({
       id: "none",
-      category: "design",
+      category: "analyse-approfondie",
       tags: ["figma"],
     }); // score: 0
 

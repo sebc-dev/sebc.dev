@@ -8,7 +8,17 @@ const articles = defineCollection({
     title: z.string(),
     description: z.string().max(160),
     date: z.coerce.date(),
-    category: z.string(),
+    category: z.enum([
+      "actualites",
+      "analyse-approfondie",
+      "parcours-apprentissage",
+      "retrospective",
+      "tutoriel",
+      "etude-de-cas",
+      "astuces-rapides",
+      "dans-les-coulisses",
+      "test-outil",
+    ]),
     tags: z.array(z.string()),
     pillarTags: z
       .array(z.enum(["IA", "Ingénierie", "UX"]))

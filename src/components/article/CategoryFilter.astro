@@ -1,5 +1,9 @@
 ---
-import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+import {
+  getLangFromUrl,
+  useTranslations,
+  getCategoryLabel,
+} from "@/i18n/utils";
 
 interface Props {
   categories: string[];
@@ -14,7 +18,7 @@ const t = useTranslations(lang);
   class="pt-10 pb-6 fade-up fade-up-d1"
   aria-label={t("search.categories")}
 >
-  <div class="flex items-center gap-3 overflow-x-auto pb-2 -mx-1 px-1">
+  <div class="flex flex-wrap items-center gap-2.5">
     <button
       data-filter="all"
       class="text-sm font-medium px-3.5 py-1.5 rounded-xs border whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright text-teal-bright border-teal bg-teal-dim"
@@ -29,7 +33,7 @@ const t = useTranslations(lang);
           class="text-sm font-medium px-3.5 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright"
           aria-pressed="false"
         >
-          {category}
+          {getCategoryLabel(category, lang)}
         </button>
       ))
     }

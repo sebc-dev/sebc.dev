@@ -11,3 +11,11 @@ export function useTranslations(lang: keyof typeof ui) {
     return ui[lang][key] ?? ui[defaultLang][key];
   };
 }
+
+export function getCategoryLabel(
+  category: string,
+  lang: keyof typeof ui,
+): string {
+  const key = `category.${category}` as keyof (typeof ui)[typeof defaultLang];
+  return ui[lang][key] ?? ui[defaultLang][key] ?? category;
+}
