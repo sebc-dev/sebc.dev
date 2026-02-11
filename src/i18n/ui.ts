@@ -65,6 +65,10 @@ export const ui = {
       "[Placeholder: Short description of UX pillar focus]",
     "about.cta": "Discover my articles",
     "about.photo.alt": "Profile photo",
+    "pagination.previous": "Previous",
+    "pagination.next": "Next",
+    "pagination.page": "Page",
+    "pagination.of": "of",
   },
   fr: {
     "nav.home": "Accueil",
@@ -126,5 +130,9 @@ export const ui = {
       "[Placeholder: Courte description du pilier UX]",
     "about.cta": "Decouvrir mes articles",
     "about.photo.alt": "Photo de profil",
+    "pagination.previous": "Précédent",
+    "pagination.next": "Suivant",
+    "pagination.page": "Page",
+    "pagination.of": "sur",
   },
 } as const;

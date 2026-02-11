@@ -1,0 +1,29 @@
+---
+title: "Architecture RAG : construire une génération augmentée fiable"
+description: "Concevoir des systèmes RAG qui dépassent la recherche vectorielle naïve pour des réponses précises."
+date: 2026-02-01
+category: "ia"
+tags: ["ia", "rag", "llm", "recherche-vectorielle"]
+pillarTags: ["IA", "Ingénierie"]
+readingTime: 14
+featured: true
+draft: false
+lang: "fr"
+translationSlug: "en-rag-architecture"
+---
+
+## Au-delà du RAG naïf
+
+Le pipeline RAG le plus simple -- embedder les documents, trouver les voisins les plus proches, les injecter dans un prompt -- fonctionne pour les démos mais échoue en production. Les documents sont découpés à des frontières arbitraires, perdant le contexte. Des chunks non pertinents polluent la fenêtre de contexte.
+
+## Stratégies de chunking efficaces
+
+Découpez aux frontières sémantiques, pas à des nombres de caractères fixes. Utilisez la structure du document (titres, paragraphes, blocs de code) pour créer des unités significatives. Faites chevaucher les chunks de 10-15% pour préserver le contexte aux frontières.
+
+## Recherche hybride
+
+La similarité vectorielle pure manque les correspondances exactes de mots-clés. La recherche par mots-clés pure manque les équivalents sémantiques. La solution est la recherche hybride : lancez à la fois une recherche vectorielle et une recherche BM25 par mots-clés, puis fusionnez les résultats avec le reciprocal rank fusion.
+
+## Évaluation et garde-fous
+
+Mesurez la qualité de la recherche séparément de la qualité de la génération. Suivez le rappel de recherche (avons-nous trouvé les bons documents ?) et la fidélité de génération (la réponse est-elle restée ancrée dans le contexte récupéré ?).

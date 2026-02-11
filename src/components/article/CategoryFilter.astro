@@ -64,6 +64,9 @@ const t = useTranslations(lang);
             card.classList.add("hidden");
           }
         });
+
+        // Notify pagination to reset
+        document.dispatchEvent(new CustomEvent("category-filter-change"));
       });
     });
   });

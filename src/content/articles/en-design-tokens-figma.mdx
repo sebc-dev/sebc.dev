@@ -1,0 +1,42 @@
+---
+title: "From Figma to Code: Automating Design Token Pipelines"
+description: "Building a seamless bridge between design tools and production CSS with token automation."
+date: 2025-11-28
+category: "design-systems"
+tags: ["figma", "design-tokens", "css", "automation"]
+pillarTags: ["UX", "Ingénierie"]
+readingTime: 10
+featured: false
+draft: false
+lang: "en"
+translationSlug: "fr-design-tokens-figma"
+---
+
+## The Token Translation Problem
+
+Designers define colors, spacing, and typography in Figma. Engineers consume them as CSS custom properties, Tailwind theme values, or platform-specific constants. The gap between these two worlds is where inconsistencies creep in -- a designer updates a color, but the code still references the old value three sprints later.
+
+## Building the Pipeline
+
+The modern token pipeline has three stages: extraction, transformation, and distribution. Extract tokens from Figma using the Variables API, transform them through Style Dictionary into platform-specific formats, and distribute via npm packages or CI-driven pull requests.
+
+```json
+{
+  "color": {
+    "primary": {
+      "$value": "#0d9488",
+      "$type": "color",
+      "$description": "Brand teal, used for CTAs and links"
+    },
+    "surface": {
+      "$value": "#0a0a0f",
+      "$type": "color",
+      "$description": "Main background color"
+    }
+  }
+}
+```
+
+## Keeping Tokens in Sync
+
+The pipeline is only as good as its automation. Set up a webhook that triggers on Figma file changes, runs the extraction script, and opens a PR with the updated tokens. Engineers review the diff, see exactly which values changed, and merge with confidence. No more manual copy-paste from design specs.

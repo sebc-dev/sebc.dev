@@ -1,0 +1,44 @@
+---
+title: "Prompt engineering pour développeurs : une approche systémique"
+description: "Dépasser le tâtonnement pour des interactions LLM systématiques et testables."
+date: 2026-02-08
+category: "ia"
+tags: ["ia", "llm", "prompt-engineering"]
+pillarTags: ["IA"]
+readingTime: 11
+featured: true
+draft: false
+lang: "fr"
+translationSlug: "en-llm-prompt-engineering"
+---
+
+## Le problème du prompting ad-hoc
+
+La plupart des développeurs interagissent avec les LLM par tâtonnement. Ils ajustent un prompt jusqu'à ce qu'il fonctionne pour leur cas de test, puis le déploient. Cette approche est fragile -- un prompt qui fonctionne pour une entrée peut échouer sur les cas limites. Nous avons besoin de la même rigueur que pour le code.
+
+## Conception structurée de prompts
+
+Traitez les prompts comme des fonctions avec des contrats clairs. Définissez le format d'entrée, le schéma de sortie attendu et le comportement sur les cas limites explicitement. Utilisez les prompts système pour les instructions persistantes et les prompts utilisateur pour l'entrée variable.
+
+```markdown
+## Rôle
+
+Vous êtes un réviseur de documentation technique.
+
+## Entrée
+
+Un document markdown contenant de la documentation API.
+
+## Sortie
+
+Un objet JSON avec : { erreurs: string[], suggestions: string[], score: number }
+
+## Contraintes
+
+- Le score est de 0 à 100, basé sur la complétude, la précision et la clarté
+- Chaque erreur doit référencer une ligne ou section spécifique
+```
+
+## Tester les sorties LLM
+
+Construisez des suites d'évaluation pour vos prompts. Définissez des cas de test avec des sorties attendues, exécutez-les contre les changements de prompts et suivez les régressions. Des outils comme promptfoo permettent de versionner les prompts et de lancer des évaluations automatisées.

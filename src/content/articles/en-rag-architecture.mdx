@@ -1,0 +1,29 @@
+---
+title: "RAG Architecture: Building Reliable Retrieval-Augmented Generation"
+description: "Designing RAG systems that go beyond naive vector search to deliver accurate answers."
+date: 2026-02-01
+category: "ai"
+tags: ["ai", "rag", "llm", "vector-search"]
+pillarTags: ["IA", "Ingénierie"]
+readingTime: 14
+featured: true
+draft: false
+lang: "en"
+translationSlug: "fr-architecture-rag"
+---
+
+## Beyond Naive RAG
+
+The simplest RAG pipeline -- embed documents, find nearest neighbors, stuff them into a prompt -- works for demos but fails in production. Documents get chunked at arbitrary boundaries, losing context. Irrelevant chunks pollute the context window. And the LLM hallucinates when retrieved passages almost-but-not-quite answer the question.
+
+## Chunking Strategies That Work
+
+Chunk at semantic boundaries, not fixed character counts. Use document structure (headers, paragraphs, code blocks) to create meaningful units. Overlap chunks by 10-15% to preserve cross-boundary context. For technical documentation, keep code blocks intact and attach surrounding prose as metadata.
+
+## Hybrid Retrieval
+
+Pure vector similarity misses keyword-exact matches. Pure keyword search misses semantic equivalents. The solution is hybrid retrieval: run both a vector search and a BM25 keyword search, then merge results using reciprocal rank fusion. This consistently outperforms either approach alone, especially for technical queries where exact identifiers matter.
+
+## Evaluation and Guardrails
+
+Measure retrieval quality separately from generation quality. Track retrieval recall (did we find the right documents?) and generation faithfulness (did the answer stay grounded in the retrieved context?). Build automated evaluation pipelines that flag when either metric degrades after index or prompt changes.

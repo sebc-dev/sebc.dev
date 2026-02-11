@@ -1,0 +1,34 @@
+---
+title: "Rust et WebAssembly : quand JavaScript ne suffit plus"
+description: "Guide pratique pour utiliser Rust compilé en WebAssembly pour les tâches web critiques."
+date: 2026-02-05
+category: "performance"
+tags: ["rust", "webassembly", "performance"]
+pillarTags: ["Ingénierie"]
+readingTime: 15
+featured: false
+draft: false
+lang: "fr"
+translationSlug: "en-rust-wasm-performance"
+---
+
+## Identifier le goulot d'étranglement
+
+Toutes les apps web lentes n'ont pas besoin de WebAssembly. Avant de passer à Rust, profilez votre JavaScript. Si le goulot d'étranglement est la manipulation du DOM, la latence réseau ou le rendu, Wasm n'aidera pas. Là où Wasm excelle, c'est le calcul intensif : traitement d'images, cryptographie, parsing de données, simulations physiques et algorithmes de compression.
+
+## Le pipeline Rust vers Wasm
+
+La chaîne d'outils a beaucoup mûri. `wasm-pack` compile votre crate Rust en un package npm avec des définitions de types TypeScript. Vous écrivez du Rust idiomatique, annotez votre API publique avec `#[wasm_bindgen]`, et obtenez un binaire `.wasm` plus du code JavaScript de liaison.
+
+```rust
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
+pub fn traiter_image(data: &[u8], largeur: u32, hauteur: u32) -> Vec<u8> {
+    data.iter().map(|pixel| pixel.saturating_add(10)).collect()
+}
+```
+
+## Gains de performance réels
+
+En production, les équipes rapportent des accélérations de 5 à 20x pour des tâches de calcul ciblées. La clé est de garder la frontière Wasm fine -- passez les données volumineuses en entrée, récupérez les résultats en sortie, minimisez les appels inter-frontières.

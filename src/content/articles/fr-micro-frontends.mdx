@@ -1,0 +1,29 @@
+---
+title: "Micro-frontends en 2026 : leçons du terrain"
+description: "Ce qui marche, ce qui ne marche pas, et quand éviter les micro-frontends."
+date: 2025-12-02
+category: "architecture"
+tags: ["micro-frontends", "architecture", "monorepo"]
+pillarTags: ["Ingénierie"]
+readingTime: 11
+featured: false
+draft: false
+lang: "fr"
+translationSlug: "en-micro-frontends"
+---
+
+## La promesse et la réalité
+
+Les micro-frontends promettent un déploiement indépendant, l'autonomie des équipes et la diversité technologique. En pratique, ils délivrent ces bénéfices uniquement à grande échelle -- quand vous avez 5+ équipes travaillant sur le même produit. Pour les petites équipes, la surcharge opérationnelle dépasse les bénéfices organisationnels.
+
+## Approches de composition
+
+Les trois approches dominantes sont la composition au build (Module Federation), la composition côté serveur (server-side includes ou rendu serveur) et la composition côté client (Web Components ou iframes). Chacune a des compromis distincts en performance, isolation et expérience développeur.
+
+## Dépendances partagées : le coût caché
+
+Le plus gros point de douleur dans les architectures micro-frontend est la gestion des dépendances. Quand trois micro-frontends embarquent chacun leur propre version de React, vous expédiez des mégaoctets de code dupliqué. L'approche pragmatique : partagez les dépendances framework, isolez tout le reste.
+
+## Quand dire non
+
+Si votre produit a moins de quatre équipes contributrices, un monolithe bien structuré avec des frontières de modules claires vous servira mieux. Les micro-frontends sont une stratégie de scaling organisationnel, pas une amélioration technique.

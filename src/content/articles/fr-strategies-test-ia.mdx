@@ -1,0 +1,29 @@
+---
+title: "Tester les fonctionnalités IA : stratégies au-delà des tests unitaires"
+description: "Comment gagner en confiance sur les features IA non-déterministes via des tests en couches."
+date: 2025-11-15
+category: "tests"
+tags: ["ia", "tests", "qualite"]
+pillarTags: ["IA", "Ingénierie"]
+readingTime: 10
+featured: false
+draft: false
+lang: "fr"
+translationSlug: "en-ai-testing-strategies"
+---
+
+## Le problème du déterminisme
+
+Les tests traditionnels assertent des sorties exactes : étant donné l'entrée X, attendre la sortie Y. Les fonctionnalités IA cassent ce contrat. Le même prompt peut produire des réponses différentes entre les exécutions.
+
+## Stratégie de tests en couches
+
+Construisez la confiance à travers plusieurs couches de tests. En bas, testez votre code déterministe normalement -- parsing d'entrée, formatage de sortie, logique du client API. Au milieu, utilisez des tests par propriétés pour les sorties IA : assertez que les réponses contiennent les champs requis, restent dans les limites de longueur et correspondent aux schémas attendus.
+
+## Tests de snapshot pour les régressions
+
+Bien que la correspondance exacte de sortie ne fonctionne pas, le snapshot testing sémantique fonctionne. Projetez vos sorties IA dans un espace vectoriel et comparez avec des embeddings de référence. Si la similarité cosinus passe sous un seuil après un changement de prompt, signalez-le comme régression.
+
+## Évaluation humaine dans la boucle
+
+Pour les dimensions subjectives de qualité -- ton, utilité, précision -- les métriques automatisées ne suffisent pas. Construisez une interface légère d'évaluation où les membres de l'équipe notent les sorties IA sur une échelle de 1 à 5.

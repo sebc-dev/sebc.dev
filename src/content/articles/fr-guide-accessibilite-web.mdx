@@ -1,0 +1,25 @@
+---
+title: "Guide pratique d'accessibilité web pour les frameworks modernes"
+description: "Un guide concret pour construire des composants accessibles en React, Vue et Astro."
+date: 2026-01-20
+category: "accessibilite"
+tags: ["accessibilite", "a11y", "composants"]
+pillarTags: ["UX", "Ingénierie"]
+readingTime: 12
+featured: true
+draft: false
+lang: "fr"
+translationSlug: "en-web-accessibility-guide"
+---
+
+## Pourquoi l'accessibilité est souvent repoussée
+
+Les équipes savent que l'accessibilité compte, mais elle tombe souvent au bas du backlog. La cause principale est un manque de guidance concrète et spécifique aux frameworks. La documentation WCAG générique ne vous dit pas comment rendre votre combobox React navigable au clavier.
+
+## Patterns au niveau composant
+
+Chaque composant interactif a besoin de trois choses : le support clavier, la sémantique ARIA et la gestion du focus. Un menu déroulant doit s'ouvrir avec Entrée ou Espace, se naviguer avec les flèches et se fermer avec Échap.
+
+## Tester l'accessibilité
+
+Les outils automatisés comme axe-core détectent environ 30% des problèmes d'accessibilité. Le reste nécessite des tests manuels avec des lecteurs d'écran et la navigation au clavier uniquement. Intégrez les deux dans votre pipeline CI et votre processus QA.

@@ -1,0 +1,35 @@
+---
+title: "Rust and WebAssembly: When JavaScript Isn't Fast Enough"
+description: "Practical guide to using Rust compiled to WebAssembly for performance-critical web tasks."
+date: 2026-02-05
+category: "performance"
+tags: ["rust", "webassembly", "performance"]
+pillarTags: ["Ingénierie"]
+readingTime: 15
+featured: false
+draft: false
+lang: "en"
+translationSlug: "fr-rust-wasm-performance"
+---
+
+## Identifying the Bottleneck
+
+Not every slow web app needs WebAssembly. Before reaching for Rust, profile your JavaScript. If the bottleneck is DOM manipulation, network latency, or rendering, Wasm won't help. Where Wasm shines is CPU-bound computation: image processing, cryptography, data parsing, physics simulations, and compression algorithms.
+
+## The Rust-to-Wasm Pipeline
+
+The toolchain has matured significantly. `wasm-pack` compiles your Rust crate into a npm-ready package with TypeScript type definitions. You write idiomatic Rust, annotate your public API with `#[wasm_bindgen]`, and get a `.wasm` binary plus JavaScript glue code that handles memory management and type conversion.
+
+```rust
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
+pub fn process_image(data: &[u8], width: u32, height: u32) -> Vec<u8> {
+    // CPU-intensive pixel manipulation runs at near-native speed
+    data.iter().map(|pixel| pixel.saturating_add(10)).collect()
+}
+```
+
+## Real-World Performance Gains
+
+In production, teams report 5-20x speedups for targeted computation tasks. The key is keeping the Wasm boundary thin -- pass large data in, get results out, minimize cross-boundary calls. Treat your Wasm module like a microservice: clear inputs, clear outputs, no shared state.

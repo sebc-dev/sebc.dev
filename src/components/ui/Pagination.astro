@@ -1,0 +1,168 @@
+---
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+interface Props {
+  perPage?: number;
+}
+
+const { perPage = 6 } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<nav
+  id="pagination"
+  aria-label={t("pagination.page")}
+  data-per-page={perPage}
+  class="flex items-center justify-center gap-2 pt-8 pb-16"
+>
+  <button
+    id="pagination-prev"
+    class="px-3 py-1.5 text-sm font-medium rounded-xs border border-border text-text-muted transition-all hover:border-teal/40 hover:text-teal-bright disabled:opacity-30 disabled:pointer-events-none"
+  >
+    {t("pagination.previous")}
+  </button>
+
+  <div id="pagination-pages" class="flex items-center gap-1"></div>
+
+  <button
+    id="pagination-next"
+    class="px-3 py-1.5 text-sm font-medium rounded-xs border border-border text-text-muted transition-all hover:border-teal/40 hover:text-teal-bright disabled:opacity-30 disabled:pointer-events-none"
+  >
+    {t("pagination.next")}
+  </button>
+</nav>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const nav = document.getElementById("pagination");
+    const prevBtn = document.getElementById("pagination-prev");
+    const nextBtn = document.getElementById("pagination-next");
+    const pagesContainer = document.getElementById("pagination-pages");
+
+    if (!nav || !prevBtn || !nextBtn || !pagesContainer) return;
+
+    const perPage = parseInt(nav.dataset.perPage || "6", 10);
+    let currentPage = 1;
+
+    function getVisibleCards(): HTMLElement[] {
+      const allCards = Array.from(
+        document.querySelectorAll<HTMLElement>("[data-category]"),
+      );
+      return allCards.filter((card) => !card.classList.contains("hidden"));
+    }
+
+    function paginate() {
+      const visible = getVisibleCards();
+      const totalPages = Math.max(1, Math.ceil(visible.length / perPage));
+
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      const start = (currentPage - 1) * perPage;
+      const end = start + perPage;
+
+      visible.forEach((card, i) => {
+        if (i >= start && i < end) {
+          card.style.display = "";
+        } else {
+          card.style.display = "none";
+        }
+      });
+
+      // Update buttons
+      (prevBtn as HTMLButtonElement).disabled = currentPage <= 1;
+      (nextBtn as HTMLButtonElement).disabled = currentPage >= totalPages;
+
+      // Build page numbers
+      if (pagesContainer) pagesContainer.innerHTML = "";
+
+      if (totalPages <= 1) {
+        if (nav) nav.style.display = "none";
+        return;
+      }
+      if (nav) nav.style.display = "";
+
+      const pages = buildPageNumbers(currentPage, totalPages);
+
+      pages.forEach((p) => {
+        if (p === "...") {
+          const span = document.createElement("span");
+          span.textContent = "...";
+          span.className = "px-1 text-sm text-text-muted";
+          pagesContainer?.appendChild(span);
+        } else {
+          const btn = document.createElement("button");
+          btn.textContent = String(p);
+          btn.className =
+            p === currentPage
+              ? "w-8 h-8 text-sm font-medium rounded-xs border border-teal bg-teal-dim text-teal-bright"
+              : "w-8 h-8 text-sm font-medium rounded-xs border border-border text-text-muted transition-all hover:border-teal/40 hover:text-teal-bright";
+          btn.addEventListener("click", () => {
+            currentPage = p as number;
+            paginate();
+            scrollToGrid();
+          });
+          pagesContainer?.appendChild(btn);
+        }
+      });
+    }
+
+    function buildPageNumbers(
+      current: number,
+      total: number,
+    ): (number | "...")[] {
+      if (total <= 5) {
+        return Array.from({ length: total }, (_, i) => i + 1);
+      }
+
+      const pages: (number | "...")[] = [1];
+
+      if (current > 3) pages.push("...");
+
+      const start = Math.max(2, current - 1);
+      const end = Math.min(total - 1, current + 1);
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+
+      if (current < total - 2) pages.push("...");
+
+      pages.push(total);
+      return pages;
+    }
+
+    function scrollToGrid() {
+      const grid = document.querySelector("[data-article-grid]");
+      if (grid) {
+        grid.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    prevBtn.addEventListener("click", () => {
+      if (currentPage > 1) {
+        currentPage--;
+        paginate();
+        scrollToGrid();
+      }
+    });
+
+    nextBtn.addEventListener("click", () => {
+      const visible = getVisibleCards();
+      const totalPages = Math.max(1, Math.ceil(visible.length / perPage));
+      if (currentPage < totalPages) {
+        currentPage++;
+        paginate();
+        scrollToGrid();
+      }
+    });
+
+    document.addEventListener("category-filter-change", () => {
+      currentPage = 1;
+      // Wait a tick for the filter to apply hidden classes
+      requestAnimationFrame(() => paginate());
+    });
+
+    paginate();
+  });
+</script>

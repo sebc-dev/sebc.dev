@@ -1,0 +1,29 @@
+---
+title: "Testing AI Features: Strategies Beyond Unit Tests"
+description: "How to build confidence in non-deterministic AI-powered features through layered testing."
+date: 2025-11-15
+category: "testing"
+tags: ["ai", "testing", "quality"]
+pillarTags: ["IA", "Ingénierie"]
+readingTime: 10
+featured: false
+draft: false
+lang: "en"
+translationSlug: "fr-strategies-test-ia"
+---
+
+## The Determinism Problem
+
+Traditional tests assert exact outputs: given input X, expect output Y. AI features break this contract. The same prompt can produce different responses across runs. You can't write `expect(llm.complete(prompt)).toBe(exactString)` and call it a day.
+
+## Layered Testing Strategy
+
+Build confidence through multiple testing layers. At the bottom, test your deterministic code normally -- input parsing, output formatting, API client logic. In the middle, use property-based tests for AI outputs: assert that responses contain required fields, stay within length bounds, and match expected schemas. At the top, run evaluation suites that measure quality metrics across large sample sets.
+
+## Snapshot Testing for Regressions
+
+While exact output matching doesn't work, semantic snapshot testing does. Embed your AI outputs into a vector space and compare against reference embeddings. If the cosine similarity drops below a threshold after a prompt change, flag it as a regression. This catches meaningful drift without requiring identical outputs.
+
+## Human-in-the-Loop Evaluation
+
+For subjective quality dimensions -- tone, helpfulness, accuracy -- automated metrics only go so far. Build a lightweight evaluation interface where team members rate AI outputs on a 1-5 scale across relevant dimensions. Track these ratings over time to spot quality trends that automated tests miss.

@@ -1,0 +1,57 @@
+---
+title: "Web Animations That Don't Jank: A Performance Guide"
+description: "Mastering CSS and JavaScript animations that stay locked at 60fps on any device."
+date: 2025-12-20
+category: "performance"
+tags: ["animation", "css", "performance"]
+pillarTags: ["UX", "Ingénierie"]
+readingTime: 9
+featured: false
+draft: false
+lang: "en"
+translationSlug: "fr-performance-animations"
+---
+
+## Why Animations Jank
+
+Every frame has a 16.67ms budget at 60fps. When your animation triggers layout recalculation or paint, that budget gets consumed by work that has nothing to do with the visual change you intended. The result: dropped frames, stuttery motion, and a UI that feels sluggish.
+
+## The Compositor-Only Rule
+
+The golden rule of performant animation: only animate properties that the compositor can handle independently -- `transform` and `opacity`. These properties don't trigger layout or paint. The browser offloads them to the GPU, which processes them on a separate thread from your JavaScript.
+
+```css
+/* Bad: triggers layout on every frame */
+.slide-in {
+  animation: slideIn 300ms ease-out;
+}
+@keyframes slideIn {
+  from {
+    left: -100%;
+  }
+  to {
+    left: 0;
+  }
+}
+
+/* Good: compositor-only, GPU-accelerated */
+.slide-in {
+  animation: slideIn 300ms ease-out;
+}
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+```
+
+## The View Transitions API
+
+The View Transitions API gives you animated page transitions with minimal JavaScript. Call `document.startViewTransition()`, update the DOM, and the browser automatically cross-fades between the old and new states. Customize with CSS `::view-transition` pseudo-elements for per-element control.
+
+## Measuring Animation Performance
+
+Use the Performance panel in DevTools to record frame timings during animations. Look for long frames (over 16ms) and trace them back to layout thrashing, expensive paint operations, or main-thread JavaScript blocking the compositor. The PerformanceObserver API lets you measure frame drops in production and report them to your analytics pipeline.

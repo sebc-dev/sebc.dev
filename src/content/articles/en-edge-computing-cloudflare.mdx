@@ -1,0 +1,29 @@
+---
+title: "Edge Computing with Cloudflare Workers: Architecture Patterns"
+description: "Practical patterns for moving logic to the edge and when it actually makes sense."
+date: 2026-01-05
+category: "infrastructure"
+tags: ["cloudflare", "edge", "architecture"]
+pillarTags: ["Ingénierie"]
+readingTime: 13
+featured: false
+draft: false
+lang: "en"
+translationSlug: "fr-edge-computing-cloudflare"
+---
+
+## Why the Edge Matters
+
+Moving computation closer to users reduces latency, but the benefits depend heavily on your workload. Static asset caching at the edge is a no-brainer. Dynamic request handling at the edge is where things get interesting -- and where architectural decisions matter most.
+
+## Pattern: Edge-Side Personalization
+
+Instead of routing every request to a central origin for personalization, parse the user's context at the edge. Geolocation, device type, and cookie-based preferences can all be resolved in a Worker without hitting your origin server. Combine this with HTMLRewriter for surgical DOM modifications and you get personalized pages at CDN speed.
+
+## Pattern: Edge-Side Rate Limiting
+
+Rate limiting at the edge prevents abusive traffic from ever reaching your origin. Using Durable Objects for distributed counters gives you consistent rate limiting across all edge locations without a centralized database. The tradeoff is eventual consistency -- but for rate limiting, a few extra requests slipping through during counter synchronization is acceptable.
+
+## When to Stay at the Origin
+
+Not everything belongs at the edge. Complex database transactions, long-running computations, and stateful session management are better served by traditional server infrastructure. The edge excels at read-heavy, latency-sensitive, stateless operations. Know your workload before distributing it.

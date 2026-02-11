@@ -1,0 +1,51 @@
+---
+title: "Animations web sans saccade : guide de performance"
+description: "Maîtriser les animations CSS et JavaScript qui restent à 60fps sur tous les appareils."
+date: 2025-12-20
+category: "performance"
+tags: ["animation", "css", "performance"]
+pillarTags: ["UX", "Ingénierie"]
+readingTime: 9
+featured: false
+draft: false
+lang: "fr"
+translationSlug: "en-animation-performance"
+---
+
+## Pourquoi les animations saccadent
+
+Chaque frame a un budget de 16,67ms à 60fps. Quand votre animation déclenche un recalcul de layout ou un paint, ce budget est consommé par du travail sans rapport avec le changement visuel voulu. Le résultat : des frames perdues, un mouvement saccadé et une interface qui semble lente.
+
+## La règle du compositor uniquement
+
+La règle d'or de l'animation performante : n'animez que les propriétés que le compositor peut gérer de façon indépendante -- `transform` et `opacity`. Ces propriétés ne déclenchent ni layout ni paint. Le navigateur les délègue au GPU, qui les traite sur un thread séparé de votre JavaScript.
+
+```css
+/* Mauvais : déclenche un layout à chaque frame */
+@keyframes glisser {
+  from {
+    left: -100%;
+  }
+  to {
+    left: 0;
+  }
+}
+
+/* Bon : compositor uniquement, accéléré GPU */
+@keyframes glisser {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+```
+
+## L'API View Transitions
+
+L'API View Transitions offre des transitions de page animées avec un minimum de JavaScript. Appelez `document.startViewTransition()`, mettez à jour le DOM, et le navigateur fait automatiquement un fondu enchaîné entre les anciens et nouveaux états.
+
+## Mesurer la performance des animations
+
+Utilisez le panneau Performance des DevTools pour enregistrer les timings de frames pendant les animations. Cherchez les frames longues (plus de 16ms) et remontez la trace jusqu'au layout thrashing, aux opérations de paint coûteuses ou au JavaScript sur le thread principal.

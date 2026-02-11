@@ -1,0 +1,29 @@
+---
+title: "Edge computing avec Cloudflare Workers : patterns d'architecture"
+description: "Patterns pratiques pour déplacer la logique en edge et quand cela a vraiment du sens."
+date: 2026-01-05
+category: "infrastructure"
+tags: ["cloudflare", "edge", "architecture"]
+pillarTags: ["Ingénierie"]
+readingTime: 13
+featured: false
+draft: false
+lang: "fr"
+translationSlug: "en-edge-computing-cloudflare"
+---
+
+## Pourquoi l'edge compte
+
+Rapprocher le calcul des utilisateurs réduit la latence, mais les bénéfices dépendent fortement de votre charge de travail. La mise en cache d'assets statiques en edge est évidente. Le traitement dynamique des requêtes en edge est là où les choses deviennent intéressantes -- et où les décisions architecturales comptent le plus.
+
+## Pattern : personnalisation côté edge
+
+Au lieu de router chaque requête vers un origin central pour la personnalisation, parsez le contexte utilisateur en edge. Géolocalisation, type d'appareil et préférences basées sur les cookies peuvent tous être résolus dans un Worker. Combinez cela avec HTMLRewriter pour des modifications chirurgicales du DOM et vous obtenez des pages personnalisées à la vitesse CDN.
+
+## Pattern : rate limiting côté edge
+
+Le rate limiting en edge empêche le trafic abusif d'atteindre votre origin. Utiliser les Durable Objects pour des compteurs distribués donne un rate limiting cohérent à travers toutes les locations edge sans base centralisée.
+
+## Quand rester à l'origin
+
+Tout n'a pas sa place en edge. Les transactions complexes en base de données, les calculs longs et la gestion de sessions stateful sont mieux servis par une infrastructure serveur traditionnelle.

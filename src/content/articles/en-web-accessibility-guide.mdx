@@ -1,0 +1,25 @@
+---
+title: "Practical Web Accessibility for Modern Frameworks"
+description: "A hands-on guide to building accessible components in React, Vue, and Astro."
+date: 2026-01-20
+category: "accessibility"
+tags: ["accessibility", "a11y", "components"]
+pillarTags: ["UX", "Ingénierie"]
+readingTime: 12
+featured: true
+draft: false
+lang: "en"
+translationSlug: "fr-guide-accessibilite-web"
+---
+
+## Why Accessibility Gets Deprioritized
+
+Teams know accessibility matters, but it often falls to the bottom of the backlog. The root cause is usually a lack of concrete, framework-specific guidance. Generic WCAG documentation doesn't tell you how to make your React combobox keyboard-navigable or how to announce route changes in a single-page app.
+
+## Component-Level Patterns
+
+Every interactive component needs three things: keyboard support, ARIA semantics, and focus management. A dropdown menu should open with Enter or Space, navigate with arrow keys, and close with Escape. The trigger button needs `aria-expanded` and `aria-haspopup`. Focus should move into the menu on open and return to the trigger on close.
+
+## Testing Accessibility
+
+Automated tools like axe-core catch about 30% of accessibility issues. The rest requires manual testing with screen readers and keyboard-only navigation. Build both into your CI pipeline and your QA process. Run axe in your integration tests, and schedule regular screen reader audits with real assistive technology users.

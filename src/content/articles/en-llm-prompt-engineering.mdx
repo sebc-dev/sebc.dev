@@ -1,0 +1,45 @@
+---
+title: "Prompt Engineering for Developers: A Systems Approach"
+description: "Moving beyond trial-and-error prompting to systematic, testable LLM interactions."
+date: 2026-02-08
+category: "ai"
+tags: ["ai", "llm", "prompt-engineering"]
+pillarTags: ["IA"]
+readingTime: 11
+featured: true
+draft: false
+lang: "en"
+translationSlug: "fr-prompt-engineering-llm"
+---
+
+## The Problem with Ad-Hoc Prompting
+
+Most developers interact with LLMs through trial and error. They tweak a prompt until it works for their test case, then ship it. This approach is fragile -- a prompt that works for one input may fail catastrophically on edge cases. We need the same rigor we apply to code: version control, testing, and systematic iteration.
+
+## Structured Prompt Design
+
+Treat prompts like functions with clear contracts. Define the input format, expected output schema, and edge case behavior explicitly. Use system prompts for persistent instructions and user prompts for variable input. Separate concerns: don't mix formatting instructions with domain logic in the same prompt block.
+
+```markdown
+## Role
+
+You are a technical documentation reviewer.
+
+## Input
+
+A markdown document containing API documentation.
+
+## Output
+
+A JSON object with: { errors: string[], suggestions: string[], score: number }
+
+## Constraints
+
+- Score is 0-100 based on completeness, accuracy, and clarity
+- Each error must reference a specific line or section
+- Suggestions are optional improvements, not errors
+```
+
+## Testing LLM Outputs
+
+Build evaluation suites for your prompts. Define test cases with expected outputs, run them against prompt changes, and track regression. Tools like promptfoo let you version prompts and run automated evaluations. Treat prompt changes like code changes -- they deserve review and testing before deployment.
