@@ -27,6 +27,8 @@ const url = getArticleUrl(article);
             src={article.data.image}
             alt={article.data.title}
             class="w-full aspect-[16/10] object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+            loading="eager"
+            fetchpriority="high"
           />
         ) : (
           <div class="w-full aspect-[16/10] bg-surface flex items-center justify-center">
@@ -47,7 +49,11 @@ const url = getArticleUrl(article);
     </div>
     <div>
       <div class="flex items-center gap-3 text-xs text-text-muted mb-4">
-        <time class="tabular-nums">{formatDate(article.data.date, lang)}</time>
+        <time
+          class="tabular-nums"
+          datetime={article.data.date.toISOString().slice(0, 10)}
+          >{formatDate(article.data.date, lang)}</time
+        >
         <span class="w-1 h-1 rounded-full bg-text-muted"></span>
         <span>{article.data.readingTime} {t("article.readingTime")}</span>
       </div>

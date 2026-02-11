@@ -1,6 +1,6 @@
 export const languages = {
   en: "English",
-  fr: "Francais",
+  fr: "Français",
 } as const;
 
 export const defaultLang = "en" as const;
@@ -30,6 +30,7 @@ export const ui = {
     "article.shareDevto": "Share on dev.to",
     "article.copyLink": "Copy link",
     "article.linkCopied": "Copied!",
+    "article.closeToc": "Close",
     "search.title": "Search",
     "search.description": "Search articles on sebc.dev",
     "search.placeholder": "Search articles...",
@@ -73,13 +74,13 @@ export const ui = {
   fr: {
     "nav.home": "Accueil",
     "nav.search": "Recherche",
-    "nav.about": "A propos",
-    "footer.description": "Blog technique — IA x Ingenierie x UX",
-    "footer.copyright": "Tous droits reserves.",
+    "nav.about": "À propos",
+    "footer.description": "Blog technique — IA x Ingénierie x UX",
+    "footer.copyright": "Tous droits réservés.",
     "lang.switch": "Passer en {label}",
     "404.title": "Page introuvable",
     "404.message": "Cette page n'existe pas.",
-    "404.back": "Retour a l'accueil",
+    "404.back": "Retour à l'accueil",
     "home.description":
       "Blog technique sur l'IA, l'Ing\u00e9nierie logicielle & l'UX",
     "home.noArticles": "Pas encore d'articles. Revenez bient\u00f4t !",
@@ -94,7 +95,8 @@ export const ui = {
     "article.shareLinkedin": "Partager sur LinkedIn",
     "article.shareDevto": "Partager sur dev.to",
     "article.copyLink": "Copier le lien",
-    "article.linkCopied": "Copie !",
+    "article.linkCopied": "Copié !",
+    "article.closeToc": "Fermer",
     "search.title": "Recherche",
     "search.description": "Rechercher des articles sur sebc.dev",
     "search.placeholder": "Rechercher des articles...",
@@ -114,21 +116,21 @@ export const ui = {
     "search.dateTo": "Au",
     "search.readingTime": "Temps de lecture",
     "search.minutes": "min",
-    "about.description": "A propos de l'auteur et philosophie du blog",
+    "about.description": "À propos de l'auteur et philosophie du blog",
     "about.hero.tagline": "[Placeholder: Accroche learn in public]",
     "about.hero.intro":
-      "[Placeholder: Courte intro sur la philosophie learn in public a l'intersection IA x Ingenierie x UX]",
-    "about.hero.bio": "[Placeholder: Courte bio - qui vous etes, parcours]",
+      "[Placeholder: Courte intro sur la philosophie learn in public à l'intersection IA x Ingénierie x UX]",
+    "about.hero.bio": "[Placeholder: Courte bio - qui vous êtes, parcours]",
     "about.pillar.ia.title": "IA",
     "about.pillar.ia.description":
       "[Placeholder: Courte description du pilier IA]",
-    "about.pillar.engineering.title": "Ingenierie",
+    "about.pillar.engineering.title": "Ingénierie",
     "about.pillar.engineering.description":
-      "[Placeholder: Courte description du pilier Ingenierie]",
+      "[Placeholder: Courte description du pilier Ingénierie]",
     "about.pillar.ux.title": "UX",
     "about.pillar.ux.description":
       "[Placeholder: Courte description du pilier UX]",
-    "about.cta": "Decouvrir mes articles",
+    "about.cta": "Découvrir mes articles",
     "about.photo.alt": "Photo de profil",
     "pagination.previous": "Précédent",
     "pagination.next": "Suivant",

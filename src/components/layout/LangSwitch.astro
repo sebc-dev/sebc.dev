@@ -29,13 +29,13 @@ function getLocalizedPath(targetLang: string): string {
             ? "text-teal-bright font-semibold"
             : "text-text-secondary hover:text-text-primary",
         ]}
-        aria-current={code === currentLang ? "true" : undefined}
+        aria-current={code === currentLang ? "page" : undefined}
         aria-label={
           code === currentLang
             ? label
             : code === "en"
               ? "Switch to English"
-              : "Passer en Francais"
+              : "Passer en Français"
         }
       >
         {code.toUpperCase()}

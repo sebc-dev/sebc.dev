@@ -46,7 +46,11 @@ const url = getArticleUrl(article);
     </a>
   </div>
   <div class="flex items-center gap-2 text-xs text-text-muted mb-2.5">
-    <time class="tabular-nums">{formatDate(article.data.date, lang)}</time>
+    <time
+      class="tabular-nums"
+      datetime={article.data.date.toISOString().slice(0, 10)}
+      >{formatDate(article.data.date, lang)}</time
+    >
     <span class="w-1 h-1 rounded-full bg-text-muted"></span>
     <span>{article.data.readingTime} {t("article.readingTime")}</span>
   </div>

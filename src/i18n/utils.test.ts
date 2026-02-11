@@ -39,6 +39,6 @@ describe("useTranslations", () => {
   it("falls back to English for missing French key", () => {
     const t = useTranslations("fr");
     // All keys exist in both, so test a known key returns fr value
-    expect(t("nav.about")).toBe("A propos");
+    expect(t("nav.about")).toBe("À propos");
   });
 });

@@ -97,6 +97,7 @@ const devtoUrl = buildDevToShareUrl(title, url);
       data-copy-url={url}
       class="w-9 h-9 flex items-center justify-center rounded-xs border border-border text-text-muted hover:text-teal hover:border-teal/30 transition-colors"
       aria-label={t("article.copyLink")}
+      data-copied-label={t("article.linkCopied")}
     >
       <svg
         width="16"
@@ -135,7 +136,7 @@ const devtoUrl = buildDevToShareUrl(title, url);
           const originalLabel = button.getAttribute("aria-label") || "";
           button.setAttribute(
             "aria-label",
-            button.getAttribute("aria-label-copied") || "Copied!",
+            button.dataset.copiedLabel || "Copied!",
           );
           button.classList.add("text-teal", "border-teal/30");
 

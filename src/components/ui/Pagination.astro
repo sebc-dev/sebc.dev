@@ -14,6 +14,7 @@ const t = useTranslations(lang);
   id="pagination"
   aria-label={t("pagination.page")}
   data-per-page={perPage}
+  data-page-label={t("pagination.page")}
   class="flex items-center justify-center gap-2 pt-8 pb-16"
 >
   <button
@@ -84,19 +85,26 @@ const t = useTranslations(lang);
 
       const pages = buildPageNumbers(currentPage, totalPages);
 
+      const pageLabel = nav?.dataset.pageLabel || "Page";
       pages.forEach((p) => {
         if (p === "...") {
           const span = document.createElement("span");
           span.textContent = "...";
           span.className = "px-1 text-sm text-text-muted";
+          span.setAttribute("aria-hidden", "true");
           pagesContainer?.appendChild(span);
         } else {
           const btn = document.createElement("button");
           btn.textContent = String(p);
-          btn.className =
-            p === currentPage
-              ? "w-8 h-8 text-sm font-medium rounded-xs border border-teal bg-teal-dim text-teal-bright"
-              : "w-8 h-8 text-sm font-medium rounded-xs border border-border text-text-muted transition-all hover:border-teal/40 hover:text-teal-bright";
+          btn.setAttribute("aria-label", `${pageLabel} ${p}`);
+          if (p === currentPage) {
+            btn.setAttribute("aria-current", "page");
+            btn.className =
+              "w-8 h-8 text-sm font-medium rounded-xs border border-teal bg-teal-dim text-teal-bright";
+          } else {
+            btn.className =
+              "w-8 h-8 text-sm font-medium rounded-xs border border-border text-text-muted transition-all hover:border-teal/40 hover:text-teal-bright";
+          }
           btn.addEventListener("click", () => {
             currentPage = p as number;
             paginate();

@@ -89,7 +89,9 @@ const t = useTranslations(lang);
           <line x1="8" x2="8" y1="2" y2="6"></line>
           <line x1="3" x2="21" y1="10" y2="10"></line>
         </svg>
-        <time>{formatDate(article.data.date, lang)}</time>
+        <time datetime={article.data.date.toISOString().slice(0, 10)}
+          >{formatDate(article.data.date, lang)}</time
+        >
       </div>
 
       <!-- Reading time -->

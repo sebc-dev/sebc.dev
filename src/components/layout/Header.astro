@@ -16,7 +16,11 @@ const lang = getLangFromUrl(Astro.url);
 >
   <div class="max-w-6xl mx-auto px-6 lg:px-8">
     <div class="flex items-center justify-between h-16">
-      <a href={`/${lang}`} class="flex items-center gap-2 group">
+      <a
+        href={`/${lang}`}
+        class="flex items-center gap-2 group"
+        aria-label="sebc.dev — Home"
+      >
         <span
           class="w-8 h-8 bg-teal/15 border border-teal/30 rounded-sm flex items-center justify-center text-teal-bright font-code text-sm font-medium group-hover:bg-teal/25 transition-colors"
           >&gt;_</span
