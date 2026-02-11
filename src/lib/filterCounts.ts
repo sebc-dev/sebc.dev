@@ -1,8 +1,9 @@
 import type { Article } from "./articles";
+import type { Category } from "./categories";
 
 export function computeCategoryCounts(
   articles: Article[],
-  categories: string[],
+  categories: Category[],
 ): Record<string, number> {
   const counts: Record<string, number> = {};
   for (const cat of categories) {

@@ -4,9 +4,10 @@ import {
   useTranslations,
   getCategoryLabel,
 } from "@/i18n/utils";
+import type { Category } from "@/lib/categories";
 
 interface Props {
-  categories: string[];
+  categories: Category[];
 }
 
 const { categories } = Astro.props;

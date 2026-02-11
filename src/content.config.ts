@@ -1,6 +1,7 @@
 import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
+import { CATEGORIES } from "./lib/categories";
 
 const articles = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/articles" }),
@@ -8,17 +9,7 @@ const articles = defineCollection({
     title: z.string(),
     description: z.string().max(160),
     date: z.coerce.date(),
-    category: z.enum([
-      "actualites",
-      "analyse-approfondie",
-      "parcours-apprentissage",
-      "retrospective",
-      "tutoriel",
-      "etude-de-cas",
-      "astuces-rapides",
-      "dans-les-coulisses",
-      "test-outil",
-    ]),
+    category: z.enum([...CATEGORIES]),
     tags: z.array(z.string()),
     pillarTags: z
       .array(z.enum(["IA", "Ingénierie", "UX"]))

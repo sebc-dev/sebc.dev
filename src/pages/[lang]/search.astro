@@ -7,11 +7,11 @@ import {
   useTranslations,
   getCategoryLabel,
 } from "@/i18n/utils";
+import { computeCategoryCounts, computeTagCounts } from "@/lib/filterCounts";
 
 export function getStaticPaths() {
   return [{ params: { lang: "en" } }, { params: { lang: "fr" } }];
 }
-import { computeCategoryCounts, computeTagCounts } from "@/lib/filterCounts";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);

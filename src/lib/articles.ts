@@ -1,4 +1,6 @@
 import { getCollection, type CollectionEntry } from "astro:content";
+export { CATEGORIES, type Category } from "./categories";
+import { CATEGORIES, type Category } from "./categories";
 
 export type Article = CollectionEntry<"articles">;
 
@@ -18,22 +20,7 @@ export async function getFeaturedArticle(
   return articles.find((a) => a.data.featured) ?? articles[0];
 }
 
-/** Canonical category order matching architecture spec */
-export const CATEGORIES = [
-  "actualites",
-  "analyse-approfondie",
-  "parcours-apprentissage",
-  "retrospective",
-  "tutoriel",
-  "etude-de-cas",
-  "astuces-rapides",
-  "dans-les-coulisses",
-  "test-outil",
-] as const;
-
-export type Category = (typeof CATEGORIES)[number];
-
-export async function getCategories(lang: "en" | "fr"): Promise<string[]> {
+export async function getCategories(lang: "en" | "fr"): Promise<Category[]> {
   const articles = await getArticlesByLocale(lang);
   const used = new Set(articles.map((a) => a.data.category));
   return CATEGORIES.filter((c) => used.has(c));

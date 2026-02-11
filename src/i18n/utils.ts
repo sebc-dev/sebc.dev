@@ -1,4 +1,5 @@
 import { ui, defaultLang } from "./ui";
+import type { Category } from "@/lib/categories";
 
 export function getLangFromUrl(url: URL) {
   const [, lang] = url.pathname.split("/");
@@ -13,7 +14,7 @@ export function useTranslations(lang: keyof typeof ui) {
 }
 
 export function getCategoryLabel(
-  category: string,
+  category: Category,
   lang: keyof typeof ui,
 ): string {
   const key = `category.${category}` as keyof (typeof ui)[typeof defaultLang];
