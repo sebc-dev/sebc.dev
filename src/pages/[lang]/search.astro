@@ -7,7 +7,6 @@ import {
   useTranslations,
   getCategoryLabel,
 } from "@/i18n/utils";
-import { computeCategoryCounts, computeTagCounts } from "@/lib/filterCounts";
 
 export function getStaticPaths() {
   return [{ params: { lang: "en" } }, { params: { lang: "fr" } }];
@@ -28,11 +27,9 @@ const allArticles = await getArticlesByLocale(lang);
 const categories = await getCategories(lang);
 const tags = await getTags(lang);
 
-const categoryCounts = computeCategoryCounts(allArticles, categories);
 const categoryLabels: Record<string, string> = Object.fromEntries(
   categories.map((c) => [c, getCategoryLabel(c, lang)]),
 );
-const tagCounts = computeTagCounts(allArticles, tags);
 
 // Reading time and date ranges for filters
 const readingTimes = allArticles.map((a) => a.data.readingTime);
@@ -76,46 +73,122 @@ const maxReadingTime = Math.max(...readingTimes);
       <!-- Left sidebar (desktop) -->
       <aside id="filter-sidebar" class="hidden lg:block">
         <div class="sticky top-24">
-          <!-- Categories -->
+          <!-- Categories combobox -->
           <div class="mb-8">
             <h3
-              class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-4"
+              class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-3"
             >
               {t("search.categories")}
             </h3>
-            <div class="flex flex-col gap-1.5">
-              {
-                categories.map((cat) => (
-                  <button
-                    data-filter-category={cat}
-                    data-count={categoryCounts[cat]}
-                    class="text-sm font-medium px-3.5 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright text-left"
-                  >
-                    {getCategoryLabel(cat, lang)}
-                  </button>
-                ))
-              }
+            <div
+              class="filter-combobox"
+              data-combobox="category"
+              data-mode="multi"
+            >
+              <div class="combobox-input-wrap">
+                <input
+                  id="cb-category"
+                  type="text"
+                  placeholder={t("search.filterCategories")}
+                  class="combobox-input"
+                  autocomplete="off"
+                  role="combobox"
+                  aria-expanded="false"
+                  aria-haspopup="listbox"
+                  aria-autocomplete="list"
+                  aria-controls="cb-category-list"
+                />
+                <svg
+                  class="combobox-chevron"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  ><polyline points="6 9 12 15 18 9"></polyline></svg
+                >
+              </div>
+              <ul
+                id="cb-category-list"
+                class="combobox-listbox hidden"
+                role="listbox"
+                aria-label={t("search.categories")}
+              >
+                {
+                  categories.map((cat) => (
+                    <li
+                      id={`cb-cat-${cat}`}
+                      role="option"
+                      data-combobox-option={cat}
+                      data-label={getCategoryLabel(cat, lang)}
+                      aria-selected="false"
+                    >
+                      <span class="combobox-option-label">
+                        {getCategoryLabel(cat, lang)}
+                      </span>
+                    </li>
+                  ))
+                }
+              </ul>
             </div>
           </div>
-          <!-- Tags -->
+          <!-- Tags combobox -->
           <div>
             <h3
-              class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-4"
+              class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-3"
             >
               {t("search.tags")}
             </h3>
-            <div class="flex flex-wrap gap-1.5">
-              {
-                tags.map((tag) => (
-                  <button
-                    data-filter-tag={tag}
-                    data-count={tagCounts[tag]}
-                    class="text-xs font-code px-2.5 py-1 rounded-xs border border-border text-text-secondary whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright"
-                  >
-                    {tag}
-                  </button>
-                ))
-              }
+            <div class="filter-combobox" data-combobox="tag" data-mode="multi">
+              <div class="combobox-input-wrap">
+                <input
+                  id="cb-tag"
+                  type="text"
+                  placeholder={t("search.filterTags")}
+                  class="combobox-input"
+                  autocomplete="off"
+                  role="combobox"
+                  aria-expanded="false"
+                  aria-haspopup="listbox"
+                  aria-autocomplete="list"
+                  aria-controls="cb-tag-list"
+                />
+                <svg
+                  class="combobox-chevron"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  ><polyline points="6 9 12 15 18 9"></polyline></svg
+                >
+              </div>
+              <ul
+                id="cb-tag-list"
+                class="combobox-listbox hidden"
+                role="listbox"
+                aria-label={t("search.tags")}
+              >
+                {
+                  tags.map((tag) => (
+                    <li
+                      id={`cb-tag-${tag}`}
+                      role="option"
+                      data-combobox-option={tag}
+                      data-label={tag}
+                      aria-selected="false"
+                    >
+                      <span class="combobox-option-label">{tag}</span>
+                    </li>
+                  ))
+                }
+              </ul>
             </div>
           </div>
           <!-- Date range -->
@@ -259,49 +332,126 @@ const maxReadingTime = Math.max(...readingTimes);
             </button>
           </div>
           <nav class="flex-1 overflow-y-auto px-6 py-6">
-            <!-- Mobile Categories -->
+            <!-- Mobile Categories combobox -->
             <div class="mb-8">
               <h3
-                class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-4"
+                class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-3"
               >
                 {t("search.categories")}
               </h3>
-              <div class="flex flex-col gap-1.5">
-                {
-                  categories.map((cat) => (
-                    <button
-                      data-filter-category-mobile={cat}
-                      data-count={categoryCounts[cat]}
-                      class="text-sm font-medium px-3.5 py-1.5 rounded-xs border border-border text-text-muted whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright text-left"
-                    >
-                      {getCategoryLabel(cat, lang)}{" "}
-                      <span class="text-text-muted opacity-60">
-                        ({categoryCounts[cat]})
-                      </span>
-                    </button>
-                  ))
-                }
+              <div
+                class="filter-combobox"
+                data-combobox="category"
+                data-mode="multi"
+              >
+                <div class="combobox-input-wrap">
+                  <input
+                    id="cb-category-mobile"
+                    type="text"
+                    placeholder={t("search.filterCategories")}
+                    class="combobox-input"
+                    autocomplete="off"
+                    role="combobox"
+                    aria-expanded="false"
+                    aria-haspopup="listbox"
+                    aria-autocomplete="list"
+                    aria-controls="cb-category-mobile-list"
+                  />
+                  <svg
+                    class="combobox-chevron"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    ><polyline points="6 9 12 15 18 9"></polyline></svg
+                  >
+                </div>
+                <ul
+                  id="cb-category-mobile-list"
+                  class="combobox-listbox hidden"
+                  role="listbox"
+                  aria-label={t("search.categories")}
+                >
+                  {
+                    categories.map((cat) => (
+                      <li
+                        id={`cb-cat-m-${cat}`}
+                        role="option"
+                        data-combobox-option={cat}
+                        data-label={getCategoryLabel(cat, lang)}
+                        aria-selected="false"
+                      >
+                        <span class="combobox-option-label">
+                          {getCategoryLabel(cat, lang)}
+                        </span>
+                      </li>
+                    ))
+                  }
+                </ul>
               </div>
             </div>
-            <!-- Mobile Tags -->
+            <!-- Mobile Tags combobox -->
             <div>
               <h3
-                class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-4"
+                class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-3"
               >
                 {t("search.tags")}
               </h3>
-              <div class="flex flex-wrap gap-1.5">
-                {
-                  tags.map((tag) => (
-                    <button
-                      data-filter-tag-mobile={tag}
-                      data-count={tagCounts[tag]}
-                      class="text-xs font-code px-2.5 py-1 rounded-xs border border-border text-text-secondary whitespace-nowrap transition-all hover:border-teal/40 hover:text-teal-bright"
-                    >
-                      {tag}
-                    </button>
-                  ))
-                }
+              <div
+                class="filter-combobox"
+                data-combobox="tag"
+                data-mode="multi"
+              >
+                <div class="combobox-input-wrap">
+                  <input
+                    id="cb-tag-mobile"
+                    type="text"
+                    placeholder={t("search.filterTags")}
+                    class="combobox-input"
+                    autocomplete="off"
+                    role="combobox"
+                    aria-expanded="false"
+                    aria-haspopup="listbox"
+                    aria-autocomplete="list"
+                    aria-controls="cb-tag-mobile-list"
+                  />
+                  <svg
+                    class="combobox-chevron"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    ><polyline points="6 9 12 15 18 9"></polyline></svg
+                  >
+                </div>
+                <ul
+                  id="cb-tag-mobile-list"
+                  class="combobox-listbox hidden"
+                  role="listbox"
+                  aria-label={t("search.tags")}
+                >
+                  {
+                    tags.map((tag) => (
+                      <li
+                        id={`cb-tag-m-${tag}`}
+                        role="option"
+                        data-combobox-option={tag}
+                        data-label={tag}
+                        aria-selected="false"
+                      >
+                        <span class="combobox-option-label">{tag}</span>
+                      </li>
+                    ))
+                  }
+                </ul>
               </div>
             </div>
             <!-- Mobile Date range -->
@@ -514,7 +664,6 @@ const maxReadingTime = Math.max(...readingTimes);
     const searchLoading = document.getElementById("search-loading");
     const resultCount = document.getElementById("result-count");
     const viewToggle = document.getElementById("view-toggle");
-    const filterSidebar = document.getElementById("filter-sidebar");
     const filterMobileBtn = document.getElementById("filter-mobile-btn");
     const filterDrawerOverlay = document.getElementById(
       "filter-drawer-overlay",
@@ -573,7 +722,7 @@ const maxReadingTime = Math.max(...readingTimes);
     // --- State ---
     interface SearchState {
       query: string;
-      category: string;
+      categories: string[];
       tags: string[];
       view: "grid" | "list";
       dateFrom: string;
@@ -584,7 +733,7 @@ const maxReadingTime = Math.max(...readingTimes);
 
     let state: SearchState = {
       query: "",
-      category: "",
+      categories: [],
       tags: [],
       view: "grid",
       dateFrom: "",
@@ -611,7 +760,7 @@ const maxReadingTime = Math.max(...readingTimes);
       const params = new URLSearchParams(window.location.search);
       return {
         query: params.get("q") || "",
-        category: params.get("cat") || "",
+        categories: params.get("cat")?.split(",").filter(Boolean) || [],
         tags: params.get("tags")?.split(",").filter(Boolean) || [],
         view: state.view,
         dateFrom: params.get("from") || "",
@@ -628,7 +777,7 @@ const maxReadingTime = Math.max(...readingTimes);
     function writeStateToUrl(s: SearchState, push = false) {
       const params = new URLSearchParams();
       if (s.query) params.set("q", s.query);
-      if (s.category) params.set("cat", s.category);
+      if (s.categories.length) params.set("cat", s.categories.join(","));
       if (s.tags.length) params.set("tags", s.tags.join(","));
       if (s.dateFrom) params.set("from", s.dateFrom);
       if (s.dateTo) params.set("to", s.dateTo);
@@ -866,159 +1015,162 @@ const maxReadingTime = Math.max(...readingTimes);
       $count.textContent = `${count} ${label}`;
     }
 
-    // --- Update filter button states ---
-    function updateFilterButtons() {
-      // Desktop sidebar
-      if (filterSidebar) {
-        filterSidebar
-          .querySelectorAll("[data-filter-category]")
-          .forEach((btn) => {
-            const cat = (btn as HTMLElement).dataset.filterCategory || "";
-            if (cat === state.category) {
-              btn.classList.add(
-                "text-teal-bright",
-                "border-teal",
-                "bg-teal-dim",
-              );
-              btn.classList.remove("text-text-muted", "border-border");
-            } else {
-              btn.classList.remove(
-                "text-teal-bright",
-                "border-teal",
-                "bg-teal-dim",
-              );
-              btn.classList.add("text-text-muted", "border-border");
-            }
-          });
-        filterSidebar.querySelectorAll("[data-filter-tag]").forEach((btn) => {
-          const tag = (btn as HTMLElement).dataset.filterTag || "";
-          if (state.tags.includes(tag)) {
-            btn.classList.add(
-              "text-teal-bright",
-              "border-teal/20",
-              "bg-teal-dim",
-            );
-            btn.classList.remove("text-text-secondary", "border-border");
+    // --- Combobox autocomplete ---
+    function initCombobox(
+      container: HTMLElement,
+      type: "category" | "tag",
+      onSelect: (value: string) => void,
+    ) {
+      const input = container.querySelector(
+        ".combobox-input",
+      ) as HTMLInputElement | null;
+      const listbox = container.querySelector(
+        ".combobox-listbox",
+      ) as HTMLElement | null;
+      if (!input || !listbox) return;
+
+      // Narrowed non-null refs for closures
+      const $input = input;
+      const $listbox = listbox;
+
+      const options = Array.from(
+        $listbox.querySelectorAll("[data-combobox-option]"),
+      ) as HTMLElement[];
+      let activeIndex = -1;
+
+      function open() {
+        $listbox.classList.remove("hidden");
+        container.classList.add("open");
+        $input.setAttribute("aria-expanded", "true");
+      }
+
+      function close() {
+        $listbox.classList.add("hidden");
+        container.classList.remove("open");
+        $input.setAttribute("aria-expanded", "false");
+        activeIndex = -1;
+        clearActive();
+      }
+
+      function clearActive() {
+        options.forEach((o) => o.classList.remove("combobox-active"));
+      }
+
+      function setActive(idx: number) {
+        clearActive();
+        const visible = options.filter(
+          (o) => !o.classList.contains("combobox-hidden"),
+        );
+        if (idx >= 0 && idx < visible.length) {
+          activeIndex = idx;
+          visible[idx].classList.add("combobox-active");
+          visible[idx].scrollIntoView({ block: "nearest" });
+          $input.setAttribute("aria-activedescendant", visible[idx].id || "");
+        }
+      }
+
+      function filterOptions(query: string) {
+        const q = query.toLowerCase();
+        options.forEach((opt) => {
+          const label = (opt.dataset.label || "").toLowerCase();
+          if (q === "" || label.includes(q)) {
+            opt.classList.remove("combobox-hidden");
           } else {
-            btn.classList.remove(
-              "text-teal-bright",
-              "border-teal/20",
-              "bg-teal-dim",
-            );
-            btn.classList.add("text-text-secondary", "border-border");
+            opt.classList.add("combobox-hidden");
           }
         });
+        activeIndex = -1;
       }
 
-      // Mobile drawer
-      if (filterDrawerPanel) {
-        filterDrawerPanel
-          .querySelectorAll("[data-filter-category-mobile]")
-          .forEach((btn) => {
-            const cat = (btn as HTMLElement).dataset.filterCategoryMobile || "";
-            if (cat === state.category) {
-              btn.classList.add(
-                "text-teal-bright",
-                "border-teal",
-                "bg-teal-dim",
-              );
-              btn.classList.remove("text-text-muted", "border-border");
-            } else {
-              btn.classList.remove(
-                "text-teal-bright",
-                "border-teal",
-                "bg-teal-dim",
-              );
-              btn.classList.add("text-text-muted", "border-border");
-            }
-          });
-        filterDrawerPanel
-          .querySelectorAll("[data-filter-tag-mobile]")
-          .forEach((btn) => {
-            const tag = (btn as HTMLElement).dataset.filterTagMobile || "";
-            if (state.tags.includes(tag)) {
-              btn.classList.add(
-                "text-teal-bright",
-                "border-teal/20",
-                "bg-teal-dim",
-              );
-              btn.classList.remove("text-text-secondary", "border-border");
-            } else {
-              btn.classList.remove(
-                "text-teal-bright",
-                "border-teal/20",
-                "bg-teal-dim",
-              );
-              btn.classList.add("text-text-secondary", "border-border");
-            }
-          });
-      }
-    }
-
-    // --- Update filter counts from Pagefind results ---
-    function updateFilterCounts(
-      totalFilters: Record<string, Record<string, number>>,
-    ) {
-      if (!totalFilters) return;
-
-      const updateBtn = (
-        btn: Element,
-        filterKey: string,
-        filterName: string,
-      ) => {
-        const count = totalFilters[filterKey]?.[filterName] ?? 0;
-        (btn as HTMLElement).dataset.count = String(count);
-        const countSpan = btn.querySelector("span");
-        if (countSpan) countSpan.textContent = `(${count})`;
-      };
-
-      // Desktop
-      if (filterSidebar) {
-        filterSidebar
-          .querySelectorAll("[data-filter-category]")
-          .forEach((btn) => {
-            updateBtn(
-              btn,
-              "category",
-              (btn as HTMLElement).dataset.filterCategory || "",
-            );
-          });
-        filterSidebar.querySelectorAll("[data-filter-tag]").forEach((btn) => {
-          updateBtn(btn, "tag", (btn as HTMLElement).dataset.filterTag || "");
+      // Update aria-selected based on current state
+      function syncAriaSelected() {
+        options.forEach((opt) => {
+          const val = opt.dataset.comboboxOption || "";
+          const isSelected =
+            type === "category"
+              ? state.categories.includes(val)
+              : state.tags.includes(val);
+          opt.setAttribute("aria-selected", String(isSelected));
         });
       }
 
-      // Mobile
-      if (filterDrawerPanel) {
-        filterDrawerPanel
-          .querySelectorAll("[data-filter-category-mobile]")
-          .forEach((btn) => {
-            updateBtn(
-              btn,
-              "category",
-              (btn as HTMLElement).dataset.filterCategoryMobile || "",
-            );
-          });
-        filterDrawerPanel
-          .querySelectorAll("[data-filter-tag-mobile]")
-          .forEach((btn) => {
-            updateBtn(
-              btn,
-              "tag",
-              (btn as HTMLElement).dataset.filterTagMobile || "",
-            );
-          });
+      input.addEventListener("focus", () => {
+        filterOptions(input.value);
+        syncAriaSelected();
+        open();
+      });
+
+      input.addEventListener("input", () => {
+        filterOptions(input.value);
+        open();
+      });
+
+      input.addEventListener("keydown", (e) => {
+        const visible = options.filter(
+          (o) => !o.classList.contains("combobox-hidden"),
+        );
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          if ($listbox.classList.contains("hidden")) {
+            open();
+          }
+          setActive(Math.min(activeIndex + 1, visible.length - 1));
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          setActive(Math.max(activeIndex - 1, 0));
+        } else if (e.key === "Enter") {
+          e.preventDefault();
+          if (activeIndex >= 0 && activeIndex < visible.length) {
+            const val = visible[activeIndex].dataset.comboboxOption || "";
+            onSelect(val);
+            syncAriaSelected();
+          }
+        } else if (e.key === "Escape") {
+          input.value = "";
+          filterOptions("");
+          close();
+        }
+      });
+
+      options.forEach((opt) => {
+        opt.addEventListener("click", () => {
+          const val = opt.dataset.comboboxOption || "";
+          onSelect(val);
+          syncAriaSelected();
+          $input.focus();
+        });
+      });
+
+      return { syncAriaSelected, close, container, input, filterOptions };
+    }
+
+    // Sync all combobox aria-selected states across desktop & mobile
+    const comboboxInstances: ReturnType<typeof initCombobox>[] = [];
+
+    // Single global click listener to close all comboboxes on outside click
+    document.addEventListener("click", (e) => {
+      for (const inst of comboboxInstances) {
+        if (!inst) continue;
+        if (!inst.container.contains(e.target as Node)) {
+          inst.input.value = "";
+          inst.filterOptions("");
+          inst.close();
+        }
       }
+    });
+
+    function syncComboboxState() {
+      comboboxInstances.forEach((inst) => inst?.syncAriaSelected());
     }
 
     // --- Render filter chips ---
     function renderFilterChips() {
       const chips: string[] = [];
 
-      if (state.category) {
+      for (const cat of state.categories) {
         chips.push(`<span class="inline-flex items-center gap-1.5 text-xs font-code px-2.5 py-1 rounded-xs border text-teal-bright border-teal/20 bg-teal-dim">
-          ${escapeHtml(catLabel(state.category))}
-          <button data-remove-filter="category" class="hover:text-text-primary transition-colors" aria-label="Remove ${escapeHtml(catLabel(state.category))} filter">&times;</button>
+          ${escapeHtml(catLabel(cat))}
+          <button data-remove-filter="cat:${escapeHtml(cat)}" class="hover:text-text-primary transition-colors" aria-label="Remove ${escapeHtml(catLabel(cat))} filter">&times;</button>
         </span>`);
       }
 
@@ -1069,8 +1221,9 @@ const maxReadingTime = Math.max(...readingTimes);
         btn.addEventListener("click", (e) => {
           e.preventDefault();
           const val = (btn as HTMLElement).dataset.removeFilter || "";
-          if (val === "category") {
-            state.category = "";
+          if (val.startsWith("cat:")) {
+            const catName = val.slice(4);
+            state.categories = state.categories.filter((c) => c !== catName);
           } else if (val.startsWith("tag:")) {
             const tagName = val.slice(4);
             state.tags = state.tags.filter((t) => t !== tagName);
@@ -1084,7 +1237,7 @@ const maxReadingTime = Math.max(...readingTimes);
             syncRangeSliders();
           }
           writeStateToUrl(state, true);
-          updateFilterButtons();
+          syncComboboxState();
           renderFilterChips();
           performSearch();
         });
@@ -1093,7 +1246,7 @@ const maxReadingTime = Math.max(...readingTimes);
       const clearAll = $chips.querySelector("#clear-all-filters");
       if (clearAll) {
         clearAll.addEventListener("click", () => {
-          state.category = "";
+          state.categories = [];
           state.tags = [];
           state.dateFrom = "";
           state.dateTo = "";
@@ -1102,7 +1255,7 @@ const maxReadingTime = Math.max(...readingTimes);
           syncDateInputs();
           syncRangeSliders();
           writeStateToUrl(state, true);
-          updateFilterButtons();
+          syncComboboxState();
           renderFilterChips();
           performSearch();
         });
@@ -1135,7 +1288,7 @@ const maxReadingTime = Math.max(...readingTimes);
 
     async function performSearch() {
       const hasQuery = state.query.trim().length > 0;
-      const hasFilters = state.category !== "" || state.tags.length > 0;
+      const hasFilters = state.categories.length > 0 || state.tags.length > 0;
       const hasRange = hasRangeFilters();
 
       if (!hasQuery && !hasFilters && !hasRange) {
@@ -1205,17 +1358,31 @@ const maxReadingTime = Math.max(...readingTimes);
       // Build filter object
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const pfFilters: Record<string, any> = {};
-      if (state.category) pfFilters.category = state.category;
+      if (state.categories.length === 1)
+        pfFilters.category = state.categories[0];
+      else if (state.categories.length > 1)
+        pfFilters.category = { any: state.categories };
       if (state.tags.length) pfFilters.tag = { any: state.tags };
 
-      const searchTerm = hasQuery ? state.query : null;
-      const result = await pf.debouncedSearch(
-        searchTerm,
-        { filters: pfFilters },
-        250,
-      );
-
-      if (result === null) return; // Superseded by newer search
+      let result;
+      try {
+        const searchPromise = hasQuery
+          ? pf.debouncedSearch(state.query, { filters: pfFilters }, 250)
+          : pf.search(null, { filters: pfFilters });
+        const SEARCH_TIMEOUT_MS = 8000;
+        const timeout = new Promise((_, reject) =>
+          setTimeout(
+            () => reject(new Error("Search timeout")),
+            SEARCH_TIMEOUT_MS,
+          ),
+        );
+        result = await Promise.race([searchPromise, timeout]);
+        if (result === null) return; // Superseded by newer debounced search
+      } catch (err) {
+        console.warn("Pagefind search error:", err);
+        searchLoading?.classList.add("hidden");
+        return;
+      }
 
       searchLoading?.classList.add("hidden");
       $initial.classList.add("hidden");
@@ -1238,7 +1405,7 @@ const maxReadingTime = Math.max(...readingTimes);
           lang === "fr" ? "Aucun résultat pour" : "No results for";
         const queryDisplay =
           state.query ||
-          [state.category ? catLabel(state.category) : "", ...state.tags]
+          [...state.categories.map(catLabel), ...state.tags]
             .filter(Boolean)
             .join(", ");
         if ($noResultsP)
@@ -1249,11 +1416,6 @@ const maxReadingTime = Math.max(...readingTimes);
         $noResults.classList.add("hidden");
         renderResults(loaded);
         updateResultCount(loaded.length);
-      }
-
-      // Update filter counts from search results
-      if (result.totalFilters) {
-        updateFilterCounts(result.totalFilters);
       }
     }
 
@@ -1306,65 +1468,46 @@ const maxReadingTime = Math.max(...readingTimes);
     // Lazy init Pagefind on focus
     searchInput.addEventListener("focus", () => initPagefind(), { once: true });
 
-    // Category filter clicks (desktop)
-    filterSidebar?.querySelectorAll("[data-filter-category]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const cat = (btn as HTMLElement).dataset.filterCategory || "";
-        state.category = state.category === cat ? "" : cat;
-        writeStateToUrl(state, true);
-        updateFilterButtons();
-        renderFilterChips();
-        performSearch();
+    // Initialize comboboxes (desktop + mobile)
+    function onCategorySelect(val: string) {
+      if (state.categories.includes(val)) {
+        state.categories = state.categories.filter((c) => c !== val);
+      } else {
+        state.categories = [...state.categories, val];
+      }
+      writeStateToUrl(state, true);
+      syncComboboxState();
+      renderFilterChips();
+      performSearch();
+    }
+
+    function onTagSelect(val: string) {
+      if (state.tags.includes(val)) {
+        state.tags = state.tags.filter((t) => t !== val);
+      } else {
+        state.tags = [...state.tags, val];
+      }
+      writeStateToUrl(state, true);
+      syncComboboxState();
+      renderFilterChips();
+      performSearch();
+    }
+
+    document
+      .querySelectorAll('[data-combobox="category"]')
+      .forEach((container) => {
+        const inst = initCombobox(
+          container as HTMLElement,
+          "category",
+          onCategorySelect,
+        );
+        if (inst) comboboxInstances.push(inst);
       });
+
+    document.querySelectorAll('[data-combobox="tag"]').forEach((container) => {
+      const inst = initCombobox(container as HTMLElement, "tag", onTagSelect);
+      if (inst) comboboxInstances.push(inst);
     });
-
-    // Tag filter clicks (desktop)
-    filterSidebar?.querySelectorAll("[data-filter-tag]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const tag = (btn as HTMLElement).dataset.filterTag || "";
-        if (state.tags.includes(tag)) {
-          state.tags = state.tags.filter((t) => t !== tag);
-        } else {
-          state.tags = [...state.tags, tag];
-        }
-        writeStateToUrl(state, true);
-        updateFilterButtons();
-        renderFilterChips();
-        performSearch();
-      });
-    });
-
-    // Category filter clicks (mobile)
-    filterDrawerPanel
-      ?.querySelectorAll("[data-filter-category-mobile]")
-      .forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const cat = (btn as HTMLElement).dataset.filterCategoryMobile || "";
-          state.category = state.category === cat ? "" : cat;
-          writeStateToUrl(state, true);
-          updateFilterButtons();
-          renderFilterChips();
-          performSearch();
-        });
-      });
-
-    // Tag filter clicks (mobile)
-    filterDrawerPanel
-      ?.querySelectorAll("[data-filter-tag-mobile]")
-      .forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const tag = (btn as HTMLElement).dataset.filterTagMobile || "";
-          if (state.tags.includes(tag)) {
-            state.tags = state.tags.filter((t) => t !== tag);
-          } else {
-            state.tags = [...state.tags, tag];
-          }
-          writeStateToUrl(state, true);
-          updateFilterButtons();
-          renderFilterChips();
-          performSearch();
-        });
-      });
 
     // View toggle
     viewToggle?.querySelectorAll("button").forEach((btn) => {
@@ -1649,7 +1792,7 @@ const maxReadingTime = Math.max(...readingTimes);
       searchInput.value = state.query;
       syncDateInputs();
       syncRangeSliders();
-      updateFilterButtons();
+      syncComboboxState();
       renderFilterChips();
       performSearch();
     });
@@ -1668,7 +1811,7 @@ const maxReadingTime = Math.max(...readingTimes);
     const initialState = readStateFromUrl();
     if (
       initialState.query ||
-      initialState.category ||
+      initialState.categories.length ||
       initialState.tags.length ||
       initialState.dateFrom ||
       initialState.dateTo ||
@@ -1679,7 +1822,7 @@ const maxReadingTime = Math.max(...readingTimes);
       searchInput.value = state.query;
       syncDateInputs();
       syncRangeSliders();
-      updateFilterButtons();
+      syncComboboxState();
       renderFilterChips();
       performSearch();
     }
@@ -1691,6 +1834,107 @@ const maxReadingTime = Math.max(...readingTimes);
 </script>
 
 <style is:global>
+  /* Search highlight */
+  #search-results mark {
+    background: rgba(217, 169, 99, 0.15);
+    color: #d9a963;
+    border-radius: 2px;
+    padding: 0 2px;
+  }
+
+  /* Combobox autocomplete */
+  .filter-combobox {
+    position: relative;
+  }
+  .combobox-input-wrap {
+    position: relative;
+  }
+  .combobox-input {
+    width: 100%;
+    background: var(--color-surface, #12122a);
+    border: 1px solid var(--color-border, #2a2a3e);
+    border-radius: 6px;
+    padding: 8px 36px 8px 12px;
+    font-size: 0.8125rem;
+    color: var(--color-text-primary, #e8e8f0);
+    font-family: var(--font-body, "Albert Sans", sans-serif);
+    transition: border-color 0.15s;
+  }
+  .combobox-input::placeholder {
+    color: var(--color-text-muted, #6b6b8a);
+  }
+  .combobox-input:focus {
+    outline: none;
+    border-color: color-mix(
+      in srgb,
+      var(--color-teal, #0d9488) 50%,
+      transparent
+    );
+  }
+  .combobox-chevron {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-muted, #6b6b8a);
+    pointer-events: none;
+    transition: transform 0.2s;
+  }
+  .filter-combobox.open .combobox-chevron {
+    transform: translateY(-50%) rotate(180deg);
+  }
+  .combobox-listbox {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    margin-top: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    background: var(--color-surface, #12122a);
+    border: 1px solid var(--color-border, #2a2a3e);
+    border-radius: 6px;
+    padding: 4px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    list-style: none;
+  }
+  .combobox-listbox li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 10px;
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary, #a0a0b8);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.1s;
+  }
+  .combobox-listbox li:hover,
+  .combobox-listbox li.combobox-active {
+    background: color-mix(in srgb, var(--color-teal, #0d9488) 12%, transparent);
+    color: var(--color-teal-bright, #2dd4bf);
+  }
+  .combobox-listbox li[aria-selected="true"] {
+    background: color-mix(in srgb, var(--color-teal, #0d9488) 20%, transparent);
+    color: var(--color-teal-bright, #2dd4bf);
+    font-weight: 600;
+  }
+  .combobox-listbox li.combobox-hidden {
+    display: none;
+  }
+  /* Scrollbar for listbox */
+  .combobox-listbox::-webkit-scrollbar {
+    width: 6px;
+  }
+  .combobox-listbox::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .combobox-listbox::-webkit-scrollbar-thumb {
+    background: var(--color-border, #2a2a3e);
+    border-radius: 3px;
+  }
+
   /* Custom date picker */
   .date-picker-wrapper {
     position: relative;

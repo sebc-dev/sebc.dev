@@ -6,13 +6,18 @@ import ShareButtons from "@/components/article/ShareButtons.astro";
 import RelatedArticles from "@/components/article/RelatedArticles.astro";
 import ReadingProgress from "@/components/ui/ReadingProgress.astro";
 import Tag from "@/components/ui/Tag.astro";
+import PillarTag from "@/components/article/PillarTag.astro";
 import JsonLd from "@/components/seo/JsonLd.astro";
 import {
   getRelatedArticles,
   getArticleUrl,
   type Article,
 } from "@/lib/articles";
-import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+import {
+  getLangFromUrl,
+  useTranslations,
+  getCategoryLabel,
+} from "@/i18n/utils";
 
 interface Props {
   article: Article;
@@ -196,16 +201,90 @@ if (article.data.translationSlug) {
                   ))
               }
             </ul>
+            <div class="mt-6 pt-6 border-t border-border">
+              <h4
+                class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-3"
+              >
+                {t("article.category")}
+              </h4>
+              <a
+                href={`/${lang}/search?cat=${encodeURIComponent(article.data.category)}`}
+                data-toc-mobile-link
+                class="inline-flex items-center text-sm font-semibold px-2.5 py-1 rounded-xs border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-teal transition-colors"
+              >
+                {getCategoryLabel(article.data.category, lang)}
+              </a>
+            </div>
+            <div class="mt-5">
+              <h4
+                class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-3"
+              >
+                {t("article.pillarTags")}
+              </h4>
+              <div class="flex flex-wrap gap-2">
+                {
+                  article.data.pillarTags.map((pillar) => (
+                    <PillarTag pillar={pillar} />
+                  ))
+                }
+              </div>
+            </div>
+            <div class="mt-5">
+              <h4
+                class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-3"
+              >
+                {t("article.tags")}
+              </h4>
+              <div class="flex flex-wrap gap-2">
+                {
+                  article.data.tags.map((tag) => (
+                    <Tag
+                      label={tag}
+                      href={`/${lang}/search?tags=${encodeURIComponent(tag)}`}
+                    />
+                  ))
+                }
+              </div>
+            </div>
           </nav>
         </div>
       </div>
 
       <aside class="hidden lg:block">
-        <div class="sticky top-24">
+        <div
+          class="sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto overscroll-contain sidebar-scroll pb-12"
+        >
           <TableOfContents headings={headings} />
           <div class="mt-8">
             <h3
-              class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-4"
+              class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-3"
+            >
+              {t("article.category")}
+            </h3>
+            <a
+              href={`/${lang}/search?cat=${encodeURIComponent(article.data.category)}`}
+              class="inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-xs border border-border bg-surface text-text-secondary hover:text-text-primary hover:border-teal transition-colors"
+            >
+              {getCategoryLabel(article.data.category, lang)}
+            </a>
+          </div>
+          <div class="mt-6">
+            <h3
+              class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-3"
+            >
+              {t("article.pillarTags")}
+            </h3>
+            <div class="flex flex-wrap gap-2">
+              {
+                article.data.pillarTags.map((pillar) => (
+                  <PillarTag pillar={pillar} />
+                ))
+              }
+            </div>
+          </div>
+          <div class="mt-6">
+            <h3
+              class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-3"
             >
               {t("article.tags")}
             </h3>

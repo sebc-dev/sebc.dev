@@ -1,5 +1,4 @@
 import { getCollection, type CollectionEntry } from "astro:content";
-export { CATEGORIES, type Category } from "./categories";
 import { CATEGORIES, type Category } from "./categories";
 
 export type Article = CollectionEntry<"articles">;

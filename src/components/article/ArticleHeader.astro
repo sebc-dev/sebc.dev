@@ -1,13 +1,7 @@
 ---
 import { formatDate } from "@/utils/dates";
-import {
-  getLangFromUrl,
-  useTranslations,
-  getCategoryLabel,
-} from "@/i18n/utils";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 import { type Article } from "@/lib/articles";
-import Tag from "@/components/ui/Tag.astro";
-import PillarTag from "@/components/article/PillarTag.astro";
 
 interface Props {
   article: Article;
@@ -39,7 +33,7 @@ const t = useTranslations(lang);
     {t("article.backToArticles")}
   </a>
 
-  <!-- Cover image with category badge -->
+  <!-- Cover image -->
   {
     article.data.image && (
       <div class="relative overflow-hidden rounded-xs border border-border mb-8">
@@ -50,12 +44,6 @@ const t = useTranslations(lang);
           loading="eager"
         />
         <div class="absolute inset-0 bg-linear-to-t from-canvas/50 to-transparent" />
-        <a
-          href={`/${lang}/search?cat=${encodeURIComponent(article.data.category)}`}
-          class="absolute top-4 left-4 z-10 text-xs font-code text-teal bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded-xs border border-teal/20 hover:bg-canvas/90 transition-colors"
-        >
-          {getCategoryLabel(article.data.category, lang)}
-        </a>
       </div>
     )
   }
@@ -115,29 +103,6 @@ const t = useTranslations(lang);
         </svg>
         <span>{article.data.readingTime} {t("article.readingTime")}</span>
       </div>
-
-      <!-- Pillar tags -->
-      {
-        article.data.pillarTags && article.data.pillarTags.length > 0 && (
-          <div class="flex items-center gap-2">
-            {article.data.pillarTags.map((pillar) => (
-              <PillarTag pillar={pillar} />
-            ))}
-          </div>
-        )
-      }
-    </div>
-
-    <!-- Tags below metadata -->
-    <div class="flex flex-wrap gap-2 mt-6">
-      {
-        article.data.tags.map((tag) => (
-          <Tag
-            label={tag}
-            href={`/${lang}/search?tags=${encodeURIComponent(tag)}`}
-          />
-        ))
-      }
     </div>
   </header>
 </div>
