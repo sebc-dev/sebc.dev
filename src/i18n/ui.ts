@@ -64,19 +64,20 @@ export const ui = {
     "search.filterCategories": "Filter categories...",
     "search.filterTags": "Filter tags...",
     "about.description": "About the author and blog philosophy",
-    "about.hero.tagline": "[Placeholder: Learn in public tagline]",
+    "about.hero.tagline": "A Public Learning Lab",
     "about.hero.intro":
-      "[Placeholder: Short intro about learn in public philosophy at the intersection of AI x Engineering x UX]",
-    "about.hero.bio": "[Placeholder: Short bio - who you are, background]",
+      "Writing helps me structure my thinking and solidify what I've learned. I share my successes, my failures, and everything in between. All centered around three pillars: AI, software engineering, and user experience. Three disciplines that are, in my view, the future of our craft.",
+    "about.hero.bio":
+      "I'm Sébastien Chauveau. After an unconventional path through cooking, accounting, and education, I eventually followed my lifelong passion: tech. Now a developer at CEGAPE for the past 5 years, I dove into AI the moment ChatGPT launched. A field moving so fast that my curiosity never gets a chance to run out.",
     "about.pillar.ia.title": "AI",
     "about.pillar.ia.description":
-      "[Placeholder: Short description of AI pillar focus]",
+      "From AI-assisted coding to context engineering, through RAG architectures and agents. I explore how to get the best out of AI: its strengths, its limits, and its pitfalls.",
     "about.pillar.engineering.title": "Engineering",
     "about.pillar.engineering.description":
-      "[Placeholder: Short description of Engineering pillar focus]",
+      "Clean code, design patterns, architecture principles. The fundamentals of software engineering, from the basics to advanced concepts. Universal knowledge, useful regardless of your stack.",
     "about.pillar.ux.title": "UX",
     "about.pillar.ux.description":
-      "[Placeholder: Short description of UX pillar focus]",
+      "Design systems, accessibility, intuitive interfaces. I explore how to create experiences that truly work for users and bridge the gap between code and people.",
     "about.cta": "Discover my articles",
     "about.photo.alt": "Profile photo",
     "pagination.previous": "Previous",
@@ -143,19 +144,20 @@ export const ui = {
     "search.filterCategories": "Filtrer les catégories...",
     "search.filterTags": "Filtrer les tags...",
     "about.description": "À propos de l'auteur et philosophie du blog",
-    "about.hero.tagline": "[Placeholder: Accroche learn in public]",
+    "about.hero.tagline": "Laboratoire d'apprentissage public",
     "about.hero.intro":
-      "[Placeholder: Courte intro sur la philosophie learn in public à l'intersection IA x Ingénierie x UX]",
-    "about.hero.bio": "[Placeholder: Courte bio - qui vous êtes, parcours]",
+      "L'écriture me permet de structurer ma pensée et de consolider mes acquis. Je partage ici mes réussites, mes échecs et tout ce qui se trouve entre les deux. Le tout autour de trois piliers : l'IA, l'ingénierie logicielle et l'expérience utilisateur. Trois disciplines qui sont, selon moi, l'avenir de notre métier.",
+    "about.hero.bio":
+      "Je suis Sébastien Chauveau. Après un parcours atypique passant par la cuisine, la comptabilité et l'éducation, j'ai fini par suivre ma passion de toujours : l'informatique. Aujourd'hui développeur chez CEGAPE depuis 5 ans, je me suis plongé dans l'IA dès la sortie de ChatGPT. Un domaine à une telle vitesse que ma curiosité n'a jamais le temps de s'essouffler.",
     "about.pillar.ia.title": "IA",
     "about.pillar.ia.description":
-      "[Placeholder: Courte description du pilier IA]",
+      "Du coding assisté par IA au context engineering, en passant par les architectures RAG et les agents. J'explore comment tirer le meilleur de l'IA : ses forces, ses limites et ses pièges.",
     "about.pillar.engineering.title": "Ingénierie",
     "about.pillar.engineering.description":
-      "[Placeholder: Courte description du pilier Ingénierie]",
+      "Clean code, design patterns, principes d'architecture. Les fondamentaux de l'ingénierie logicielle, des bases aux concepts avancés. Des connaissances universelles, utiles quel que soit votre stack.",
     "about.pillar.ux.title": "UX",
     "about.pillar.ux.description":
-      "[Placeholder: Courte description du pilier UX]",
+      "Design systems, accessibilité, interfaces intuitives. J'explore comment créer des expériences qui fonctionnent vraiment pour les utilisateurs et faire le pont entre le code et l'humain.",
     "about.cta": "Découvrir mes articles",
     "about.photo.alt": "Photo de profil",
     "pagination.previous": "Précédent",
