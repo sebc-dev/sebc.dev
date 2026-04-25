@@ -1,11 +1,11 @@
 ---
-title: "Le guide complet de l'observabilit\u00e9 des syst\u00e8mes distribu\u00e9s"
-description: "De la collecte des m\u00e9triques au tracing distribu\u00e9, tout ce qu'il faut pour observer un syst\u00e8me en production."
+title: "Le guide complet de l'observabilité des systèmes distribués"
+description: "De la collecte des métriques au tracing distribué, tout ce qu'il faut pour observer un système en production."
 date: 2026-02-10
 category: "parcours-apprentissage"
 tags:
   [
-    "observabilit\u00e9",
+    "observabilité",
     "monitoring",
     "prometheus",
     "grafana",
@@ -18,225 +18,225 @@ tags:
     "kubernetes",
     "docker",
   ]
-pillarTags: ["Ing\u00e9nierie", "IA", "UX"]
+pillarTags: ["Ingénierie", "IA", "UX"]
 readingTime: 45
 featured: false
 draft: false
 lang: "fr"
 ---
 
-## Pourquoi l'observabilit\u00e9 est indispensable
+## Pourquoi l'observabilité est indispensable
 
-On ne peut pas am\u00e9liorer ce qu'on ne mesure pas. Un syst\u00e8me distribu\u00e9 sans observabilit\u00e9, c'est piloter un avion sans instruments. Tout fonctionne jusqu'\u00e0 ce que \u00e7a ne fonctionne plus, et \u00e0 ce moment-l\u00e0 on est aveugle.
+On ne peut pas améliorer ce qu'on ne mesure pas. Un système distribué sans observabilité, c'est piloter un avion sans instruments. Tout fonctionne jusqu'à ce que ça ne fonctionne plus, et à ce moment-là on est aveugle.
 
-### La diff\u00e9rence entre monitoring et observabilit\u00e9
+### La différence entre monitoring et observabilité
 
-Le monitoring r\u00e9pond \u00e0 la question "est-ce que \u00e7a marche ?". L'observabilit\u00e9 r\u00e9pond \u00e0 "pourquoi \u00e7a ne marche pas ?". Le monitoring est r\u00e9actif, l'observabilit\u00e9 est proactive.
+Le monitoring répond à la question "est-ce que ça marche ?". L'observabilité répond à "pourquoi ça ne marche pas ?". Le monitoring est réactif, l'observabilité est proactive.
 
 ### Les trois piliers classiques
 
-M\u00e9triques, logs et traces forment la trinit\u00e9 de l'observabilit\u00e9. Chacun apporte une perspective diff\u00e9rente sur le comportement du syst\u00e8me. Aucun n'est suffisant seul.
+Métriques, logs et traces forment la trinité de l'observabilité. Chacun apporte une perspective différente sur le comportement du système. Aucun n'est suffisant seul.
 
-### Le quatri\u00e8me pilier : les profils continus
+### Le quatrième pilier : les profils continus
 
-Le profiling continu est devenu le quatri\u00e8me pilier. Il r\u00e9pond \u00e0 "o\u00f9 le syst\u00e8me passe-t-il son temps ?". Des outils comme Pyroscope ou Parca permettent de collecter des flame graphs en production sans impact significatif.
+Le profiling continu est devenu le quatrième pilier. Il répond à "où le système passe-t-il son temps ?". Des outils comme Pyroscope ou Parca permettent de collecter des flame graphs en production sans impact significatif.
 
-## Les m\u00e9triques : le pouls du syst\u00e8me
+## Les métriques : le pouls du système
 
-Les m\u00e9triques sont des valeurs num\u00e9riques agr\u00e9g\u00e9es dans le temps. Elles sont compactes, rapides \u00e0 interroger, et id\u00e9ales pour les dashboards et les alertes.
+Les métriques sont des valeurs numériques agrégées dans le temps. Elles sont compactes, rapides à interroger, et idéales pour les dashboards et les alertes.
 
-### Types de m\u00e9triques
+### Types de métriques
 
-Les compteurs croissent de mani\u00e8re monotone. Les jauges montent et descendent. Les histogrammes capturent la distribution des valeurs. Les summaries calculent des quantiles c\u00f4t\u00e9 client.
+Les compteurs croissent de manière monotone. Les jauges montent et descendent. Les histogrammes capturent la distribution des valeurs. Les summaries calculent des quantiles côté client.
 
-### Prometheus et son \u00e9cosyst\u00e8me
+### Prometheus et son écosystème
 
-Prometheus est devenu le standard de facto pour les m\u00e9triques. Son mod\u00e8le pull, son langage PromQL, et son int\u00e9gration native avec Kubernetes en font l'outil incontournable.
+Prometheus est devenu le standard de facto pour les métriques. Son modèle pull, son langage PromQL, et son intégration native avec Kubernetes en font l'outil incontournable.
 
 ### Instrumentation des applications
 
-L'instrumentation peut \u00eatre automatique via des agents, ou manuelle via les SDK. Les m\u00e9triques RED (Rate, Errors, Duration) couvrent la plupart des besoins pour les services.
+L'instrumentation peut être automatique via des agents, ou manuelle via les SDK. Les métriques RED (Rate, Errors, Duration) couvrent la plupart des besoins pour les services.
 
-### Cardinalit\u00e9 : le pi\u00e8ge \u00e0 \u00e9viter
+### Cardinalité : le piège à éviter
 
-Chaque combinaison unique de labels cr\u00e9e une s\u00e9rie temporelle. Utiliser un user ID comme label avec un million d'utilisateurs cr\u00e9e un million de s\u00e9ries. Prometheus tombe \u00e0 genoux.
+Chaque combinaison unique de labels crée une série temporelle. Utiliser un user ID comme label avec un million d'utilisateurs crée un million de séries. Prometheus tombe à genoux.
 
-### M\u00e9triques custom vs m\u00e9triques par d\u00e9faut
+### Métriques custom vs métriques par défaut
 
-Les m\u00e9triques d'infrastructure (CPU, RAM, r\u00e9seau) sont collect\u00e9es automatiquement. Les m\u00e9triques m\u00e9tier (commandes par minute, panier moyen) n\u00e9cessitent une instrumentation sp\u00e9cifique.
+Les métriques d'infrastructure (CPU, RAM, réseau) sont collectées automatiquement. Les métriques métier (commandes par minute, panier moyen) nécessitent une instrumentation spécifique.
 
-## Les logs : le r\u00e9cit d\u00e9taill\u00e9
+## Les logs : le récit détaillé
 
-Les logs racontent l'histoire compl\u00e8te de chaque \u00e9v\u00e9nement. Ils sont riches en contexte mais volumineux et co\u00fbteux \u00e0 stocker.
+Les logs racontent l'histoire complète de chaque événement. Ils sont riches en contexte mais volumineux et coûteux à stocker.
 
-### Logs structur\u00e9s vs logs texte
+### Logs structurés vs logs texte
 
-Les logs texte sont lisibles par un humain. Les logs structur\u00e9s (JSON) sont lisibles par une machine. En production, il faut les deux : structur\u00e9s pour l'indexation, formatt\u00e9s pour le d\u00e9bogage.
+Les logs texte sont lisibles par un humain. Les logs structurés (JSON) sont lisibles par une machine. En production, il faut les deux : structurés pour l'indexation, formattés pour le débogage.
 
 ### Niveaux de log et bonnes pratiques
 
-DEBUG pour le d\u00e9veloppement, INFO pour les \u00e9v\u00e9nements normaux, WARN pour les anomalies r\u00e9cup\u00e9rables, ERROR pour les \u00e9checs, FATAL pour les crashs. Le ratio INFO/ERROR doit rester stable.
+DEBUG pour le développement, INFO pour les événements normaux, WARN pour les anomalies récupérables, ERROR pour les échecs, FATAL pour les crashs. Le ratio INFO/ERROR doit rester stable.
 
-### Agr\u00e9gation avec la stack ELK
+### Agrégation avec la stack ELK
 
 Elasticsearch pour le stockage et la recherche, Logstash pour la transformation, Kibana pour la visualisation. La stack fonctionne mais consomme beaucoup de ressources.
 
 ### L'alternative Loki
 
-Loki adopte une approche diff\u00e9rente : il n'indexe que les labels, pas le contenu des logs. Le co\u00fbt de stockage est drastiquement r\u00e9duit. La recherche est plus lente mais suffisante pour la plupart des cas.
+Loki adopte une approche différente : il n'indexe que les labels, pas le contenu des logs. Le coût de stockage est drastiquement réduit. La recherche est plus lente mais suffisante pour la plupart des cas.
 
-### Corr\u00e9lation logs-traces
+### Corrélation logs-traces
 
-Injecter le trace ID dans chaque ligne de log transforme l'exp\u00e9rience de d\u00e9bogage. Un clic sur un log m\u00e8ne directement \u00e0 la trace associ\u00e9e, et inversement.
+Injecter le trace ID dans chaque ligne de log transforme l'expérience de débogage. Un clic sur un log mène directement à la trace associée, et inversement.
 
-### R\u00e9tention et co\u00fbts
+### Rétention et coûts
 
-Stocker tous les logs ind\u00e9finiment est financ\u00e8rement intenable. Une strat\u00e9gie de r\u00e9tention par niveaux est n\u00e9cessaire : 7 jours pour les DEBUG, 30 jours pour les INFO, 90 jours pour les ERROR.
+Stocker tous les logs indéfiniment est financèrement intenable. Une stratégie de rétention par niveaux est nécessaire : 7 jours pour les DEBUG, 30 jours pour les INFO, 90 jours pour les ERROR.
 
-## Le tracing distribu\u00e9 : suivre une requ\u00eate
+## Le tracing distribué : suivre une requête
 
-Dans un syst\u00e8me \u00e0 microservices, une requ\u00eate utilisateur traverse potentiellement des dizaines de services. Le tracing distribu\u00e9 reconstruit ce parcours.
+Dans un système à microservices, une requête utilisateur traverse potentiellement des dizaines de services. Le tracing distribué reconstruit ce parcours.
 
 ### Concepts fondamentaux
 
-Un trace repr\u00e9sente le parcours complet d'une requ\u00eate. Un span repr\u00e9sente une op\u00e9ration au sein d'un service. Les spans s'embo\u00eetent pour former un arbre d'appels.
+Un trace représente le parcours complet d'une requête. Un span représente une opération au sein d'un service. Les spans s'emboîtent pour former un arbre d'appels.
 
-### OpenTelemetry : le standard unifi\u00e9
+### OpenTelemetry : le standard unifié
 
-OpenTelemetry fusionne OpenTracing et OpenCensus. Il fournit des SDK, des collecteurs et des conventions s\u00e9mantiques pour les trois piliers. C'est le standard \u00e0 adopter aujourd'hui.
+OpenTelemetry fusionne OpenTracing et OpenCensus. Il fournit des SDK, des collecteurs et des conventions sémantiques pour les trois piliers. C'est le standard à adopter aujourd'hui.
 
 ### Propagation du contexte
 
-Le contexte de trace se propage via les headers HTTP, les messages de queue, ou les m\u00e9tadonn\u00e9es gRPC. W3C Trace Context est le format standard. Il faut s'assurer que chaque couche de l'infrastructure propage correctement le contexte.
+Le contexte de trace se propage via les headers HTTP, les messages de queue, ou les métadonnées gRPC. W3C Trace Context est le format standard. Il faut s'assurer que chaque couche de l'infrastructure propage correctement le contexte.
 
-### \u00c9chantillonnage intelligent
+### Échantillonnage intelligent
 
-Tracer 100% des requ\u00eates en production est rarement viable. L'\u00e9chantillonnage head-based d\u00e9cide au d\u00e9but. Le tail-based d\u00e9cide \u00e0 la fin, en gardant les traces int\u00e9ressantes (erreurs, latence \u00e9lev\u00e9e).
+Tracer 100% des requêtes en production est rarement viable. L'échantillonnage head-based décide au début. Le tail-based décide à la fin, en gardant les traces intéressantes (erreurs, latence élevée).
 
 ### Jaeger et Tempo
 
-Jaeger est le backend de tracing le plus mature. Tempo de Grafana offre une alternative plus l\u00e9g\u00e8re qui stocke les traces dans un object store comme S3.
+Jaeger est le backend de tracing le plus mature. Tempo de Grafana offre une alternative plus légère qui stocke les traces dans un object store comme S3.
 
 ### Analyse de performance avec les traces
 
-Les traces r\u00e9v\u00e8lent les goulots d'\u00e9tranglement. Le span le plus long indique o\u00f9 optimiser. Les appels s\u00e9quentiels qui pourraient \u00eatre parall\u00e9lis\u00e9s sautent aux yeux dans un diagramme de Gantt.
+Les traces révèlent les goulots d'étranglement. Le span le plus long indique où optimiser. Les appels séquentiels qui pourraient être parallélisés sautent aux yeux dans un diagramme de Gantt.
 
 ## Dashboards et visualisation
 
-Les donn\u00e9es d'observabilit\u00e9 n'ont de valeur que si elles sont accessibles et compr\u00e9hensibles. Un bon dashboard raconte une histoire en un coup d'\u0153il.
+Les données d'observabilité n'ont de valeur que si elles sont accessibles et compréhensibles. Un bon dashboard raconte une histoire en un coup d'œil.
 
 ### Grafana comme point central
 
-Grafana f\u00e9d\u00e8re toutes les sources de donn\u00e9es. M\u00e9triques Prometheus, logs Loki, traces Tempo : tout converge dans une interface unifi\u00e9e avec la possibilit\u00e9 de naviguer entre les piliers.
+Grafana fédère toutes les sources de données. Métriques Prometheus, logs Loki, traces Tempo : tout converge dans une interface unifiée avec la possibilité de naviguer entre les piliers.
 
 ### Concevoir des dashboards efficaces
 
-Un dashboard doit r\u00e9pondre \u00e0 une question pr\u00e9cise. Les dashboards "fourre-tout" avec 50 panneaux ne sont consult\u00e9s par personne. La hi\u00e9rarchie visuelle guide le regard : indicateurs cl\u00e9s en haut, d\u00e9tails en dessous.
+Un dashboard doit répondre à une question précise. Les dashboards "fourre-tout" avec 50 panneaux ne sont consultés par personne. La hiérarchie visuelle guide le regard : indicateurs clés en haut, détails en dessous.
 
 ### Les dashboards RED et USE
 
-RED (Rate, Errors, Duration) pour les services orient\u00e9s requ\u00eates. USE (Utilization, Saturation, Errors) pour les ressources infrastructure. Ces m\u00e9thodes fournissent un cadre \u00e9prouv\u00e9.
+RED (Rate, Errors, Duration) pour les services orientés requêtes. USE (Utilization, Saturation, Errors) pour les ressources infrastructure. Ces méthodes fournissent un cadre éprouvé.
 
-### Annotations et corr\u00e9lation temporelle
+### Annotations et corrélation temporelle
 
-Annoter les d\u00e9ploiements, les incidents et les changements de configuration sur les graphes permet de corr\u00e9ler visuellement cause et effet. "La latence a augment\u00e9 juste apr\u00e8s ce d\u00e9ploiement" devient \u00e9vident.
+Annoter les déploiements, les incidents et les changements de configuration sur les graphes permet de corréler visuellement cause et effet. "La latence a augmenté juste après ce déploiement" devient évident.
 
-## Alerting : r\u00e9agir au bon moment
+## Alerting : réagir au bon moment
 
-Les alertes sont le pont entre l'observabilit\u00e9 et l'action. Trop d'alertes cr\u00e9ent de la fatigue. Pas assez d'alertes laissent passer des incidents.
+Les alertes sont le pont entre l'observabilité et l'action. Trop d'alertes créent de la fatigue. Pas assez d'alertes laissent passer des incidents.
 
 ### SLO, SLI et error budgets
 
-D\u00e9finir des SLO (Service Level Objectives) avant de configurer des alertes. Un SLO de 99.9% de disponibilit\u00e9 signifie 43 minutes d'indisponibilit\u00e9 autoris\u00e9es par mois. L'alerte se d\u00e9clenche quand le budget d'erreur se consume trop vite.
+Définir des SLO (Service Level Objectives) avant de configurer des alertes. Un SLO de 99.9% de disponibilité signifie 43 minutes d'indisponibilité autorisées par mois. L'alerte se déclenche quand le budget d'erreur se consume trop vite.
 
-### \u00c9viter l'alert fatigue
+### Éviter l'alert fatigue
 
-Chaque alerte doit \u00eatre actionnable. Si l'\u00e9quipe ignore r\u00e9guli\u00e8rement une alerte, il faut soit la corriger soit la supprimer. Le ratio signal/bruit doit rester \u00e9lev\u00e9.
+Chaque alerte doit être actionnable. Si l'équipe ignore régulièrement une alerte, il faut soit la corriger soit la supprimer. Le ratio signal/bruit doit rester élevé.
 
 ### Routage et escalade
 
-PagerDuty, OpsGenie ou Grafana OnCall pour le routage. Les alertes critiques vont \u00e0 l'astreinte. Les warnings vont dans un canal Slack. L'escalade automatique rattrape les alertes non acquitt\u00e9es.
+PagerDuty, OpsGenie ou Grafana OnCall pour le routage. Les alertes critiques vont à l'astreinte. Les warnings vont dans un canal Slack. L'escalade automatique rattrape les alertes non acquittées.
 
-### Alertes sur les sympt\u00f4mes, pas les causes
+### Alertes sur les symptômes, pas les causes
 
-Alerter sur "les utilisateurs voient des erreurs 500" plut\u00f4t que sur "le CPU est \u00e0 90%". Le CPU peut \u00eatre \u00e0 90% et le service fonctionner parfaitement. L'inverse est aussi vrai.
+Alerter sur "les utilisateurs voient des erreurs 500" plutôt que sur "le CPU est à 90%". Le CPU peut être à 90% et le service fonctionner parfaitement. L'inverse est aussi vrai.
 
 ### Runbooks et automatisation
 
-Chaque alerte critique doit avoir un runbook associ\u00e9 : les \u00e9tapes de diagnostic et de r\u00e9solution. L'automatisation va plus loin : corriger automatiquement les probl\u00e8mes connus (auto-scaling, restart, failover).
+Chaque alerte critique doit avoir un runbook associé : les étapes de diagnostic et de résolution. L'automatisation va plus loin : corriger automatiquement les problèmes connus (auto-scaling, restart, failover).
 
-## Observabilit\u00e9 dans Kubernetes
+## Observabilité dans Kubernetes
 
-Kubernetes ajoute une couche de complexit\u00e9 avec ses abstractions (pods, services, deployments). L'observabilit\u00e9 doit couvrir l'infrastructure et les applications.
+Kubernetes ajoute une couche de complexité avec ses abstractions (pods, services, deployments). L'observabilité doit couvrir l'infrastructure et les applications.
 
 ### kube-state-metrics et node-exporter
 
-kube-state-metrics expose l'\u00e9tat des objets Kubernetes. node-exporter expose les m\u00e9triques de l'h\u00f4te. Ensemble, ils couvrent le monitoring de l'infrastructure Kubernetes.
+kube-state-metrics expose l'état des objets Kubernetes. node-exporter expose les métriques de l'hôte. Ensemble, ils couvrent le monitoring de l'infrastructure Kubernetes.
 
-### Service mesh et observabilit\u00e9 automatique
+### Service mesh et observabilité automatique
 
-Istio ou Linkerd interceptent tout le trafic r\u00e9seau. Ils g\u00e9n\u00e8rent automatiquement des m\u00e9triques, des logs et des traces pour chaque appel inter-service. L'observabilit\u00e9 "gratuite" au prix d'une complexit\u00e9 op\u00e9rationnelle.
+Istio ou Linkerd interceptent tout le trafic réseau. Ils génèrent automatiquement des métriques, des logs et des traces pour chaque appel inter-service. L'observabilité "gratuite" au prix d'une complexité opérationnelle.
 
-### eBPF : l'observabilit\u00e9 sans agent
+### eBPF : l'observabilité sans agent
 
-eBPF permet d'observer le noyau Linux sans modifier les applications ni d\u00e9ployer de sidecar. Cilium pour le r\u00e9seau, Pixie pour le tracing applicatif, Tetragon pour la s\u00e9curit\u00e9.
+eBPF permet d'observer le noyau Linux sans modifier les applications ni déployer de sidecar. Cilium pour le réseau, Pixie pour le tracing applicatif, Tetragon pour la sécurité.
 
-### Observabilit\u00e9 des pipelines CI/CD
+### Observabilité des pipelines CI/CD
 
-Ne pas oublier d'observer le pipeline lui-m\u00eame : dur\u00e9e des builds, taux d'\u00e9chec des d\u00e9ploiements, temps moyen de rollback. Un pipeline lent ou instable impacte directement la v\u00e9locit\u00e9 de l'\u00e9quipe.
+Ne pas oublier d'observer le pipeline lui-même : durée des builds, taux d'échec des déploiements, temps moyen de rollback. Un pipeline lent ou instable impacte directement la vélocité de l'équipe.
 
-## IA et observabilit\u00e9
+## IA et observabilité
 
-L'IA transforme l'observabilit\u00e9 de deux fa\u00e7ons : elle est \u00e0 la fois un sujet \u00e0 observer et un outil pour mieux observer.
+L'IA transforme l'observabilité de deux façons : elle est à la fois un sujet à observer et un outil pour mieux observer.
 
-### Observer les syst\u00e8mes d'IA en production
+### Observer les systèmes d'IA en production
 
-Les mod\u00e8les de ML ont leurs propres m\u00e9triques : latence d'inf\u00e9rence, distribution des pr\u00e9dictions, d\u00e9rive des donn\u00e9es. Un mod\u00e8le qui r\u00e9pond vite mais pr\u00e9dit n'importe quoi est un probl\u00e8me silencieux.
+Les modèles de ML ont leurs propres métriques : latence d'inférence, distribution des prédictions, dérive des données. Un modèle qui répond vite mais prédit n'importe quoi est un problème silencieux.
 
-### D\u00e9tection d'anomalies automatis\u00e9e
+### Détection d'anomalies automatisée
 
-Les algorithmes de d\u00e9tection d'anomalies identifient les comportements inhabituels sans r\u00e8gles manuelles. La saisonnalit\u00e9, les tendances et les changements brusques sont d\u00e9tect\u00e9s automatiquement.
+Les algorithmes de détection d'anomalies identifient les comportements inhabituels sans règles manuelles. La saisonnalité, les tendances et les changements brusques sont détectés automatiquement.
 
-### AIOps : promesses et r\u00e9alit\u00e9
+### AIOps : promesses et réalité
 
-L'AIOps promet de r\u00e9duire le bruit des alertes, de corr\u00e9ler automatiquement les \u00e9v\u00e9nements et de sugg\u00e9rer des remediations. La r\u00e9alit\u00e9 est plus nuanc\u00e9e : ces outils fonctionnent bien sur les patterns connus mais peinent face \u00e0 l'inconnu.
+L'AIOps promet de réduire le bruit des alertes, de corréler automatiquement les événements et de suggérer des remediations. La réalité est plus nuancée : ces outils fonctionnent bien sur les patterns connus mais peinent face à l'inconnu.
 
 ### LLMs pour l'analyse de logs
 
-Les LLMs excellent \u00e0 r\u00e9sumer des milliers de lignes de logs en un diagnostic lisible. Ils identifient des patterns que les regex manquent. Le co\u00fbt et la latence restent des freins pour l'analyse en temps r\u00e9el.
+Les LLMs excellent à résumer des milliers de lignes de logs en un diagnostic lisible. Ils identifient des patterns que les regex manquent. Le coût et la latence restent des freins pour l'analyse en temps réel.
 
-## UX de l'observabilit\u00e9
+## UX de l'observabilité
 
-L'observabilit\u00e9 est aussi un produit interne. Si les \u00e9quipes n'utilisent pas les outils, c'est comme s'ils n'existaient pas.
+L'observabilité est aussi un produit interne. Si les équipes n'utilisent pas les outils, c'est comme s'ils n'existaient pas.
 
-### Onboarding des \u00e9quipes
+### Onboarding des équipes
 
-Un outil d'observabilit\u00e9 non document\u00e9 est un outil inutilis\u00e9. Des guides de d\u00e9marrage, des dashboards pr\u00eat \u00e0 l'emploi et des alertes pr\u00e9configur\u00e9es r\u00e9duisent la barri\u00e8re \u00e0 l'entr\u00e9e.
+Un outil d'observabilité non documenté est un outil inutilisé. Des guides de démarrage, des dashboards prêt à l'emploi et des alertes préconfigurées réduisent la barrière à l'entrée.
 
-### Exp\u00e9rience de d\u00e9bogage unifi\u00e9e
+### Expérience de débogage unifiée
 
-Naviguer entre m\u00e9triques, logs et traces sans perdre le contexte. Un clic sur un pic de latence m\u00e8ne aux traces concern\u00e9es, puis aux logs du service fautif. Le flux doit \u00eatre fluide.
+Naviguer entre métriques, logs et traces sans perdre le contexte. Un clic sur un pic de latence mène aux traces concernées, puis aux logs du service fautif. Le flux doit être fluide.
 
-### Accessibilit\u00e9 des dashboards
+### Accessibilité des dashboards
 
-Les dashboards doivent \u00eatre lisibles par tous : contraste suffisant, palettes de couleurs accessibles aux daltoniens, textes alternatifs pour les graphes. L'observabilit\u00e9 inclusive produit de meilleurs r\u00e9sultats.
+Les dashboards doivent être lisibles par tous : contraste suffisant, palettes de couleurs accessibles aux daltoniens, textes alternatifs pour les graphes. L'observabilité inclusive produit de meilleurs résultats.
 
-## Strat\u00e9gie d'impl\u00e9mentation
+## Stratégie d'implémentation
 
-Mettre en place l'observabilit\u00e9 est un marathon, pas un sprint. Il faut prioriser et it\u00e9rer.
+Mettre en place l'observabilité est un marathon, pas un sprint. Il faut prioriser et itérer.
 
-### Par o\u00f9 commencer
+### Par où commencer
 
-Commencer par les m\u00e9triques de base (RED) sur les services les plus critiques. Ajouter les logs structur\u00e9s. Puis le tracing distribu\u00e9. Ne pas essayer de tout instrumenter d'un coup.
+Commencer par les métriques de base (RED) sur les services les plus critiques. Ajouter les logs structurés. Puis le tracing distribué. Ne pas essayer de tout instrumenter d'un coup.
 
-### Co\u00fbts et optimisation
+### Coûts et optimisation
 
-L'observabilit\u00e9 a un co\u00fbt : stockage, compute, licences. L'\u00e9chantillonnage, la r\u00e9tention diff\u00e9renci\u00e9e et l'agr\u00e9gation sont les leviers principaux pour ma\u00eetriser les co\u00fbts sans sacrifier la visibilit\u00e9.
+L'observabilité a un coût : stockage, compute, licences. L'échantillonnage, la rétention différenciée et l'agrégation sont les leviers principaux pour maîtriser les coûts sans sacrifier la visibilité.
 
-### Culture d'observabilit\u00e9
+### Culture d'observabilité
 
-La technologie ne suffit pas. L'\u00e9quipe doit adopter le r\u00e9flexe de consulter les dashboards, d'\u00e9crire des post-mortems, et d'am\u00e9liorer l'instrumentation apr\u00e8s chaque incident.
+La technologie ne suffit pas. L'équipe doit adopter le réflexe de consulter les dashboards, d'écrire des post-mortems, et d'améliorer l'instrumentation après chaque incident.
 
-### \u00c9volution et tendances
+### Évolution et tendances
 
-OpenTelemetry continue de maturer. L'observabilit\u00e9 frontend gagne en importance. Le couplage avec le chaos engineering (observer pendant qu'on casse) devient une pratique standard. Les prochaines ann\u00e9es verront l'IA s'int\u00e9grer plus profond\u00e9ment dans la boucle d'observabilit\u00e9.
+OpenTelemetry continue de maturer. L'observabilité frontend gagne en importance. Le couplage avec le chaos engineering (observer pendant qu'on casse) devient une pratique standard. Les prochaines années verront l'IA s'intégrer plus profondément dans la boucle d'observabilité.
