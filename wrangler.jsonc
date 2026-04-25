@@ -1,9 +1,10 @@
 {
+  "main": "@astrojs/cloudflare/entrypoints/server",
   "name": "sebc-dev",
-  "compatibility_date": "2025-01-01",
-  "compatibility_flags": [
-    "nodejs_compat",
-    "nodejs_compat_populate_process_env",
-  ],
-  "pages_build_output_dir": "dist",
+  "compatibility_date": "2026-03-17",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+  },
 }

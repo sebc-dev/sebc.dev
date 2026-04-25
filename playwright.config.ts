@@ -10,7 +10,7 @@ export default defineConfig({
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
-    command: "npm run build && wrangler pages dev ./dist --port 4321",
+    command: "npm run build && wrangler dev --port 4321",
     url: "http://localhost:4321",
     timeout: 120_000,
     reuseExistingServer: !process.env.CI,
