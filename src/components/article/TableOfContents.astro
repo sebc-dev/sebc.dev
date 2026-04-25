@@ -41,31 +41,59 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
 <script>
   document.addEventListener("astro:page-load", () => {
-    const headings = document.querySelectorAll(
-      "article :is(h2, h3)",
-    ) as NodeListOf<HTMLHeadingElement>;
+    const headings = Array.from(
+      document.querySelectorAll("article :is(h2, h3)"),
+    ) as HTMLHeadingElement[];
     const tocLinks = document.querySelectorAll(
       "[data-toc-link]",
     ) as NodeListOf<HTMLAnchorElement>;
 
     if (!headings.length || !tocLinks.length) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            tocLinks.forEach((link) => link.classList.remove("active"));
-            const id = entry.target.getAttribute("id");
-            const activeLink = document.querySelector(
-              `[data-toc-link][href="#${id}"]`,
-            );
-            activeLink?.classList.add("active");
-          }
-        }
-      },
-      { threshold: 1, rootMargin: "-80px 0px -66% 0px" },
-    );
+    const HEADER_OFFSET = 96;
 
-    headings.forEach((heading) => observer.observe(heading));
+    const setActive = (id: string | null) => {
+      tocLinks.forEach((link) => link.classList.remove("active"));
+      if (!id) return;
+      const link = document.querySelector(
+        `[data-toc-link][href="#${CSS.escape(id)}"]`,
+      );
+      link?.classList.add("active");
+    };
+
+    const updateActive = () => {
+      let current: HTMLHeadingElement | null = null;
+      for (const h of headings) {
+        if (h.getBoundingClientRect().top - HEADER_OFFSET <= 0) {
+          current = h;
+        } else {
+          break;
+        }
+      }
+      setActive(current?.id ?? headings[0]?.id ?? null);
+    };
+
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        updateActive();
+        ticking = false;
+      });
+    };
+
+    updateActive();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+
+    document.addEventListener(
+      "astro:before-swap",
+      () => {
+        window.removeEventListener("scroll", onScroll);
+        window.removeEventListener("resize", onScroll);
+      },
+      { once: true },
+    );
   });
 </script>
