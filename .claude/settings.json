@@ -12,6 +12,7 @@
     ]
   },
   "enabledPlugins": {
-    "scd-astro@sebc-dev-marketplace": true
+    "scd-astro@sebc-dev-marketplace": true,
+    "cloudflare@cloudflare": true
   }
 }
