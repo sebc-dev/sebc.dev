@@ -12,12 +12,12 @@ export default [
   {
     ignores: [
       "dist/",
+      "coverage/",
       ".astro/",
       ".wrangler/",
       "node_modules/",
       "public/pagefind/",
       ".stryker-tmp/",
-      "worker-configuration.d.ts",
       ".claude/get-shit-done/",
       ".claude/hooks/",
     ],

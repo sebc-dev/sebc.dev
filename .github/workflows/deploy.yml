@@ -1,6 +1,13 @@
 name: Deploy
 on:
-  workflow_dispatch: # manual trigger only — auto-deploy disabled
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# A newer push to main supersedes an in-flight deploy; never let two races land.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -14,7 +21,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 22 # Astro 7 requires >=22.12.0
           cache: npm
 
       - name: Cache Astro artifacts

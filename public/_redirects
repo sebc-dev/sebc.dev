@@ -1,0 +1,3 @@
+# Root -> default locale. Astro also emits a meta-refresh page at /index.html as
+# a fallback; this turns it into a real 301 when served by Workers.
+/  /en  301
