@@ -19,6 +19,7 @@
     "test:mutation": "npx stryker run",
     "test:e2e": "playwright test",
     "knip": "knip",
+    "check:no-demo": "node scripts/check-no-demo.mjs",
     "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {

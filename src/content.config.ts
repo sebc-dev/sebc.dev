@@ -18,6 +18,7 @@ const articles = defineCollection({
     readingTime: z.number(),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
+    demo: z.boolean().default(false), // fixture de développement : jamais publiée
     lang: z.enum(["fr", "en"]),
     translationSlug: z.string().optional(),
     series: z

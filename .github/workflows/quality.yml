@@ -60,6 +60,8 @@ jobs:
       - run: npm ci
       - run: npm run build
       - uses: treosh/lighthouse-ci-action@v12
+        env:
+          INCLUDE_DEMO: "1"
         with:
           configPath: ./lighthouserc.json
           uploadArtifacts: true

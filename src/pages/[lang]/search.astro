@@ -33,8 +33,8 @@ const categoryLabels: Record<string, string> = Object.fromEntries(
 
 // Reading time and date ranges for filters
 const readingTimes = allArticles.map((a) => a.data.readingTime);
-const minReadingTime = Math.min(...readingTimes);
-const maxReadingTime = Math.max(...readingTimes);
+const minReadingTime = readingTimes.length > 0 ? Math.min(...readingTimes) : 0;
+const maxReadingTime = readingTimes.length > 0 ? Math.max(...readingTimes) : 0;
 ---
 
 <BaseLayout
@@ -229,41 +229,43 @@ const maxReadingTime = Math.max(...readingTimes);
             </div>
           </div>
           <!-- Reading time -->
-          <div class="mt-8">
-            <h3
-              class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-4"
-            >
-              {t("search.readingTime")}
-            </h3>
-            <div class="flex justify-between text-xs text-text-muted mb-3">
-              <span id="rt-min-label"
-                >{minReadingTime} {t("search.minutes")}</span
-              >
-              <span id="rt-max-label"
-                >{maxReadingTime} {t("search.minutes")}</span
-              >
-            </div>
-            <div class="range-slider-container">
-              <div class="range-slider-track"></div>
-              <div id="rt-range-fill" class="range-slider-fill"></div>
-              <input
-                type="range"
-                id="rt-min"
-                min={minReadingTime}
-                max={maxReadingTime}
-                value={minReadingTime}
-                class="range-slider-input"
-              />
-              <input
-                type="range"
-                id="rt-max"
-                min={minReadingTime}
-                max={maxReadingTime}
-                value={maxReadingTime}
-                class="range-slider-input"
-              />
-            </div>
-          </div>
+          {
+            allArticles.length > 0 && (
+              <div class="mt-8">
+                <h3 class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-4">
+                  {t("search.readingTime")}
+                </h3>
+                <div class="flex justify-between text-xs text-text-muted mb-3">
+                  <span id="rt-min-label">
+                    {minReadingTime} {t("search.minutes")}
+                  </span>
+                  <span id="rt-max-label">
+                    {maxReadingTime} {t("search.minutes")}
+                  </span>
+                </div>
+                <div class="range-slider-container">
+                  <div class="range-slider-track" />
+                  <div id="rt-range-fill" class="range-slider-fill" />
+                  <input
+                    type="range"
+                    id="rt-min"
+                    min={minReadingTime}
+                    max={maxReadingTime}
+                    value={minReadingTime}
+                    class="range-slider-input"
+                  />
+                  <input
+                    type="range"
+                    id="rt-max"
+                    min={minReadingTime}
+                    max={maxReadingTime}
+                    value={maxReadingTime}
+                    class="range-slider-input"
+                  />
+                </div>
+              </div>
+            )
+          }
         </div>
       </aside>
 
@@ -499,41 +501,43 @@ const maxReadingTime = Math.max(...readingTimes);
               </div>
             </div>
             <!-- Mobile Reading time -->
-            <div class="mt-8">
-              <h3
-                class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-4"
-              >
-                {t("search.readingTime")}
-              </h3>
-              <div class="flex justify-between text-xs text-text-muted mb-3">
-                <span id="rt-min-label-mobile"
-                  >{minReadingTime} {t("search.minutes")}</span
-                >
-                <span id="rt-max-label-mobile"
-                  >{maxReadingTime} {t("search.minutes")}</span
-                >
-              </div>
-              <div class="range-slider-container">
-                <div class="range-slider-track"></div>
-                <div id="rt-range-fill-mobile" class="range-slider-fill"></div>
-                <input
-                  type="range"
-                  id="rt-min-mobile"
-                  min={minReadingTime}
-                  max={maxReadingTime}
-                  value={minReadingTime}
-                  class="range-slider-input"
-                />
-                <input
-                  type="range"
-                  id="rt-max-mobile"
-                  min={minReadingTime}
-                  max={maxReadingTime}
-                  value={maxReadingTime}
-                  class="range-slider-input"
-                />
-              </div>
-            </div>
+            {
+              allArticles.length > 0 && (
+                <div class="mt-8">
+                  <h3 class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-4">
+                    {t("search.readingTime")}
+                  </h3>
+                  <div class="flex justify-between text-xs text-text-muted mb-3">
+                    <span id="rt-min-label-mobile">
+                      {minReadingTime} {t("search.minutes")}
+                    </span>
+                    <span id="rt-max-label-mobile">
+                      {maxReadingTime} {t("search.minutes")}
+                    </span>
+                  </div>
+                  <div class="range-slider-container">
+                    <div class="range-slider-track" />
+                    <div id="rt-range-fill-mobile" class="range-slider-fill" />
+                    <input
+                      type="range"
+                      id="rt-min-mobile"
+                      min={minReadingTime}
+                      max={maxReadingTime}
+                      value={minReadingTime}
+                      class="range-slider-input"
+                    />
+                    <input
+                      type="range"
+                      id="rt-max-mobile"
+                      min={minReadingTime}
+                      max={maxReadingTime}
+                      value={maxReadingTime}
+                      class="range-slider-input"
+                    />
+                  </div>
+                </div>
+              )
+            }
           </nav>
         </div>
       </div>
