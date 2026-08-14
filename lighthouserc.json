@@ -1,7 +1,7 @@
 {
   "ci": {
     "collect": {
-      "startServerCommand": "npm run build && wrangler dev --port 4321",
+      "startServerCommand": "npm run build && npx wrangler dev --port 4321",
       "startServerReadyPattern": "Ready on",
       "startServerReadyTimeout": 60000,
       "url": [
