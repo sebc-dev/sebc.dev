@@ -27,6 +27,7 @@ jobs:
       - run: npm run build
         env:
           NODE_OPTIONS: "--max-old-space-size=4096"
+      - run: npm run check:no-demo
 
       - name: Deploy to Cloudflare
         uses: cloudflare/wrangler-action@v3

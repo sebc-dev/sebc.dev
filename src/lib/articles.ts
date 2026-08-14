@@ -3,12 +3,35 @@ import { CATEGORIES, type Category } from "./categories";
 
 export type Article = CollectionEntry<"articles">;
 
+const INCLUDE_DEMO =
+  import.meta.env.DEV || import.meta.env.INCLUDE_DEMO === "1";
+
+export function isPublished(
+  entry: Article,
+  includeDemo = INCLUDE_DEMO,
+): boolean {
+  if (entry.data.draft) return false;
+  return includeDemo || !entry.data.demo;
+}
+
+export async function getPublishedArticles(
+  includeDemo?: boolean,
+): Promise<Article[]> {
+  return getCollection("articles", (e) =>
+    isPublished(e, includeDemo ?? INCLUDE_DEMO),
+  );
+}
+
 export async function getArticlesByLocale(
   lang: "en" | "fr",
+  includeDemo?: boolean,
 ): Promise<Article[]> {
-  const articles = await getCollection("articles", (entry) => {
-    return entry.data.lang === lang && !entry.data.draft;
-  });
+  const articles = await getCollection(
+    "articles",
+    (entry) =>
+      isPublished(entry, includeDemo ?? INCLUDE_DEMO) &&
+      entry.data.lang === lang,
+  );
   return articles.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 }
 

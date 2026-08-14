@@ -8,6 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run dev` — Start dev server (runs `wrangler types && astro dev`)
 - `npm run build` — Full build: wrangler types → astro check → astro build → pagefind indexing
 - `npm run preview` — Build + preview with Wrangler Workers locally
+- `INCLUDE_DEMO=1 npm run build` (or `npm run dev`/`npm run preview`) — rebuild with the `demo: true` seed articles included, for local testing of article pages/search/RSS
 
 ### Testing
 - `npm run test` — Run unit tests once (vitest)
@@ -23,6 +24,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run format` / `npm run format:check` — Prettier
 - `npm run knip` — Dead code detection
 - `npm run typecheck` — Full type check (astro sync + astro check + tsc --noEmit)
+- `npm run check:no-demo` — Fails if any `demo: true` article leaked into `dist/` (run after build, before deploy)
 
 ### Quality Report Script
 `./scripts/quality-report.sh` — Compact report optimized for LLM consumption (minimal tokens):
@@ -44,14 +46,15 @@ There is **no Astro adapter**: the site is 100% static, so `astro build` writes 
 - MDX articles in `src/content/articles/` loaded via `glob()` loader
 - Schema enforces `pillarTags` enum: `"IA"`, `"Ingénierie"`, `"UX"` (min 1)
 - `draft: true` articles are filtered out by `src/lib/articles.ts`
+- `demo: true` marks the 31 seed/fixture articles as dev-only: never published, regardless of `draft`. Visibility is centralized in `isPublished()`/`getPublishedArticles()` in `src/lib/articles.ts`; controlled by the `INCLUDE_DEMO` env var (defaults to included in dev, excluded in production builds)
 - Articles support `series` (id, episode, total) and `translationSlug` for cross-locale linking
 
 ### Routing
 - `src/pages/index.astro` — redirect to default locale
-- `src/pages/{en,fr}/index.astro` — home pages
-- `src/pages/{en,fr}/articles/[id].astro` — dynamic article pages (use `entry.id` NOT `entry.slug`)
-- `src/pages/{en,fr}/search.astro` — Pagefind client-side search
-- `src/pages/{en,fr}/about.astro`
+- `src/pages/[lang]/index.astro` — home pages
+- `src/pages/[lang]/articles/[id].astro` — dynamic article pages (use `entry.id` NOT `entry.slug`)
+- `src/pages/[lang]/search.astro` — Pagefind client-side search
+- `src/pages/[lang]/about.astro`
 
 ### Key Modules
 - `src/lib/articles.ts` — Article queries (by locale, featured, related by score, categories)
@@ -91,6 +94,6 @@ There is **no Astro adapter**: the site is 100% static, so `astro build` writes 
 - `npm run preview` builds then serves through `wrangler dev`, which exercises the real routing rules above — use it, not `astro preview`, to validate redirects and headers.
 
 ## CI/CD
-- **PR**: Quality Gate (`quality.yml`) — prettier, eslint, markdownlint, astro check, knip, vitest+coverage, npm audit, playwright E2E, Lighthouse CI (0.9 min scores)
-- **Push to main**: Deploy (`deploy.yml`) — build + Cloudflare Workers deploy via wrangler. Needs the `CF_API_TOKEN` and `CF_ACCOUNT_ID` secrets in the `production` environment.
+- **PR**: Quality Gate (`quality.yml`) — prettier, eslint, markdownlint, astro check, knip, vitest+coverage, npm audit, playwright E2E, Lighthouse CI (0.9 min scores). The `lighthouse` job builds with `INCLUDE_DEMO=1` so it has an article to measure; the `e2e` job builds the real (demo-free) site
+- **Push to main**: Deploy (`deploy.yml`) — build + `npm run check:no-demo` guard + Cloudflare Workers deploy via wrangler. Needs the `CF_API_TOKEN` and `CF_ACCOUNT_ID` secrets in the `production` environment.
 - **Pre-commit** (lefthook): prettier, eslint, markdownlint on staged files

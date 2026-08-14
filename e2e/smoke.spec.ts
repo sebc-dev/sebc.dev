@@ -9,13 +9,13 @@ test.describe("Smoke tests", () => {
   test("EN home page loads", async ({ page }) => {
     await page.goto("/en");
     await expect(page).toHaveTitle(/sebc\.dev/);
-    await expect(page.locator("h1, [data-article-grid]")).toBeVisible();
+    await expect(page.locator("h1").first()).toBeVisible();
   });
 
   test("FR home page loads", async ({ page }) => {
     await page.goto("/fr");
     await expect(page).toHaveTitle(/sebc\.dev/);
-    await expect(page.locator("h1, [data-article-grid]")).toBeVisible();
+    await expect(page.locator("h1").first()).toBeVisible();
   });
 
   test("EN about page loads", async ({ page }) => {

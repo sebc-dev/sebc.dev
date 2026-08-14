@@ -14,6 +14,8 @@ import {
   getTags,
   getArticleUrl,
   getRelatedArticles,
+  isPublished,
+  getPublishedArticles,
 } from "./articles";
 
 const mockedGetCollection = vi.mocked(getCollection);
@@ -34,6 +36,7 @@ function makeArticle(
       readingTime: 5,
       featured: false,
       draft: false,
+      demo: false,
       lang: "en",
       ...data,
     },
@@ -204,5 +207,45 @@ describe("getRelatedArticles", () => {
   it("respects the limit parameter", async () => {
     const related = await getRelatedArticles(allArticles[1], 1);
     expect(related).toHaveLength(1);
+  });
+});
+
+describe("demo articles", () => {
+  const demoArticle = makeArticle({
+    id: "demo1",
+    title: "Demo",
+    draft: false,
+    demo: true,
+  });
+  const withDemo = [...allArticles, demoArticle];
+
+  beforeEach(() => {
+    mockedGetCollection.mockImplementation(async (_collection, filter) => {
+      if (!filter) return withDemo;
+      return withDemo.filter((a) => (filter as (entry: Article) => boolean)(a));
+    });
+  });
+
+  it("isPublished excludes a demo article when includeDemo is false", () => {
+    expect(isPublished(demoArticle, false)).toBe(false);
+  });
+
+  it("isPublished includes a demo article when includeDemo is true", () => {
+    expect(isPublished(demoArticle, true)).toBe(true);
+  });
+
+  it("isPublished excludes a demo article even when draft is false", () => {
+    expect(demoArticle.data.draft).toBe(false);
+    expect(isPublished(demoArticle, false)).toBe(false);
+  });
+
+  it("getArticlesByLocale excludes demo fixtures when includeDemo is false", async () => {
+    const articles = await getArticlesByLocale("en", false);
+    expect(articles.find((a) => a.id === "demo1")).toBeUndefined();
+  });
+
+  it("getPublishedArticles excludes demo fixtures when includeDemo is false", async () => {
+    const articles = await getPublishedArticles(false);
+    expect(articles.find((a) => a.id === "demo1")).toBeUndefined();
   });
 });
