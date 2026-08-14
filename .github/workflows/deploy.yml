@@ -1,13 +1,6 @@
 name: Deploy
 on:
-  push:
-    branches: [main]
-  workflow_dispatch:
-
-# A newer push to main supersedes an in-flight deploy; never let two races land.
-concurrency:
-  group: deploy-production
-  cancel-in-progress: false
+  workflow_dispatch: # manual trigger only — auto-deploy disabled
 
 jobs:
   deploy:
