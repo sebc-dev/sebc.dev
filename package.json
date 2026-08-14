@@ -44,7 +44,7 @@
     "hastscript": "^9.0.1",
     "knip": "^5.83.1",
     "lefthook": "^2.1.0",
-    "markdownlint-cli2": "^0.20.0",
+    "markdownlint-cli2": "^0.23.2",
     "pagefind": "^1.4.0",
     "prettier": "^3.8.1",
     "prettier-plugin-astro": "^0.14.1",
@@ -58,6 +58,15 @@
     "node": ">=22.12.0"
   },
   "overrides": {
-    "vite": "^8.2.1"
+    "vite": "^8.2.1",
+    "qs": "^6.15.2",
+    "eslint": {
+      "@eslint/eslintrc": {
+        "js-yaml": "^4.3.1"
+      }
+    },
+    "knip": {
+      "js-yaml": "^4.3.1"
+    }
   }
 }
