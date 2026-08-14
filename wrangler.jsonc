@@ -1,10 +1,21 @@
 {
-  "main": "@astrojs/cloudflare/entrypoints/server",
+  "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "sebc-dev",
   "compatibility_date": "2026-03-17",
-  "compatibility_flags": ["nodejs_compat"],
   "assets": {
+    // Astro builds a fully static site straight into ./dist (no adapter, so no
+    // dist/client split). Served by Workers Static Assets, no Worker script.
     "directory": "./dist",
-    "binding": "ASSETS",
+    // Matches Astro's `trailingSlash: "never"`: /a/b is served from
+    // /a/b/index.html and /a/b/ redirects to /a/b.
+    "html_handling": "drop-trailing-slash",
+    // Serves the nearest 404.html (built from src/pages/404.astro).
+    "not_found_handling": "404-page",
   },
+  "routes": [
+    {
+      "pattern": "sebc.dev",
+      "custom_domain": true,
+    },
+  ],
 }

@@ -1,35 +1,35 @@
 import { defineConfig } from "astro/config";
-import cloudflare from "@astrojs/cloudflare";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import astroExpressiveCode from "astro-expressive-code";
-import { rehypeHeadingIds } from "@astrojs/markdown-remark";
+import { unified, rehypeHeadingIds } from "@astrojs/markdown-remark";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import { h } from "hastscript";
 
 export default defineConfig({
   site: "https://sebc.dev",
   output: "static",
-  adapter: cloudflare({
-    imageService: "compile",
-  }),
   markdown: {
-    rehypePlugins: [
-      rehypeHeadingIds,
-      [
-        rehypeAutolinkHeadings,
-        {
-          behavior: "append",
-          properties: {
-            class: "heading-anchor",
-            ariaHidden: true,
-            tabIndex: -1,
+    // Astro 7 defaults to Sätteri; we stay on the unified pipeline because the
+    // heading anchors below rely on rehype plugins. MDX inherits this processor.
+    processor: unified({
+      rehypePlugins: [
+        rehypeHeadingIds,
+        [
+          rehypeAutolinkHeadings,
+          {
+            behavior: "append",
+            properties: {
+              class: "heading-anchor",
+              ariaHidden: true,
+              tabIndex: -1,
+            },
+            content: h("span.heading-anchor-icon", "#"),
           },
-          content: h("span.heading-anchor-icon", "#"),
-        },
+        ],
       ],
-    ],
+    }),
   },
   integrations: [
     astroExpressiveCode({

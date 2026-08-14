@@ -8,5 +8,4 @@ package-lock.json
 .stryker-tmp/
 .claude/
 design-research/
-worker-configuration.d.ts
 *.md
